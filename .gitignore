@@ -34,3 +34,10 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+*.db
+*.sqlite
+*.sqlite3
+__pycache__/
+*.py[cod]
+.env
