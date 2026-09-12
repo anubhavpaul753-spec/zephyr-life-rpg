@@ -42,3 +42,21 @@ def root():
 @app.get('/health')
 def health():
     return {'status': 'healthy'}
+
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+import os
+
+# Serve Frontend static assets so entire app runs from 1 server
+frontend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+css_dir = os.path.join(frontend_dir, 'css')
+js_dir = os.path.join(frontend_dir, 'js')
+
+if os.path.exists(css_dir):
+    app.mount('/css', StaticFiles(directory=css_dir), name='css')
+if os.path.exists(js_dir):
+    app.mount('/js', StaticFiles(directory=js_dir), name='js')
+
+@app.get('/app')
+def serve_frontend():
+    return FileResponse(os.path.join(frontend_dir, 'index.html'))
