@@ -32,12 +32,12 @@
 
 /* --- THEME 1: Raycast Midnight Engine (Default Dark Mode) --- */
 :root, [data-theme="dark"] {
-  --bg-app: #07080D;
-  --bg-surface: #0E1119;
-  --bg-card: #121622;
-  --bg-card-hover: #171D2B;
-  --bg-subtle: #161D2B;
-  --bg-input: #0A0D14;
+  --bg-app: #07080D !important;
+  --bg-surface: #0E1119 !important;
+  --bg-card: #121622 !important;
+  --bg-card-hover: #171D2B !important;
+  --bg-subtle: #161D2B !important;
+  --bg-input: #0A0D14 !important;
 
   --border-color: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);

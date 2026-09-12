@@ -13,27 +13,52 @@
   <script>
     (function() {
       try {
-        var savedTheme = localStorage.getItem('mirror_theme');
-        if (savedTheme === 'light' || savedTheme === 'dark') {
-          document.documentElement.setAttribute('data-theme', savedTheme);
-        }
+        // 1. Sanitize local storage to remove any stale brown amber palette
         var activeUser = localStorage.getItem('mirror_active_session');
         if (activeUser) {
           var users = JSON.parse(localStorage.getItem('mirror_users') || '{}');
           if (users[activeUser]) {
-            if (users[activeUser].themeMode) {
-              document.documentElement.setAttribute('data-theme', users[activeUser].themeMode);
-            }
-            if (users[activeUser].activePalette) {
-              document.documentElement.setAttribute('data-palette', users[activeUser].activePalette);
+            if (users[activeUser].activePalette === 'amber') {
+              users[activeUser].activePalette = 'default';
+              localStorage.setItem('mirror_users', JSON.stringify(users));
             }
           }
+        }
+        document.documentElement.removeAttribute('data-palette');
+
+        // 2. Load theme immediately pre-render
+        var savedTheme = localStorage.getItem('mirror_theme');
+        if (savedTheme === 'light') {
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
         }
       } catch (e) {}
     })();
   </script>
 
-  <link rel="stylesheet" href="css/styles.css">
+  <style id="theme-enforcer">
+    /* Bulletproof Anti-Brown Global Lock */
+    html:not([data-theme="light"]), 
+    body:not([data-theme="light"]),
+    html[data-theme="dark"], 
+    body[data-theme="dark"] {
+      background-color: #07080D !important;
+      --bg-app: #07080D !important;
+      --bg-surface: #0E1119 !important;
+      --bg-card: #121622 !important;
+    }
+    html[data-theme="light"], 
+    body[data-theme="light"] {
+      background-color: #FAF9F5 !important;
+      --bg-app: #FAF9F5 !important;
+      --bg-surface: #F5F1E9 !important;
+      --bg-card: #FFFFFF !important;
+    }
+  </style>
+
+  <!-- Version-tagged to force browsers to bypass cache -->
+  <link rel="stylesheet" href="css/styles.css?v=20260912-obsidian-v3">
 </head>
 <body>
   <!-- Screen Reader Announcements (ARIA Live) -->

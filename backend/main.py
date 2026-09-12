@@ -49,7 +49,7 @@ if os.path.exists(js_dir):
 def serve_frontend():
     index_path = os.path.join(frontend_dir, 'index.html')
     if os.path.exists(index_path):
-        return FileResponse(index_path)
+        return FileResponse(index_path, headers={'Cache-Control': 'no-cache, no-store, must-revalidate'})
     return {
         'app': 'Project Mirror: Life RPG',
         'status': 'online',
