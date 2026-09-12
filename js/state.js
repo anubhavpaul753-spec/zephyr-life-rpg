@@ -652,9 +652,37 @@ class StateManager {
     this.notify();
   }
 
-  // Equip active UI theme palette (Matrix, Synthwave, Amber, Arctic, Zen, Minimalist)
+  // Equip active UI theme palette (Matrix, Synthwave, Amber, Arctic, Crimson, Minimal)
   equipPalette(paletteKey) {
-    this.state.activePalette = paletteKey;
+    const pal = paletteKey || 'default';
+    this.state.activePalette = pal;
+
+    // Immediately apply or remove data-palette from document
+    if (pal && pal !== 'default') {
+      document.documentElement.setAttribute('data-palette', pal);
+      if (document.body) document.body.setAttribute('data-palette', pal);
+    } else {
+      document.documentElement.removeAttribute('data-palette');
+      if (document.body) document.body.removeAttribute('data-palette');
+    }
+
+    // Persist directly into mirror_users in localStorage
+    try {
+      const activeUser = localStorage.getItem('mirror_active_session');
+      if (activeUser) {
+        const users = JSON.parse(localStorage.getItem('mirror_users') || '{}');
+        if (users[activeUser]) {
+          users[activeUser].activePalette = pal;
+          if (users[activeUser].userData) {
+            users[activeUser].userData.activePalette = pal;
+          }
+          localStorage.setItem('mirror_users', JSON.stringify(users));
+        }
+      }
+    } catch (e) {
+      console.warn('[Storage Error]', e);
+    }
+
     this.saveState();
     this.notify();
   }
@@ -706,11 +734,13 @@ class StateManager {
         careerTrack: uTrack,
         careerTree: tree,
         lifeGoal: (user.userData.lifeGoal && user.userData.lifeGoal !== 'undefined') ? user.userData.lifeGoal : (user.lifeGoal || 'Master full-stack engineering and bring security to loved ones.'),
-        themeMode: user.userData.themeMode || user.themeMode || 'light',
+        themeMode: 'dark',
+        activePalette: user.userData.activePalette || user.activePalette || 'default',
         quests: (user.userData.quests && user.userData.quests.length > 0) 
           ? user.userData.quests 
           : this.getRoutineForCareer(uTrack),
         relationshipBonds: enrichBonds(user.userData.relationshipBonds),
+        inventory: Array.isArray(user.userData.inventory) ? user.userData.inventory : (user.inventory || []),
         honorableArchive: Array.isArray(user.userData.honorableArchive) ? user.userData.honorableArchive : [],
         completedMicroQuests: Array.isArray(user.userData.completedMicroQuests) ? user.userData.completedMicroQuests : [],
         restDaysTaken: user.userData.restDaysTaken || 0,
@@ -728,7 +758,8 @@ class StateManager {
         totalXP: 0,
         currency: 20,
         streak: 1,
-        themeMode: 'light',
+        themeMode: 'dark',
+        activePalette: 'default',
         soundEnabled: true,
         currentProfession: 'Student & Academic Learner',
         dreamCareer: 'Software Engineer & Full-Stack Developer',
@@ -738,6 +769,7 @@ class StateManager {
         relationshipBonds: JSON.parse(JSON.stringify(DEFAULT_RELATIONSHIP_BONDS)),
         skipRelationships: false,
         quests: this.getRoutineForCareer(defaultTrack),
+        inventory: [],
         honorableArchive: [],
         completedMicroQuests: [],
         restDaysTaken: 0,
@@ -761,10 +793,12 @@ class StateManager {
       relationshipBonds: (user.relationshipBonds && user.relationshipBonds.length > 0) ? enrichBonds(user.relationshipBonds) : enrichBonds(DEFAULT_RELATIONSHIP_BONDS),
       skipRelationships: !!user.skipRelationships,
       quests: this.getRoutineForCareer(defaultTrack),
+      inventory: user.inventory || [],
       totalXP: 0,
       currency: 20,
       streak: 1,
-      themeMode: user.themeMode || 'light',
+      themeMode: 'dark',
+      activePalette: user.activePalette || 'default',
       soundEnabled: true,
       honorableArchive: [],
       completedMicroQuests: [],
@@ -1409,17 +1443,15 @@ class StateManager {
     return newBond;
   }
 
-  // Toggle theme mode (dark vs light)
+  // Theme mode is locked to pure Raycast Midnight Obsidian dark mode
   setThemeMode(mode) {
-    this.state.themeMode = mode;
+    this.state.themeMode = 'dark';
     this.saveState();
     this.notify();
   }
 
   toggleThemeMode() {
-    const next = this.state.themeMode === 'dark' ? 'light' : 'dark';
-    this.setThemeMode(next);
-    return next;
+    return 'dark';
   }
 
   toggleSound() {
@@ -1576,12 +1608,12 @@ class StateManager {
   }
 
   setThemeMode(mode) {
-    this.state.themeMode = mode;
+    this.state.themeMode = 'dark';
     try {
-      localStorage.setItem('mirror_theme', mode);
+      localStorage.setItem('mirror_theme', 'dark');
     } catch (e) {}
-    document.documentElement.setAttribute('data-theme', mode);
-    if (document.body) document.body.setAttribute('data-theme', mode);
+    document.documentElement.setAttribute('data-theme', 'dark');
+    if (document.body) document.body.setAttribute('data-theme', 'dark');
     this.saveState();
     this.notify();
   }

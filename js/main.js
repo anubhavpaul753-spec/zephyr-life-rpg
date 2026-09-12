@@ -211,15 +211,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      // 5.6 Theme Toggle
-      if (e.target.closest('#theme-toggle-btn')) {
-        const current = document.documentElement.getAttribute('data-theme') || 'dark';
-        const next = current === 'dark' ? 'light' : 'dark';
-        store.setThemeMode(next);
-        showToast(next === 'light' ? 'Autumn Golden Sanctuary activated 🍂' : 'Raycast Midnight Engine activated 🌌');
-        return;
-      }
-
       // 5.7 Sound Toggle
       if (e.target.closest('#sound-toggle-btn')) {
         store.toggleSound();
@@ -386,10 +377,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const paletteKey = equipBtn.dataset.paletteKey;
         const paletteName = equipBtn.dataset.paletteName || 'Theme';
         store.equipPalette(paletteKey);
-        document.documentElement.setAttribute('data-palette', paletteKey);
         if (celebrate) celebrate.playChime('levelup');
         ui.renderShopSection(store.state);
+        ui.renderHeader(store.state, true);
         showToast(`Equipped ${paletteName}! Interface transformed. 🎨`);
+        return;
+      }
+
+      // 5.20b Revert to Default Raycast Midnight UI
+      const revertBtn = e.target.closest('[data-action="revert-palette"]');
+      if (revertBtn) {
+        store.equipPalette('default');
+        if (celebrate) celebrate.playChime('neutral');
+        ui.renderShopSection(store.state);
+        ui.renderHeader(store.state, true);
+        showToast('Reverted to Default Raycast Midnight UI! 🌌');
         return;
       }
 

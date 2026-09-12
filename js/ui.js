@@ -45,14 +45,19 @@ class UIManager {
       document.body.classList.remove('app-unauthenticated');
     }
 
-    // Apply Active Theme Mode ('dark' or 'light')
-    const activeTheme = state?.themeMode || 'dark';
-    document.documentElement.setAttribute('data-theme', activeTheme);
-    if (document.body) document.body.setAttribute('data-theme', activeTheme);
+    // Permanently enforce Raycast Midnight Obsidian Dark Mode
+    document.documentElement.setAttribute('data-theme', 'dark');
+    if (document.body) document.body.setAttribute('data-theme', 'dark');
 
-    // Apply Active Equipped Palette
+    // Apply Active Equipped Palette (cleanly set or remove data-palette)
     const activePalette = state?.activePalette || 'default';
-    document.documentElement.setAttribute('data-palette', activePalette);
+    if (activePalette && activePalette !== 'default') {
+      document.documentElement.setAttribute('data-palette', activePalette);
+      if (document.body) document.body.setAttribute('data-palette', activePalette);
+    } else {
+      document.documentElement.removeAttribute('data-palette');
+      if (document.body) document.body.removeAttribute('data-palette');
+    }
 
     // Apply Golden Avatar Aura if unlocked
     const hasAura = (state?.inventory || []).some(it => it.key === 'golden_aura' || it.key === 'accessory_aura');
@@ -764,13 +769,13 @@ class UIManager {
         desc: 'Glacial cyan & cool iceberg blues with ultra-crisp contrast.'
       },
       {
-        key: 'theme_zen',
-        name: 'Kyoto Zen Paper (Warm Light)',
+        key: 'theme_crimson',
+        name: 'Crimson Bloodmoon Theme',
         cost: 30,
-        icon: '🍵',
+        icon: '🩸',
         category: 'themes',
-        palette: 'zen',
-        desc: 'Authentic Japanese washi paper warmth, calming bamboo green & sumi ink typography.'
+        palette: 'crimson',
+        desc: 'Lethal neon crimson red glow, obsidian abyss & high-stakes dark mode aesthetic.'
       },
       {
         key: 'theme_minimal',
@@ -871,6 +876,36 @@ class UIManager {
     const inventory = state?.inventory || [];
     const activePalette = state?.activePalette || 'default';
 
+    const paletteNames = {
+      default: 'Raycast Midnight (Obsidian)',
+      matrix: 'Cyberpunk Matrix (Emerald)',
+      synthwave: 'Tokyo Synthwave (Neon Violet)',
+      amber: 'Sunset Amber Solstice (Gold)',
+      arctic: 'Nordic Arctic Frost (Cyan)',
+      crimson: 'Crimson Bloodmoon (Ruby Red)',
+      minimal: 'Monochrome Obsidian (Minimal)'
+    };
+    const currentPaletteName = paletteNames[activePalette] || 'Custom Theme';
+
+    // Active Theme Status Bar with Instant Revert Control
+    const activeBarHtml = `
+      <div class="active-palette-bar">
+        <div class="palette-status-info">
+          <span class="palette-status-icon">🎨</span>
+          <span>Current Equipped UI: <strong class="palette-name-tag">${escapeHTML(currentPaletteName)}</strong></span>
+        </div>
+        <div>
+          ${activePalette !== 'default' ? `
+            <button class="revert-theme-btn" data-action="revert-palette" title="Revert UI to default Raycast Midnight Obsidian">
+              ↺ Revert to Default UI (Raycast Midnight)
+            </button>
+          ` : `
+            <span class="active-palette-default-badge">✓ Default Raycast Obsidian Active</span>
+          `}
+        </div>
+      </div>
+    `;
+
     // Inject filter tabs above items
     const tabsHtml = `
       <div class="shop-filter-tabs" style="grid-column: 1 / -1;">
@@ -899,7 +934,13 @@ class UIManager {
         `;
       } else if (item.palette) {
         if (isEquipped) {
-          actionButtonHtml = `<button class="pill-btn equipped-btn" disabled>✓ Equipped</button>`;
+          actionButtonHtml = `
+            <button class="pill-btn equipped-active-btn" 
+                    data-action="revert-palette" 
+                    title="Theme is equipped. Click to revert to default Raycast Midnight UI.">
+              ✓ Equipped (Click to Revert)
+            </button>
+          `;
         } else {
           actionButtonHtml = `
             <button class="pill-btn equip-btn" 
@@ -937,7 +978,7 @@ class UIManager {
       `;
     }).join('');
 
-    itemsContainer.innerHTML = tabsHtml + cardsHtml;
+    itemsContainer.innerHTML = activeBarHtml + tabsHtml + cardsHtml;
 
     // Acquired Inventory
     const invContainer = document.getElementById('user-inventory-container');
