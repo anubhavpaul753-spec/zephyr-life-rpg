@@ -11,9 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 1. Initial Render & Sound Unlock
   const urlParams = new URLSearchParams(window.location.search);
+  // Auto-login only if explicitly requested in URL demo query
   if (urlParams.get('demo') === 'true' && !auth.isAuthenticated()) {
-    auth.login('arpita', '123');
-    store.loadActiveUserState();
+    auth.login('anubhav', '123').then(() => {
+      store.loadActiveUserState();
+      ui.render(store.state);
+    });
   }
   if (urlParams.get('theme')) {
     store.setThemeMode(urlParams.get('theme'));
@@ -171,19 +174,32 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 4. Form Submissions (Auth & Generators)
-  document.addEventListener('submit', e => {
+  document.addEventListener('submit', async e => {
     // Login Form Submit
     if (e.target.id === 'login-form') {
       e.preventDefault();
+      const submitBtn = document.getElementById('login-submit-btn');
+      const errBox = document.getElementById('auth-error-box');
+      if (errBox) errBox.classList.add('hidden');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Authenticating...'; }
+
       const u = document.getElementById('login-username').value;
       const p = document.getElementById('login-password').value;
-      const res = auth.login(u, p);
+      const res = await auth.login(u, p);
+
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Sign In to Reality Mirror →'; }
+
       if (res.success) {
         triggerNetflixIntro();
         store.loadActiveUserState();
         ui.render(store.state);
       } else {
-        alert(res.message);
+        if (errBox) {
+          errBox.textContent = res.message;
+          errBox.classList.remove('hidden');
+        } else {
+          alert(res.message);
+        }
       }
       return;
     }
@@ -191,17 +207,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Register Form Submit
     if (e.target.id === 'register-form') {
       e.preventDefault();
+      const submitBtn = document.getElementById('register-submit-btn');
+      const errBox = document.getElementById('auth-error-box');
+      if (errBox) errBox.classList.add('hidden');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating Account...'; }
+
       const full = document.getElementById('reg-fullname').value;
       const u = document.getElementById('reg-username').value;
       const p = document.getElementById('reg-password').value;
       const c = document.getElementById('reg-careertrack').value;
-      const res = auth.register(u, p, full, c);
+      const res = await auth.register(u, p, full, c);
+
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create Account & Begin →'; }
+
       if (res.success) {
         triggerNetflixIntro();
         store.loadActiveUserState();
         ui.render(store.state);
       } else {
-        alert(res.message);
+        if (errBox) {
+          errBox.textContent = res.message;
+          errBox.classList.remove('hidden');
+        } else {
+          alert(res.message);
+        }
       }
       return;
     }

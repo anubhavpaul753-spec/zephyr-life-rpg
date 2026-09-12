@@ -51,28 +51,30 @@ class UIRenderer {
     if (this.authTab === 'login') {
       container.innerHTML = `
         <form id="login-form" class="auth-form">
+          <div id="auth-error-box" class="auth-error-banner hidden" style="color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:10px; font-size:0.85rem; margin-bottom:8px; text-align:center;"></div>
           <div class="form-group">
             <label class="form-label">Username</label>
-            <input type="text" id="login-username" class="form-input" placeholder="e.g. arpita" required autocomplete="username" value="arpita">
+            <input type="text" id="login-username" class="form-input" placeholder="Enter your username" required autocomplete="username">
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
-            <input type="password" id="login-password" class="form-input" placeholder="Enter password" required autocomplete="current-password" value="123">
+            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
           </div>
-          <button type="submit" class="auth-submit-btn">Enter Reality Mirror →</button>
-          <p class="auth-hint">Demo account pre-filled. New user? Click <strong>Create Account</strong> above.</p>
+          <button type="submit" id="login-submit-btn" class="auth-submit-btn">Sign In to Reality Mirror →</button>
+          <p class="auth-hint">New to Project Mirror? Click <strong>Create Account</strong> above to begin your journey.</p>
         </form>
       `;
     } else {
       container.innerHTML = `
         <form id="register-form" class="auth-form">
+          <div id="auth-error-box" class="auth-error-banner hidden" style="color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:10px; font-size:0.85rem; margin-bottom:8px; text-align:center;"></div>
           <div class="form-group">
-            <label class="form-label">Your Name</label>
-            <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Arpita" required>
+            <label class="form-label">Your Full Name</label>
+            <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Anubhav Paul" required>
           </div>
           <div class="form-group">
             <label class="form-label">Choose Username</label>
-            <input type="text" id="reg-username" class="form-input" placeholder="e.g. arpita" required autocomplete="username">
+            <input type="text" id="reg-username" class="form-input" placeholder="e.g. anubhav" required autocomplete="username">
           </div>
           <div class="form-group">
             <label class="form-label">Choose Password</label>
@@ -84,8 +86,8 @@ class UIRenderer {
               ${careerOptions}
             </select>
           </div>
-          <button type="submit" class="auth-submit-btn">Begin Life RPG Journey →</button>
-          <p class="auth-hint">All your progress, habits, and XP are securely preserved per-account.</p>
+          <button type="submit" id="register-submit-btn" class="auth-submit-btn">Create Account & Begin →</button>
+          <p class="auth-hint">All your progress, habits, and XP are securely preserved in the database.</p>
         </form>
       `;
     }
