@@ -655,6 +655,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       ui.renderCareerSection(store.state);
       ui.renderRoutineSection(store.state);
       ui.renderMirrorSection(store.state);
+      ui.renderHeroGateway(store.state, true);
+      ui.renderHeader(store.state, true);
       if (celebrate) celebrate.playChime('success');
       showToast(`Career switched to ${newTrack}! Daily routine & milestones updated. 🎯`);
       return;

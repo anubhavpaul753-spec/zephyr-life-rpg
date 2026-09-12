@@ -399,6 +399,9 @@ class UIManager {
 
   // SECTION 2: Daily Routine
   renderRoutineSection(state) {
+    const careerBadge = document.getElementById('routine-career-badge');
+    if (careerBadge) careerBadge.textContent = state?.careerTrack || 'Core Practice';
+
     const quests = state?.quests || [];
     const completedCount = quests.filter(q => q.completed).length;
     const totalCount = quests.length;

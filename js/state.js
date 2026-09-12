@@ -43,6 +43,7 @@ const CAREER_TRACKS = [
   { id: 'finance', name: 'Finance, Banking & Investment Analyst', defaultGoal: 'Master capital allocation, risk modeling, market dynamics, and ethical wealth stewardship.' },
   { id: 'filmmaker', name: 'Filmmaker, Director & Cinematographer', defaultGoal: 'Master visual storytelling, cinematic lighting, directorial vision, and poignant filmmaking.' }
 ];
+if (typeof window !== "undefined") window.CAREER_TRACKS = CAREER_TRACKS;
 
 // Visual Progression Tree Presets: 4 Distinct Tiers for each Career Track
 // Visual Progression Tree Presets: 4 Distinct Tiers for prominent career tracks
@@ -555,14 +556,15 @@ class StateManager {
 
   generateCareerTreeForTrack(trackName) {
     const clean = trackName || 'Domain Mastery';
+    const slug = clean.toLowerCase().replace(/[^a-z0-9]+/g, '_').slice(0, 15);
     return [
       {
         tierId: 1,
         tierName: 'Foundations & Core Practice',
         subtitle: `Essential mechanics, domain literacy & daily discipline in ${clean}`,
         milestones: [
-          { id: `tier1_m1_${Date.now()}`, title: `Master Core Foundations of ${clean}`, desc: `Study primary literature, historical principles, and build baseline technical competence.`, craftXP: 40, discXP: 20, coins: 25, completed: true },
-          { id: `tier1_m2_${Date.now()}`, title: `Establish Unbroken 30-Day Craft Ritual`, desc: `Practice daily deliberate execution in ${clean} without relying on fleeting motivation.`, craftXP: 35, discXP: 20, coins: 20, completed: false }
+          { id: `${slug}_t1_m1`, title: `Master Core Foundations of ${clean}`, desc: `Study primary literature, historical principles, and build baseline technical competence.`, craftXP: 40, discXP: 20, coins: 25, completed: true },
+          { id: `${slug}_t1_m2`, title: `Establish Unbroken 30-Day Craft Ritual`, desc: `Practice daily deliberate execution in ${clean} without relying on fleeting motivation.`, craftXP: 35, discXP: 20, coins: 20, completed: false }
         ]
       },
       {
@@ -570,8 +572,8 @@ class StateManager {
         tierName: 'Execution & Practical Portfolio',
         subtitle: `Building observable artifacts, high-leverage projects & testing feedback`,
         milestones: [
-          { id: `tier2_m1_${Date.now()}`, title: `Ship 2 Signature Projects in ${clean}`, desc: `Produce high-quality work validated by real peers and industry mentors.`, craftXP: 65, discXP: 25, coins: 40, completed: false },
-          { id: `tier2_m2_${Date.now()}`, title: `Master Workflow Speed & Ergonomic Efficiency`, desc: `Optimize tools, eliminate operational drag, and elevate speed of execution.`, craftXP: 50, discXP: 20, coins: 30, completed: false }
+          { id: `${slug}_t2_m1`, title: `Ship 2 Signature Projects in ${clean}`, desc: `Produce high-quality work validated by real peers and industry mentors.`, craftXP: 65, discXP: 25, coins: 40, completed: false },
+          { id: `${slug}_t2_m2`, title: `Master Workflow Speed & Ergonomic Efficiency`, desc: `Optimize tools, eliminate operational drag, and elevate speed of execution.`, craftXP: 50, discXP: 20, coins: 30, completed: false }
         ]
       },
       {
@@ -579,8 +581,8 @@ class StateManager {
         tierName: 'Industry Mastery & Leadership',
         subtitle: `Advanced problem solving, public influence & mentoring junior peers`,
         milestones: [
-          { id: `tier3_m1_${Date.now()}`, title: `Lead Major High-Impact Initiative`, desc: `Direct and deliver complex projects that move tangible outcomes in ${clean}.`, craftXP: 85, discXP: 35, coins: 55, completed: false },
-          { id: `tier3_m2_${Date.now()}`, title: `Peer Recognition & Thought Leadership`, desc: `Share hard-won insights through public writing, talks, or open source frameworks.`, craftXP: 70, discXP: 30, coins: 45, completed: false }
+          { id: `${slug}_t3_m1`, title: `Lead Major High-Impact Initiative`, desc: `Direct and deliver complex projects that move tangible outcomes in ${clean}.`, craftXP: 85, discXP: 35, coins: 55, completed: false },
+          { id: `${slug}_t3_m2`, title: `Peer Recognition & Thought Leadership`, desc: `Share hard-won insights through public writing, talks, or open source frameworks.`, craftXP: 70, discXP: 30, coins: 45, completed: false }
         ]
       },
       {
@@ -588,8 +590,8 @@ class StateManager {
         tierName: 'Pinnacle Mastery & Sovereign Legacy',
         subtitle: `Industry pinnacle offer/sovereignty, deep personal peace & family security`,
         milestones: [
-          { id: `tier4_m1_${Date.now()}`, title: `Attain Pinnacle Milestone in ${clean}`, desc: `Secure the dream appointment, founding sovereign freedom, or prestigious fellowship.`, craftXP: 160, discXP: 50, coins: 110, completed: false },
-          { id: `tier4_m2_${Date.now()}`, title: `Share Fruits of Success with Loved Ones`, desc: `Honor parents and family who supported the long journey to true mastery.`, craftXP: 100, discXP: 40, coins: 85, completed: false }
+          { id: `${slug}_t4_m1`, title: `Attain Pinnacle Milestone in ${clean}`, desc: `Secure the dream appointment, founding sovereign freedom, or prestigious fellowship.`, craftXP: 160, discXP: 50, coins: 110, completed: false },
+          { id: `${slug}_t4_m2`, title: `Share Fruits of Success with Loved Ones`, desc: `Honor parents and family who supported the long journey to true mastery.`, craftXP: 100, discXP: 40, coins: 85, completed: false }
         ]
       }
     ];
@@ -707,7 +709,7 @@ class StateManager {
         themeMode: user.userData.themeMode || user.themeMode || 'dark',
         quests: (user.userData.quests && user.userData.quests.length > 0) 
           ? user.userData.quests 
-          : [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
+          : this.getRoutineForCareer(uTrack),
         relationshipBonds: enrichBonds(user.userData.relationshipBonds),
         honorableArchive: Array.isArray(user.userData.honorableArchive) ? user.userData.honorableArchive : [],
         completedMicroQuests: Array.isArray(user.userData.completedMicroQuests) ? user.userData.completedMicroQuests : [],
@@ -1241,14 +1243,7 @@ class StateManager {
     }
   }
 
-  // Change Career Track & load appropriate progression tree
-  setCareerTrack(trackName) {
-    const validTrack = CAREER_TREE_PRESETS[trackName] ? trackName : 'Software Engineer & Builder';
-    this.state.careerTrack = validTrack;
-    this.state.careerTree = JSON.parse(JSON.stringify(CAREER_TREE_PRESETS[validTrack]));
-    this.saveState();
-    this.notify();
-  }
+
 
   // Log an honest personal reflection / interaction for a bond
   logBondInteraction(bondId, reflectionText, tag = 'Active Listening') {
@@ -1519,6 +1514,12 @@ class StateManager {
     if (profileData.dreamCareer) {
       this.state.dreamCareer = profileData.dreamCareer;
       this.state.careerTrack = profileData.dreamCareer;
+      this.state.careerTree = this.getTreeForCareer(profileData.dreamCareer);
+      this.state.quests = this.getRoutineForCareer(profileData.dreamCareer);
+      const trackDef = (CAREER_TRACKS || []).find(t => t.name === profileData.dreamCareer);
+      if (trackDef && trackDef.defaultGoal && (!profileData.lifeGoal || profileData.lifeGoal === '')) {
+        this.state.lifeGoal = trackDef.defaultGoal;
+      }
     }
     if (profileData.lifeGoal) this.state.lifeGoal = profileData.lifeGoal;
     if (profileData.skipRelationships !== undefined) {
@@ -1542,7 +1543,9 @@ class StateManager {
   }
 
   switchCareerTrack(trackName) {
-    if (window.API) window.API.selectCareer(trackName);
+    if (typeof window !== 'undefined' && window.API && typeof window.API.selectCareer === 'function') {
+      window.API.selectCareer(trackName, this.state.lifeGoal).catch(() => {});
+    }
     return this.setCareerTrack(trackName);
   }
 
