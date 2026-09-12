@@ -1,6 +1,6 @@
 /**
- * MIRROR — UI Component Engine
- * Multi-Page Navigation, Reality Mirror, Rotating Wisdom, Specular Cards
+ * MIRROR — UI Component Engine (Linear + Raycast Aesthetic)
+ * Continuous Scroll Sections, Top Navigation Slider Pill, Rotating Wisdom, Specular Cards
  */
 
 function escapeHTML(str) {
@@ -27,7 +27,7 @@ const ROTATING_WISDOM = [
 class UIManager {
   constructor() {
     this.authTab = 'login';
-    this.activePage = 'routine';
+    this.activeSectionId = 'sec-hero';
     this.currentWisdomIndex = 0;
     this.wisdomInterval = null;
   }
@@ -35,100 +35,118 @@ class UIManager {
   // Master Render Loop
   render(state) {
     const isAuth = window.Auth && window.Auth.isAuthenticated();
-    const landingPage = document.getElementById('landing-page');
-    const appDashboard = document.getElementById('app-dashboard');
 
     // Apply Active Theme Mode ('dark' or 'light')
     const activeTheme = state?.themeMode || 'dark';
     document.documentElement.setAttribute('data-theme', activeTheme);
 
-    if (!isAuth) {
-      if (landingPage) landingPage.classList.remove('hidden');
-      if (appDashboard) appDashboard.classList.add('hidden');
-      this.renderAuthForm();
-      this.stopWisdomRotation();
-      return;
-    }
+    // Update Top Navigation Bar Status
+    this.renderHeader(state, isAuth);
 
-    if (landingPage) landingPage.classList.add('hidden');
-    if (appDashboard) appDashboard.classList.remove('hidden');
+    // Render Hero / Auth Gateway
+    this.renderHeroGateway(state, isAuth);
 
-    this.renderHeader(state);
+    // Render All Sections Concurrently for Continuous Scroll
+    this.renderRoutineSection(state);
+    this.renderMirrorSection(state);
+    this.renderCareerSection(state);
+    this.renderLovedOnesSection(state);
+    this.renderShopSection(state);
+
+    // Dynamic Rotating Wisdom Loop
     this.startWisdomRotation();
-    this.renderActivePage(state);
+
+    // Sync Active Slider Pill
+    this.updateActiveSliderPill(this.activeSectionId);
   }
 
-  // Multi-Page Tab Switching
-  switchPage(pageId, state) {
-    this.activePage = pageId;
-    document.querySelectorAll('.app-nav-tabs .nav-tab-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.page === pageId);
+  // Linear Top Slider Pill Position Controller
+  updateActiveSliderPill(targetId) {
+    this.activeSectionId = targetId;
+    const targetBtn = document.querySelector(`.nav-tab-btn[data-target="${targetId}"]`);
+    const pill = document.getElementById('nav-active-pill');
+
+    // Update active tab buttons
+    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.target === targetId);
     });
 
-    document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
-    const target = document.getElementById(`page-${pageId}`);
-    if (target) {
-      target.classList.remove('hidden');
-      target.scrollTop = 0;
-    }
-
-    this.renderActivePage(state || window.AppStore.state);
-  }
-
-  renderActivePage(state) {
-    switch (this.activePage) {
-      case 'routine':
-        this.renderRoutinePage(state);
-        break;
-      case 'mirror':
-        this.renderMirrorPage(state);
-        break;
-      case 'career':
-        this.renderCareerPage(state);
-        break;
-      case 'relationships':
-        this.renderRelationshipsPage(state);
-        break;
-      case 'shop':
-        this.renderShopPage(state);
-        break;
+    if (targetBtn && pill) {
+      pill.style.transform = `translateX(${targetBtn.offsetLeft}px)`;
+      pill.style.width = `${targetBtn.offsetWidth}px`;
+      pill.style.opacity = '1';
     }
   }
 
-  // Rotating Wisdom Loop (Cross-fade every 7s, no upper label)
-  startWisdomRotation() {
-    if (this.wisdomInterval) return;
-    this.updateWisdomText();
-    this.wisdomInterval = setInterval(() => {
-      const textEl = document.getElementById('dynamic-wisdom-text');
-      const authorEl = document.getElementById('wisdom-author');
-      const stripEl = document.getElementById('dynamic-wisdom-strip');
-      if (stripEl) stripEl.style.opacity = '0';
+  // Top Nav Status Indicators
+  renderHeader(state, isAuth) {
+    const streakEl = document.getElementById('streak-count');
+    if (streakEl) streakEl.textContent = state?.streak || 1;
 
-      setTimeout(() => {
-        this.currentWisdomIndex = (this.currentWisdomIndex + 1) % ROTATING_WISDOM.length;
-        this.updateWisdomText();
-        if (stripEl) stripEl.style.opacity = '1';
-      }, 500);
-    }, 7000);
-  }
+    const currEl = document.getElementById('currency-count');
+    if (currEl) currEl.textContent = state?.currency || 0;
 
-  stopWisdomRotation() {
-    if (this.wisdomInterval) {
-      clearInterval(this.wisdomInterval);
-      this.wisdomInterval = null;
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      if (isAuth) {
+        logoutBtn.classList.remove('hidden');
+        logoutBtn.title = 'Logout session';
+      } else {
+        logoutBtn.classList.add('hidden');
+      }
     }
   }
 
-  updateWisdomText() {
-    const quote = ROTATING_WISDOM[this.currentWisdomIndex];
-    const textEl = document.getElementById('dynamic-wisdom-text');
-    const authorEl = document.getElementById('wisdom-author');
-    if (textEl && quote) textEl.textContent = `"${quote.text}"`;
-    if (authorEl && quote) authorEl.textContent = `— ${quote.author}`;
+  // Hero Section Gateway (Auth Box or Authenticated Command Center)
+  renderHeroGateway(state, isAuth) {
+    const gatewayBox = document.getElementById('hero-gateway-box');
+    if (!gatewayBox) return;
+
+    if (!isAuth) {
+      gatewayBox.innerHTML = `
+        <div class="auth-card raycast-card specular-card" id="auth-card-container">
+          <div class="auth-tabs" id="auth-tab-switches">
+            <button class="auth-tab-btn ${this.authTab === 'login' ? 'active' : ''}" data-tab="login">Sign In</button>
+            <button class="auth-tab-btn ${this.authTab === 'register' ? 'active' : ''}" data-tab="register">Create Account</button>
+          </div>
+          <div id="auth-card-body"></div>
+        </div>
+      `;
+      this.renderAuthForm();
+    } else {
+      const rank = this.computeRankTitle(state?.level || 1);
+      const name = state?.fullName || state?.username || 'Adventurer';
+      const track = state?.careerTrack || 'Software Engineer & Builder';
+
+      gatewayBox.innerHTML = `
+        <div class="hero-command-card raycast-card specular-card">
+          <div class="command-card-top">
+            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}" class="command-card-avatar" alt="Avatar">
+            <div>
+              <div class="command-card-badge">LEVEL ${state?.level || 1} • ${escapeHTML(rank)}</div>
+              <h3 class="command-card-title">Welcome back, ${escapeHTML(name)}</h3>
+              <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
+                Path: <strong>${escapeHTML(track)}</strong> • Streak: <strong>🔥 ${state?.streak || 1}d</strong> • Balance: <strong>🪙 ${state?.currency || 0} LC</strong>
+              </p>
+            </div>
+          </div>
+          <div class="command-card-actions">
+            <button class="pill-btn primary-btn" onclick="document.getElementById('sec-routine').scrollIntoView({behavior:'smooth'})">
+              <span>📜</span> Execute Daily Routine
+            </button>
+            <button class="pill-btn secondary-btn" onclick="document.getElementById('sec-mirror').scrollIntoView({behavior:'smooth'})">
+              <span>🪞</span> Audit Reality Mirror
+            </button>
+            <button class="pill-btn secondary-btn" onclick="document.getElementById('sec-career').scrollIntoView({behavior:'smooth'})">
+              <span>🎯</span> Career Skill Tree
+            </button>
+          </div>
+        </div>
+      `;
+    }
   }
 
-  // Auth Card Form (Clean, no pre-filled dummy strings)
+  // Auth Forms (Sign In & Create Account — Clean, no dummy strings)
   renderAuthForm() {
     const container = document.getElementById('auth-card-body');
     if (!container) return;
@@ -191,23 +209,9 @@ class UIManager {
     this.renderAuthForm();
   }
 
-  // Top Header Status
-  renderHeader(state) {
-    if (!state) return;
-    const nameEl = document.getElementById('header-user-name');
-    if (nameEl) nameEl.textContent = state.fullName || state.username || 'Adventurer';
-
-    const streakEl = document.getElementById('streak-count');
-    if (streakEl) streakEl.textContent = state.streak || 1;
-
-    const currEl = document.getElementById('currency-count');
-    if (currEl) currEl.textContent = state.currency || 0;
-  }
-
-  // PAGE 1: Routine & Quests
-  renderRoutinePage(state) {
-    if (!state) return;
-    const quests = state.quests || [];
+  // SECTION 2: Daily Routine
+  renderRoutineSection(state) {
+    const quests = state?.quests || [];
     const completedCount = quests.filter(q => q.completed).length;
     const totalCount = quests.length;
     const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
@@ -242,244 +246,312 @@ class UIManager {
     if (!list) return;
 
     if (filtered.length === 0) {
-      list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted);">No quests in this category.</div>`;
+      list.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-lg);">No habits in this filter. Keep showing up!</div>`;
       return;
     }
 
     list.innerHTML = filtered.map(q => {
-      const pillarObj = window.PILLARS[q.pillar] || { color: '#6366F1', name: q.pillar };
+      const pillarObj = window.PILLARS ? window.PILLARS[q.pillar] : null;
+      const pColor = pillarObj?.color || 'var(--accent)';
+      const pName = pillarObj?.name || q.pillar;
+      const isDone = !!q.completed;
+
       return `
-        <div class="quest-item ${q.completed ? 'completed' : ''}" data-quest-id="${q.id}">
+        <div class="quest-card raycast-card specular-card ${isDone ? 'completed' : ''}" id="quest-item-${q.id}">
           <div class="quest-left">
-            <button class="quest-checkbox-btn ${q.completed ? 'checked' : ''}" data-action="toggle-quest" data-quest-id="${q.id}">
-              ${q.completed ? '✓' : ''}
+            <button class="quest-checkbox ${isDone ? 'checked' : ''}" 
+                    data-action="toggle-quest" 
+                    data-quest-id="${q.id}" 
+                    aria-label="Toggle quest: ${escapeHTML(q.title)}">
+              ${isDone ? '✓' : ''}
             </button>
-            <div class="quest-title-row">
-              <span class="quest-title-text" style="${q.completed ? 'text-decoration: line-through;' : ''}">${escapeHTML(q.title)}</span>
-              ${q.note ? `<span class="quest-note">${escapeHTML(q.note)}</span>` : ''}
+            <div class="quest-content">
+              <span class="quest-title">${escapeHTML(q.title)}</span>
+              <div class="quest-meta">
+                <span class="pillar-tag" style="background:${pColor}18; color:${pColor}; border:1px solid ${pColor}35;">
+                  ${escapeHTML(pName)}
+                </span>
+                <span>⏱️ ${escapeHTML(q.time || 'Daily')}</span>
+                <span style="color:var(--text-muted); font-size:0.75rem;">${escapeHTML(q.friction || 'Medium Friction')}</span>
+              </div>
             </div>
           </div>
-          <div class="quest-badges">
-            <span class="quest-pillar-badge" style="background:${pillarObj.color}22; color:${pillarObj.color}; border:1px solid ${pillarObj.color}55;">
-              ${escapeHTML(q.pillar)}
-            </span>
-            <span class="quest-reward-tag">+${q.xp} XP</span>
+          <div class="quest-rewards">
+            <span class="reward-xp">+${q.xp || 20} XP</span>
+            <span class="reward-coins">+${q.coins || 5} 🪙</span>
+            <!-- Hidden crossroads trigger when user considers abandoning a habit -->
+            <button class="icon-btn" data-action="abandon-quest-trigger" title="Contemplate pivoting or dropping this habit" style="width:28px; height:28px; font-size:0.7rem; border-color:transparent; opacity:0.35;">✕</button>
           </div>
         </div>
       `;
     }).join('');
 
-    // All complete card
-    const allComp = document.getElementById('all-complete-banner');
-    if (allComp) {
-      allComp.classList.toggle('hidden', !(totalCount > 0 && completedCount === totalCount));
+    const completeBanner = document.getElementById('all-complete-banner');
+    if (completeBanner) {
+      if (totalCount > 0 && completedCount === totalCount) {
+        completeBanner.classList.remove('hidden');
+      } else {
+        completeBanner.classList.add('hidden');
+      }
     }
   }
 
-  // PAGE 2: Reality Mirror (Character Sheet & 6 Pillars)
-  renderMirrorPage(state) {
-    if (!state) return;
+  // SECTION 3: Reality Mirror
+  renderMirrorSection(state) {
+    const lvl = state?.level || 1;
+    const xp = state?.xp || 0;
+    const reqXP = state?.xpToNextLevel || (100 * Math.pow(lvl, 1.5));
+    const xpPct = Math.min(100, Math.round((xp / reqXP) * 100));
 
-    const nameEl = document.getElementById('profile-user-fullname');
-    if (nameEl) nameEl.textContent = state.fullName || state.username || 'Adventurer';
-
-    const rankEl = document.getElementById('profile-rank-title');
-    if (rankEl) rankEl.textContent = state.rankTitle || 'Novice Builder';
-
-    const goalEl = document.getElementById('profile-life-goal-display');
-    if (goalEl) goalEl.textContent = `"${state.lifeGoal || 'Master full-stack architecture and build a peaceful life.'}"`;
-
-    // Avatar
-    const avatar = document.getElementById('profile-avatar-img');
-    if (avatar) avatar.src = `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state.username || 'adventurer')}`;
-
-    // Level & Non-Linear XP
-    const lvl = state.level || 1;
-    const reqXP = Math.floor(100 * Math.pow(lvl, 1.5));
-    const currXP = state.currentXP || 0;
-    const pct = Math.min(100, Math.round((currXP / reqXP) * 100));
-
-    const lvlTitle = document.getElementById('profile-level-title');
-    if (lvlTitle) lvlTitle.textContent = `Level ${lvl}`;
+    const avatarImg = document.getElementById('profile-avatar-img');
+    if (avatarImg) {
+      avatarImg.src = `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
+    }
 
     const lvlBadge = document.getElementById('profile-avatar-lvl-badge');
     if (lvlBadge) lvlBadge.textContent = `Lv. ${lvl}`;
 
-    const readout = document.getElementById('profile-xp-readout');
-    if (readout) readout.textContent = `${currXP} / ${reqXP} XP`;
+    const fullNameEl = document.getElementById('profile-user-fullname');
+    if (fullNameEl) fullNameEl.textContent = state?.fullName || state?.username || 'Adventurer';
+
+    const rankTitle = this.computeRankTitle(lvl);
+    const rankEl = document.getElementById('profile-rank-title');
+    if (rankEl) rankEl.textContent = rankTitle;
+
+    const goalEl = document.getElementById('profile-life-goal-display');
+    if (goalEl) goalEl.textContent = `"${state?.lifeGoal || 'Master full-stack engineering and build a peaceful life.'}"`;
+
+    const lvlTitle = document.getElementById('profile-level-title');
+    if (lvlTitle) lvlTitle.textContent = `Level ${lvl}`;
+
+    const xpReadout = document.getElementById('profile-xp-readout');
+    if (xpReadout) xpReadout.textContent = `${xp} / ${Math.round(reqXP)} XP`;
 
     const xpFill = document.getElementById('profile-xp-fill');
-    if (xpFill) xpFill.style.width = `${pct}%`;
+    if (xpFill) xpFill.style.width = `${xpPct}%`;
 
-    const xpPct = document.getElementById('profile-xp-percent');
-    if (xpPct) xpPct.textContent = `${pct}%`;
+    const xpPctEl = document.getElementById('profile-xp-percent');
+    if (xpPctEl) xpPctEl.textContent = `${xpPct}%`;
 
     // 6 Pillars HUD
-    const hud = document.getElementById('pillars-hud');
-    if (hud) {
-      hud.innerHTML = Object.keys(window.PILLARS).map(key => {
-        const p = window.PILLARS[key];
-        const pLevel = state.pillarLevels ? (state.pillarLevels[key] || 1) : 1;
-        const pXP = state.pillarXP ? (state.pillarXP[key] || 0) : 0;
-        const pPct = Math.min(100, (pXP % 100));
+    const pillarsContainer = document.getElementById('pillars-hud');
+    if (pillarsContainer && window.PILLARS) {
+      const userPillars = state?.pillars || {};
+      pillarsContainer.innerHTML = Object.keys(window.PILLARS).map(key => {
+        const pDef = window.PILLARS[key];
+        const pState = userPillars[key] || { level: 1, xp: 0, metric: 'Consistent' };
+        const pLevel = pState.level || 1;
+        const pProgress = Math.min(100, (pState.xp % 100));
 
         return `
-          <div class="pillar-card specular-card" style="border-left: 3px solid ${p.color};">
-            <div class="pillar-top-row">
-              <div class="pillar-name-row">
-                <span>${p.icon}</span>
-                <span>${escapeHTML(p.name)}</span>
+          <div class="pillar-card raycast-card specular-card">
+            <div class="pillar-card-header">
+              <div class="pillar-title-wrap">
+                <span class="pillar-icon">${pDef.icon}</span>
+                <span class="pillar-name">${escapeHTML(pDef.name)}</span>
               </div>
-              <span class="pillar-level-tag mono-bold" style="color:${p.color};">Lv. ${pLevel}</span>
+              <span class="pillar-level-tag" style="color:${pDef.color};">Lv. ${pLevel}</span>
             </div>
-            <div class="pillar-track">
-              <div class="pillar-bar-fill" style="width: ${pPct}%; background: ${p.color};"></div>
+            <div class="pillar-bar-track">
+              <div class="pillar-bar-fill" style="width:${pProgress}%; background:${pDef.color};"></div>
             </div>
-            <span class="pillar-xp-text">${pXP} XP accrued</span>
+            <div class="pillar-metric-desc">
+              <span>Metric: <strong>${escapeHTML(pState.metric || 'Groundwork Established')}</strong></span>
+            </div>
           </div>
         `;
       }).join('');
     }
 
-    // Trajectory Forecast
-    const fc30 = document.getElementById('forecast-30-days');
-    if (fc30) fc30.textContent = `Level ${lvl + 3}`;
-    const fc90 = document.getElementById('forecast-90-days');
-    if (fc90) fc90.textContent = `Level ${lvl + 7}`;
-    const fc1y = document.getElementById('forecast-1-year');
-    if (fc1y) fc1y.textContent = `Level ${lvl + 15}`;
+    // Trajectory Projections
+    const f30 = document.getElementById('forecast-30-days');
+    if (f30) f30.textContent = `Level ${lvl + 2}`;
+
+    const f90 = document.getElementById('forecast-90-days');
+    if (f90) f90.textContent = `Level ${lvl + 5}`;
+
+    const f1y = document.getElementById('forecast-1-year');
+    if (f1y) f1y.textContent = `Level ${lvl + 12}`;
   }
 
-  // PAGE 3: Career Mastery Tree
-  renderCareerPage(state) {
-    if (!state) return;
-    const trackEl = document.getElementById('hero-career-track');
-    if (trackEl) trackEl.textContent = state.careerTrack || 'Software Engineer & Builder';
+  computeRankTitle(level) {
+    if (level < 3) return 'Novice Builder';
+    if (level < 6) return 'Disciplined Practitioner';
+    if (level < 10) return 'Craft Journeyman';
+    if (level < 15) return 'Senior Architect';
+    return 'Grandmaster Polymath';
+  }
+
+  // SECTION 4: Career Skill Tree
+  renderCareerSection(state) {
+    const track = state?.careerTrack || 'Software Engineer & Builder';
+    const goal = state?.lifeGoal || 'Master full-stack architecture, clean code, and production reliability.';
+
+    const trackNameEl = document.getElementById('hero-career-track');
+    if (trackNameEl) trackNameEl.textContent = track;
 
     const goalEl = document.getElementById('hero-life-goal');
-    if (goalEl) goalEl.textContent = `"${state.lifeGoal || 'Master full-stack architecture, clean code, and production reliability.'}"`;
+    if (goalEl) goalEl.textContent = `"${goal}"`;
 
-    const select = document.getElementById('career-switcher-select');
-    if (select && state.careerTrack) select.value = state.careerTrack;
+    const selectEl = document.getElementById('career-switcher-select');
+    if (selectEl && selectEl.value !== track) {
+      selectEl.value = track;
+    }
 
     const treeContainer = document.getElementById('career-milestones-tree');
     if (!treeContainer) return;
 
-    const tree = state.careerTree || [];
-    treeContainer.innerHTML = tree.map(tier => {
+    // Get preset or user-defined tree
+    const tiers = (state?.careerTree && state.careerTree.length > 0)
+      ? state.careerTree
+      : (window.CAREER_TREE_PRESETS ? (window.CAREER_TREE_PRESETS[track] || window.CAREER_TREE_PRESETS['Software Engineer & Builder']) : []);
+
+    if (!tiers || tiers.length === 0) {
+      treeContainer.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);">No career milestones loaded yet. Click <strong>AI Blueprint Generator</strong> to generate one!</div>`;
+      return;
+    }
+
+    treeContainer.innerHTML = tiers.map(tier => {
+      const milestonesHtml = (tier.milestones || []).map(m => {
+        const isCompleted = !!m.completed;
+        return `
+          <div class="milestone-item ${isCompleted ? 'completed' : ''}">
+            <button class="quest-checkbox ${isCompleted ? 'checked' : ''}" 
+                    data-action="toggle-milestone" 
+                    data-milestone-id="${m.id}" 
+                    aria-label="Toggle milestone: ${escapeHTML(m.title)}">
+              ${isCompleted ? '✓' : ''}
+            </button>
+            <div class="milestone-info">
+              <span class="milestone-title">${escapeHTML(m.title)}</span>
+              <p class="milestone-desc">${escapeHTML(m.desc)}</p>
+            </div>
+            <div class="milestone-rewards">
+              <span class="reward-xp">+${m.craftXP || 50} Craft XP</span>
+              <span class="reward-coins">+${m.coins || 25} 🪙</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
       return `
-        <div class="tree-tier-card specular-card">
-          <div class="tier-header-row">
-            <div>
-              <h4 class="tier-name">${escapeHTML(tier.tierName)}</h4>
+        <div class="career-tier-block raycast-card specular-card">
+          <div class="tier-header">
+            <div class="tier-title-wrap">
+              <span class="tier-tag">${escapeHTML(tier.tierName || `Tier ${tier.tierId}`)}</span>
               <span class="tier-subtitle">${escapeHTML(tier.subtitle || '')}</span>
             </div>
           </div>
-          <div class="milestones-list">
-            ${(tier.milestones || []).map(m => `
-              <div class="milestone-item">
-                <div class="milestone-info">
-                  <button class="quest-checkbox-btn ${m.completed ? 'checked' : ''}" data-action="toggle-milestone" data-milestone-id="${m.id}">
-                    ${m.completed ? '✓' : ''}
-                  </button>
-                  <div>
-                    <span class="milestone-title" style="${m.completed ? 'text-decoration: line-through;' : ''}">${escapeHTML(m.title)}</span>
-                    <p class="milestone-desc">${escapeHTML(m.desc || '')}</p>
-                  </div>
-                </div>
-                <span class="quest-reward-tag">+${m.craftXP || 50} Craft</span>
-              </div>
-            `).join('')}
+          <div class="tier-milestones-list">
+            ${milestonesHtml}
           </div>
         </div>
       `;
     }).join('');
   }
 
-  // PAGE 4: Relationships & Loved Ones
-  renderRelationshipsPage(state) {
-    if (!state) return;
-    const container = document.getElementById('bonds-list-container');
-    if (!container) return;
+  // SECTION 5: Loved Ones & Relationships
+  renderLovedOnesSection(state) {
+    const bondsContainer = document.getElementById('bonds-list-container');
+    if (!bondsContainer) return;
 
-    const bonds = state.relationshipBonds || [];
-    container.innerHTML = bonds.map(b => {
+    const bonds = state?.bonds || [];
+    if (bonds.length === 0) {
+      bondsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:40px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-lg);">No loved ones registered yet. Click <strong>+ Add Loved One</strong> to prioritize human connections.</div>`;
+      return;
+    }
+
+    bondsContainer.innerHTML = bonds.map(b => {
+      const trust = b.trustMeter || 50;
+      const streak = b.patienceStreak || 0;
+      const lastAction = b.lastAction || 'Active unhurried listening during family conversation.';
+
       return `
-        <div class="bond-card specular-card">
-          <div class="bond-header">
-            <div>
-              <h4 class="bond-name">${escapeHTML(b.name)}</h4>
-              <span class="bond-role">${escapeHTML(b.role || 'Family')}</span>
+        <div class="bond-card raycast-card specular-card">
+          <div class="bond-card-header">
+            <div class="bond-identity">
+              <span class="bond-avatar">${b.avatar || '🤝'}</span>
+              <div>
+                <h4 class="bond-name">${escapeHTML(b.name)}</h4>
+                <span class="bond-role">${escapeHTML(b.relation)}</span>
+              </div>
             </div>
-            <span class="bond-status-pill" style="background:${b.statusColor || '#10B981'}22; color:${b.statusColor || '#10B981'}; border:1px solid ${b.statusColor || '#10B981'}55;">
-              ${escapeHTML(b.status || 'Warm')}
-            </span>
+            <span class="bond-streak-badge">🔥 ${streak}d harmony</span>
           </div>
-          <div class="bond-trust-row">
-            <div class="trust-label-row">
-              <span>Trust & Harmony Meter</span>
-              <strong class="mono-bold">${b.trust || 50}%</strong>
+
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-bottom:4px;">
+              <span>Mutual Trust & Presence</span>
+              <span>${trust}%</span>
             </div>
-            <div class="trust-track">
-              <div class="trust-bar-fill" style="width:${b.trust || 50}%;"></div>
+            <div class="bond-trust-bar-track">
+              <div class="bond-trust-bar-fill" style="width:${trust}%;"></div>
             </div>
           </div>
-          <p class="bond-notes">💭 ${escapeHTML(b.note || 'Appreciates calm communication and steady follow-through.')}</p>
-          <button class="pill-btn secondary-btn" data-action="log-bond" data-bond-id="${b.id}" style="width:100%;">
-            <span>✍️</span> Log Interaction & Reflection
+
+          <div class="bond-last-interaction">
+            <span>Last touchpoint: <em>"${escapeHTML(lastAction)}"</em></span>
+          </div>
+
+          <button class="pill-btn secondary-btn" data-action="log-bond" data-bond-id="${b.id}" style="width:100%; margin-top:4px;">
+            <span>🤝</span> Log Quiet Interaction (+25 Empathy XP)
           </button>
         </div>
       `;
     }).join('');
   }
 
-  // PAGE 5: Shop & Economy
-  renderShopPage(state) {
-    if (!state) return;
+  // SECTION 6: Guild Shop & Economy
+  renderShopSection(state) {
     const balEl = document.getElementById('shop-page-balance');
-    if (balEl) balEl.textContent = state.currency || 0;
+    if (balEl) balEl.textContent = state?.currency || 0;
 
-    const container = document.getElementById('shop-page-items');
-    if (!container) return;
+    const itemsContainer = document.getElementById('shop-page-items');
+    if (itemsContainer) {
+      const shopItems = [
+        { key: 'streak_freeze', name: 'Streak Freeze Shield', cost: 40, icon: '🛡️', desc: 'Protects your habit streak when illness or urgent emergencies happen.' },
+        { key: 'protein_feast', name: 'High-Protein Feast Pass', cost: 35, icon: '🥩', desc: 'Earned guilt-free dinner at your favorite restaurant after 5 days of consistency.' },
+        { key: 'gaming_pass', name: 'Guilt-Free Gaming Pass', cost: 50, icon: '🎮', desc: '2 hours of unhurried gaming with zero guilt after hitting daily high-leverage milestones.' },
+        { key: 'nature_walk', name: 'Deep Nature Walk Pass', cost: 25, icon: '🌲', desc: 'A serene afternoon walk in the forest/park to decompress and recharge mental stamina.' },
+        { key: 'espresso_book', name: 'Espresso & Quiet Book Pass', cost: 20, icon: '☕', desc: '90 minutes in a quiet cafe reading foundational non-fiction without checking phone.' }
+      ];
 
-    const defaultItems = [
-      { key: 'shield_freeze', name: 'Streak Freeze Shield', desc: 'Protects consecutive streak when sick, traveling, or needing an earned rest day.', cost: 100, icon: '🛡️' },
-      { key: 'coffee_buff', name: 'Artisan Espresso Boost', desc: 'High-energy focus buff for deep work mornings.', cost: 40, icon: '☕' },
-      { key: 'game_pass', name: 'Guilt-Free Gaming Pass (2 Hours)', desc: 'Earned leisure time completely free of productivity guilt.', cost: 150, icon: '🎮' },
-      { key: 'cheat_meal', name: 'Weekend Feast / Pizza Treat', desc: 'Earned culinary celebration after hitting weekly consistency.', cost: 400, icon: '🍕' }
-    ];
-
-    container.innerHTML = defaultItems.map(item => `
-      <div class="shop-item-card specular-card">
-        <div class="item-top">
-          <span class="item-icon">${item.icon}</span>
-          <div>
-            <h4 class="item-name">${escapeHTML(item.name)}</h4>
-            <p class="item-desc">${escapeHTML(item.desc)}</p>
+      itemsContainer.innerHTML = shopItems.map(item => `
+        <div class="shop-item-card raycast-card specular-card">
+          <div class="shop-item-header">
+            <span class="shop-item-icon">${item.icon}</span>
+            <div>
+              <h4 class="shop-item-name">${escapeHTML(item.name)}</h4>
+              <p class="shop-item-desc">${escapeHTML(item.desc)}</p>
+            </div>
+          </div>
+          <div class="shop-item-footer">
+            <span class="shop-item-cost">🪙 ${item.cost} LC</span>
+            <button class="pill-btn primary-btn" 
+                    data-action="buy-shop-item" 
+                    data-item-key="${item.key}" 
+                    data-item-name="${escapeHTML(item.name)}" 
+                    data-item-cost="${item.cost}">
+              Purchase
+            </button>
           </div>
         </div>
-        <div class="item-buy-row">
-          <span class="item-price">🪙 ${item.cost} LC</span>
-          <button class="pill-btn primary-btn" data-action="buy-shop-item" data-item-key="${item.key}" data-item-cost="${item.cost}" data-item-name="${escapeHTML(item.name)}">
-            Acquire
-          </button>
-        </div>
-      </div>
-    `).join('');
+      `).join('');
+    }
 
-    // Inventory
+    // Acquired Inventory
     const invContainer = document.getElementById('user-inventory-container');
     if (invContainer) {
-      const inv = state.inventory || [];
+      const inv = state?.inventory || [];
       if (inv.length === 0) {
-        invContainer.innerHTML = `<div style="grid-column: 1/-1; padding:20px; color:var(--text-muted); text-align:center;">No passes acquired yet. Complete daily quests to earn Life Credits!</div>`;
+        invContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:24px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-md);">No purchased rewards in inventory yet. Complete daily quests to earn Life Credits!</div>`;
       } else {
-        invContainer.innerHTML = inv.map(i => `
-          <div class="inv-item-card specular-card">
-            <span>🎁</span>
+        invContainer.innerHTML = inv.map(it => `
+          <div class="inventory-item-card">
+            <span>✨</span>
             <div>
-              <strong>${escapeHTML(i.name)}</strong>
-              <div style="font-size:0.75rem; color:var(--text-muted);">Active in inventory</div>
+              <strong style="font-size:0.9rem; display:block;">${escapeHTML(it.name)}</strong>
+              <span style="font-size:0.75rem; color:var(--text-muted);">Acquired: ${new Date(it.acquiredAt).toLocaleDateString()}</span>
             </div>
           </div>
         `).join('');
@@ -487,28 +559,56 @@ class UIManager {
     }
   }
 
-  // 2-Minute Paralysis Modal
+  // Paralysis Breaker Micro-Habits Modal
   renderParalysisModal() {
     const list = document.getElementById('paralysis-micro-list');
     if (!list) return;
 
-    const microQuests = window.PARALYSIS_MICRO_QUESTS || [
-      { id: 'micro_1', title: 'Open blinds & let morning sunlight in', duration: '30 sec', pillar: 'Calm', xp: 10 },
-      { id: 'micro_2', title: 'Drink a cold glass of water right now', duration: '1 min', pillar: 'Resilience', xp: 10 },
-      { id: 'micro_3', title: 'Open code editor and write just 1 line', duration: '2 min', pillar: 'Craft', xp: 15 }
+    const microHabits = [
+      { id: 'water', title: 'Drink one tall glass of water', icon: '💧', xp: 10 },
+      { id: 'breathe', title: 'Take 5 deep box breaths (4s in, 4s hold, 4s out)', icon: '🫁', xp: 15 },
+      { id: 'shoes', title: 'Put on walking shoes and step outside for 60 seconds', icon: '👟', xp: 20 },
+      { id: 'clean', title: 'Clear 3 items off your desk or bed', icon: '🧹', xp: 15 },
+      { id: 'editor', title: 'Open code editor and write just 1 line of comments', icon: '💻', xp: 20 }
     ];
 
-    list.innerHTML = microQuests.map(m => `
-      <div class="micro-quest-item specular-card" style="display:flex; justify-content:space-between; align-items:center; padding:14px; margin-bottom:10px;">
-        <div>
-          <span style="font-size:0.75rem; color:var(--accent); font-weight:700;">⏱️ ${m.duration}</span>
-          <h4 style="font-size:0.95rem; margin-top:2px;">${escapeHTML(m.title)}</h4>
+    list.innerHTML = microHabits.map(m => `
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:14px; background:var(--bg-subtle); border-radius:var(--radius-md); margin-bottom:10px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:1.3rem;">${m.icon}</span>
+          <span style="font-size:0.9rem; font-weight:600;">${escapeHTML(m.title)}</span>
         </div>
-        <button class="pill-btn primary-btn" data-action="do-micro-habit" data-micro-id="${m.id}" data-micro-xp="${m.xp}">
-          Done (+${m.xp} XP)
+        <button class="pill-btn primary-btn" data-action="do-micro-habit" data-micro-xp="${m.xp}">
+          Do Now (+${m.xp} XP)
         </button>
       </div>
     `).join('');
+  }
+
+  // Rotating Wisdom Loop (Unhurried cross-fade every 7s)
+  startWisdomRotation() {
+    if (this.wisdomInterval) return;
+    this.updateWisdomText();
+    this.wisdomInterval = setInterval(() => {
+      const textEl = document.getElementById('dynamic-wisdom-text');
+      const authorEl = document.getElementById('wisdom-author');
+      const stripEl = document.getElementById('dynamic-wisdom-strip');
+      if (stripEl) stripEl.style.opacity = '0';
+
+      setTimeout(() => {
+        this.currentWisdomIndex = (this.currentWisdomIndex + 1) % ROTATING_WISDOM.length;
+        this.updateWisdomText();
+        if (stripEl) stripEl.style.opacity = '1';
+      }, 500);
+    }, 7000);
+  }
+
+  updateWisdomText() {
+    const quote = ROTATING_WISDOM[this.currentWisdomIndex];
+    const textEl = document.getElementById('dynamic-wisdom-text');
+    const authorEl = document.getElementById('wisdom-author');
+    if (textEl && quote) textEl.textContent = `"${quote.text}"`;
+    if (authorEl && quote) authorEl.textContent = `— ${quote.author}`;
   }
 }
 

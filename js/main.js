@@ -1,6 +1,6 @@
 /**
- * MIRROR — Main Controller & Event Bus
- * Multi-Page Navigation, Crossroads Trigger, Auth Handlers, Toast Engine
+ * MIRROR — Main Controller & Event Bus (Linear + Raycast Aesthetic)
+ * Continuous Scroll Navigation, Active Slider Pill Spy, Raycast Mouse Spotlight, Modal Engine
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.render(state);
   });
 
-  // Helper: Open / Close Modals
+  // Modal Helpers
   function openModal(id) {
     const m = document.getElementById(id);
     if (m) m.classList.remove('hidden');
@@ -38,20 +38,127 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => item.remove(), 4000);
   }
 
-  // 3. Central Click Delegator
+  // -------------------------------------------------------------------------
+  // 3. LINEAR SCROLL-SPY & ACTIVE SLIDER PILL CONTROLLER
+  // -------------------------------------------------------------------------
+  let isSmoothScrolling = false;
+
+  function updateScrollSpy() {
+    if (isSmoothScrolling) return;
+
+    const sections = [
+      'sec-hero',
+      'sec-routine',
+      'sec-mirror',
+      'sec-career',
+      'sec-lovedones',
+      'sec-shop'
+    ];
+
+    const scrollPosition = window.scrollY + 140; // Offset for sticky navbar
+    let currentActive = sections[0];
+
+    for (const secId of sections) {
+      const el = document.getElementById(secId);
+      if (el) {
+        const top = el.offsetTop;
+        const height = el.offsetHeight;
+        if (scrollPosition >= top && scrollPosition < top + height) {
+          currentActive = secId;
+          break;
+        }
+      }
+    }
+
+    // Edge check: near bottom of page
+    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 80)) {
+      currentActive = 'sec-shop';
+    }
+
+    if (currentActive !== ui.activeSectionId) {
+      ui.updateActiveSliderPill(currentActive);
+    }
+  }
+
+  window.addEventListener('scroll', updateScrollSpy, { passive: true });
+  window.addEventListener('resize', () => {
+    ui.updateActiveSliderPill(ui.activeSectionId);
+  }, { passive: true });
+
+  // Initial pill placement after styles compute
+  setTimeout(() => {
+    ui.updateActiveSliderPill('sec-hero');
+  }, 100);
+
+  // -------------------------------------------------------------------------
+  // 4. RAYCAST MOUSE SPOTLIGHT / CORNER REFLECTION
+  // -------------------------------------------------------------------------
+  document.addEventListener('mousemove', e => {
+    const cards = document.querySelectorAll('.raycast-card, .specular-card');
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    const windowH = window.innerHeight;
+
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      const rect = card.getBoundingClientRect();
+      
+      // Skip offscreen elements
+      if (rect.bottom < 0 || rect.top > windowH) continue;
+
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      // Update if within interactive radius
+      if (x >= -60 && x <= rect.width + 60 && y >= -60 && y <= rect.height + 60) {
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      }
+    }
+  }, { passive: true });
+
+  // -------------------------------------------------------------------------
+  // 5. CENTRAL CLICK DISPATCHER
+  // -------------------------------------------------------------------------
   document.addEventListener('click', async e => {
-    // Landing Page CTAs
-    if (e.target.id === 'landing-signin-btn') {
-      const authBox = document.querySelector('.landing-auth-center');
-      if (authBox) authBox.scrollIntoView({ behavior: 'smooth' });
+    // Navigation Tab Click (Smooth Scroll + Pill Slide)
+    const navBtn = e.target.closest('.nav-tab-btn');
+    if (navBtn && navBtn.dataset.target) {
+      const targetId = navBtn.dataset.target;
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        isSmoothScrolling = true;
+        ui.updateActiveSliderPill(targetId);
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => { isSmoothScrolling = false; }, 600);
+      }
       return;
     }
 
-    // Landing Theme Toggle
-    if (e.target.id === 'landing-theme-toggle' || e.target.closest('#theme-toggle-btn')) {
+    // Theme Toggle (Dark Midnight vs Warm Autumn Light)
+    if (e.target.closest('#theme-toggle-btn')) {
       const current = document.documentElement.getAttribute('data-theme') || 'dark';
       const next = current === 'dark' ? 'light' : 'dark';
       store.setThemeMode(next);
+      showToast(next === 'light' ? 'Autumn Golden Sanctuary activated 🍂' : 'Raycast Midnight Engine activated 🌌');
+      return;
+    }
+
+    // Sound Toggle
+    if (e.target.closest('#sound-toggle-btn')) {
+      store.toggleSound();
+      showToast(store.state.soundEnabled ? 'Audio feedback enabled 🔔' : 'Audio muted 🔕');
+      return;
+    }
+
+    // Logout
+    if (e.target.closest('#logout-btn')) {
+      if (confirm('Log out from your current session? All your progress has been securely saved.')) {
+        auth.logout();
+        store.state = null;
+        ui.render(null);
+        showToast('Logged out successfully.');
+      }
       return;
     }
 
@@ -59,30 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const authTabBtn = e.target.closest('.auth-tab-btn');
     if (authTabBtn && authTabBtn.dataset.tab) {
       ui.setAuthTab(authTabBtn.dataset.tab);
-      return;
-    }
-
-    // Multi-Page Navigation Tabs
-    const navBtn = e.target.closest('.nav-tab-btn');
-    if (navBtn && navBtn.dataset.page) {
-      ui.switchPage(navBtn.dataset.page, store.state);
-      return;
-    }
-
-    // Sound Toggle
-    if (e.target.closest('#sound-toggle-btn')) {
-      store.toggleSound();
-      showToast(store.state.soundEnabled ? 'Audio feedback enabled' : 'Audio muted');
-      return;
-    }
-
-    // Logout Button
-    if (e.target.closest('#logout-btn')) {
-      if (confirm('Log out from your current session? All your progress has been securely saved.')) {
-        auth.logout();
-        ui.render(null);
-        showToast('Logged out successfully.');
-      }
       return;
     }
 
@@ -94,7 +177,34 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res && res.isCompleted) {
         celebrate.celebrateQuestCompletion(toggleBtn, res);
       }
-      ui.renderRoutinePage(store.state);
+      ui.renderRoutineSection(store.state);
+      ui.renderMirrorSection(store.state);
+      ui.renderHeader(store.state, auth.isAuthenticated());
+      return;
+    }
+
+    // Abandon Quest Trigger (Hidden Crossroads circuit-breaker)
+    if (e.target.closest('[data-action="abandon-quest-trigger"]') || e.target.closest('#abandon-career-trigger')) {
+      openModal('crossroads-modal');
+      return;
+    }
+
+    // Crossroads Decisions
+    if (e.target.id === 'crossroads-choose-stay') {
+      store.addXP(25, 'Discipline');
+      closeModal('crossroads-modal');
+      celebrate.playChime('success');
+      showToast('Respect for persisting through resistance. +25 Discipline XP.');
+      ui.renderMirrorSection(store.state);
+      return;
+    }
+
+    if (e.target.id === 'crossroads-choose-pivot') {
+      store.addXP(60, 'Calm');
+      closeModal('crossroads-modal');
+      celebrate.playChime('success');
+      showToast('Track safely archived. +60 Wisdom XP converted.');
+      ui.renderMirrorSection(store.state);
       return;
     }
 
@@ -105,8 +215,10 @@ document.addEventListener('DOMContentLoaded', () => {
       store.toggleMilestone(mId);
       celebrate.playChime('levelup');
       celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 24, true);
-      ui.renderCareerPage(store.state);
-      showToast('Milestone achieved! Craft XP awarded.');
+      ui.renderCareerSection(store.state);
+      ui.renderMirrorSection(store.state);
+      ui.renderHeader(store.state, auth.isAuthenticated());
+      showToast('Milestone achieved! Craft XP & Coins awarded.');
       return;
     }
 
@@ -114,19 +226,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.closest('#reset-day-btn')) {
       if (confirm('Reset daily checklist for a fresh day? Completed habits will be unchecked.')) {
         store.resetDailyRoutine();
-        ui.renderRoutinePage(store.state);
-        showToast('Daily routine reset. Time to execute!');
+        ui.renderRoutineSection(store.state);
+        showToast('Daily checklist reset. Time to execute!');
       }
       return;
     }
 
-    // Filter Tabs
+    // Routine Filter Tabs
     const fTab = e.target.closest('.filter-tab');
     if (fTab && fTab.dataset.filter) {
       store.setFilter(fTab.dataset.filter);
       document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
       fTab.classList.add('active');
-      ui.renderRoutinePage(store.state);
+      ui.renderRoutineSection(store.state);
       return;
     }
 
@@ -137,41 +249,43 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Do Micro Habit
+    // Execute Micro-Habit
     const microBtn = e.target.closest('[data-action="do-micro-habit"]');
     if (microBtn) {
       const xp = parseInt(microBtn.dataset.microXp || '10', 10);
       store.addXP(xp, 'Calm');
       celebrate.playChime('success');
-      showToast(`Momentum broken! +${xp} XP awarded.`);
+      showToast(`Paralysis broken! +${xp} XP awarded.`);
       closeModal('paralysis-modal');
-      return;
-    }
-
-    // Trigger Hidden Crossroads Modal (Interception Circuit-Breaker)
-    if (e.target.closest('#abandon-career-trigger')) {
-      openModal('crossroads-modal');
-      return;
-    }
-
-    // Crossroads Decisions
-    if (e.target.id === 'crossroads-choose-stay') {
-      store.addXP(25, 'Discipline');
-      closeModal('crossroads-modal');
-      showToast('Respect for persisting through friction. +25 Discipline XP.');
-      return;
-    }
-
-    if (e.target.id === 'crossroads-choose-pivot') {
-      store.addXP(60, 'Calm');
-      closeModal('crossroads-modal');
-      showToast('Goal safely archived. +60 Wisdom XP converted.');
+      ui.renderMirrorSection(store.state);
       return;
     }
 
     // Open AI Generator Modal
     if (e.target.closest('#ai-generator-btn')) {
       openModal('ai-generator-modal');
+      return;
+    }
+
+    // Add Loved One Bond Button
+    if (e.target.closest('#add-bond-btn')) {
+      const name = prompt('Enter loved one's name (e.g. Mom, Maya, Sarah):');
+      if (name && name.trim()) {
+        const relation = prompt('Enter relationship (e.g. Mother, Partner, Mentor, Sibling):') || 'Loved One';
+        if (!store.state.bonds) store.state.bonds = [];
+        store.state.bonds.push({
+          id: 'bond_' + Date.now(),
+          name: name.trim(),
+          relation: relation.trim(),
+          avatar: '🤝',
+          trustMeter: 65,
+          patienceStreak: 1,
+          lastAction: 'Registered bond in Mirror'
+        });
+        store.save();
+        ui.renderLovedOnesSection(store.state);
+        showToast(`Bond with ${name.trim()} added!`);
+      }
       return;
     }
 
@@ -202,7 +316,8 @@ document.addEventListener('DOMContentLoaded', () => {
       store.state.inventory.push({ key, name, acquiredAt: new Date().toISOString() });
       store.save();
       celebrate.playChime('levelup');
-      ui.renderShopPage(store.state);
+      ui.renderShopSection(store.state);
+      ui.renderHeader(store.state, auth.isAuthenticated());
       showToast(`Acquired ${name}! Enjoy your earned reward.`);
       return;
     }
@@ -220,14 +335,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Close on backdrop click
+    // Close Modal on backdrop click
     if (e.target.classList.contains('modal-backdrop')) {
       e.target.classList.add('hidden');
       return;
     }
   });
 
-  // 4. Form Submissions (Auth & Generators)
+  // -------------------------------------------------------------------------
+  // 6. FORM SUBMISSIONS
+  // -------------------------------------------------------------------------
   document.addEventListener('submit', async e => {
     // Login Form Submit
     if (e.target.id === 'login-form') {
@@ -299,7 +416,8 @@ document.addEventListener('DOMContentLoaded', () => {
       store.logRelationshipInteraction(bId, action, reflection);
       closeModal('relationship-log-modal');
       celebrate.playChime('success');
-      ui.renderRelationshipsPage(store.state);
+      ui.renderLovedOnesSection(store.state);
+      ui.renderMirrorSection(store.state);
       showToast('Interaction logged! +25 Empathy XP.');
       return;
     }
@@ -313,7 +431,7 @@ document.addEventListener('DOMContentLoaded', () => {
       celebrate.playChime('levelup');
       celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 28, true);
       closeModal('ai-generator-modal');
-      ui.renderCareerPage(store.state);
+      ui.renderCareerSection(store.state);
       showToast('AI Blueprint synthesized! Check your updated skill tree.');
       return;
     }
@@ -323,7 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('change', e => {
     if (e.target.id === 'career-switcher-select') {
       store.switchCareerTrack(e.target.value);
-      ui.renderCareerPage(store.state);
+      ui.renderCareerSection(store.state);
       showToast(`Active career switched to ${e.target.value}.`);
     }
   });

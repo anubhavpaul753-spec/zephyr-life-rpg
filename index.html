@@ -17,158 +17,53 @@
   <div id="sr-announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
   <!-- =========================================================================
-       1. PUBLIC INTERACTIVE LANDING PAGE (FOR VISITORS)
+       1. PINNED LINEAR TOP NAVIGATION BAR WITH ACTIVE SLIDER PILL
        ========================================================================= -->
-  <div id="landing-page" class="landing-wrapper">
-    
-    <!-- Landing Navigation Bar -->
-    <header class="landing-nav">
-      <div class="landing-brand">
-        <div class="brand-mirror-icon">🪞</div>
+  <header class="linear-nav" id="top-navbar">
+    <div class="nav-container">
+      
+      <!-- Brand Logo -->
+      <a href="#sec-hero" class="brand-link" title="Jump to Gateway">
+        <span class="brand-mirror-icon">🪞</span>
         <div class="brand-text">
           <span class="brand-name">MIRROR</span>
           <span class="brand-badge">REAL-LIFE RPG</span>
         </div>
-      </div>
-      <div class="landing-nav-actions">
-        <button id="landing-theme-toggle" class="icon-btn" title="Toggle Dark / Autumn Light Mode">🌓</button>
-        <button id="landing-signin-btn" class="landing-cta-btn secondary">Sign In</button>
-      </div>
-    </header>
+      </a>
 
-    <!-- Hero Section -->
-    <section class="landing-hero">
-      <div class="hackathon-tag">
-        <span class="sparkle">✦</span> Tech Zephyr Web Hackathon 2026 Submission <span class="sparkle">✦</span>
-      </div>
+      <!-- Linear Slider Navigation Track -->
+      <nav class="linear-nav-track" id="nav-tabs-container" aria-label="Sections Navigation">
+        <!-- Hardware-accelerated sliding highlight pill -->
+        <div id="nav-active-pill" class="nav-active-pill"></div>
 
-      <h1 class="hero-headline">
-        Stop Upgrading Fictional Avatars.<br>
-        <span class="hero-gradient-text">Level Up Your True Self.</span>
-      </h1>
-
-      <p class="hero-subtext">
-        Most productivity tools feel like boring chores. <strong>Mirror</strong> turns your daily friction, 
-        messy relationships, and career mastery into a high-dopamine, mathematically grounded progression engine.
-      </p>
-
-      <!-- Center Action: Auth Card Box -->
-      <div class="landing-auth-center">
-        <div class="auth-card specular-card">
-          <div class="auth-tabs">
-            <button class="auth-tab-btn active" data-tab="login">Sign In</button>
-            <button class="auth-tab-btn" data-tab="register">Create Account</button>
-          </div>
-          <div id="auth-card-body">
-            <!-- Injected dynamically by ui.js -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Interactive Floating Text Bubbles -->
-      <div class="floating-bubbles-container">
-        <div class="float-bubble bubble-1" title="Core Philosophy">
-          <span class="bubble-icon">⚡</span>
-          <span><strong>Delayed Gratification is a Trap</strong> — Get instant feedback loops</span>
-        </div>
-        <div class="float-bubble bubble-2" title="Real-World Logic">
-          <span class="bubble-icon">🎲</span>
-          <span><strong>Probabilities, Not Guarantees</strong> — Honest statistical odds</span>
-        </div>
-        <div class="float-bubble bubble-3" title="Loved Ones System">
-          <span class="bubble-icon">🤝</span>
-          <span><strong>Family Harmony First</strong> — Personal growth that brings peace home</span>
-        </div>
-        <div class="float-bubble bubble-4" title="Anti-Overwhelm">
-          <span class="bubble-icon">🌪️</span>
-          <span><strong>2-Minute Paralysis Breaker</strong> — Micro-habits when stuck in bed</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- Core Pillars Spotlight (Unreal Engine Specular Grid) -->
-    <section class="landing-features">
-      <div class="features-header">
-        <h2 class="features-title">Grounded in Reality. Not Fantasy.</h2>
-        <p class="features-subtitle">No pixel swords, no killing goblins. Every XP point feeds directly into your actual life.</p>
-      </div>
-
-      <div class="features-grid">
-        <div class="feature-card specular-card">
-          <div class="feature-icon-badge craft-glow">💻</div>
-          <h3 class="feature-name">Career Skill Trees</h3>
-          <p class="feature-desc">4-tier progression roadmaps designed to help you build portfolio projects, master system design, and land your dream offer.</p>
-        </div>
-
-        <div class="feature-card specular-card">
-          <div class="feature-icon-badge calm-glow">🪞</div>
-          <h3 class="feature-name">The Reality Mirror</h3>
-          <p class="feature-desc">Dynamic character sheet tracking Craft, Physical Resilience, Emotional Calm, Loved Ones, Discipline, and Joy with non-linear leveling.</p>
-        </div>
-
-        <div class="feature-card specular-card">
-          <div class="feature-icon-badge lovedones-glow">🤝</div>
-          <h3 class="feature-name">Relationship Bonds</h3>
-          <p class="feature-desc">Manage delicate dynamics with parents, partners, and friends with trust meters, patience streaks, and de-escalation quests.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Footer: Philosophy, Disclaimer & Developers -->
-    <footer class="landing-footer">
-      <div class="footer-content">
-        <div class="footer-disclaimer">
-          <p><strong>Disclaimer:</strong> Mirror is designed as a psychological momentum engine and life simulator. Outcomes in life are probabilistic; sustained consistency yields the highest statistical odds of personal fulfillment.</p>
-        </div>
-        <div class="footer-credits">
-          <span>Crafted with passion for <strong>Tech Zephyr Web Hackathon 2026 (Round 1)</strong></span>
-          <span class="team-names">Developed by <strong>Anubhav Paul</strong> & <strong>Arpita Sengupta</strong></span>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <!-- =========================================================================
-       2. MAIN APP DASHBOARD (AUTHENTICATED MULTI-PAGE EXPERIENCE)
-       ========================================================================= -->
-  <div id="app-dashboard" class="app-layout hidden">
-    
-    <!-- Main Top Navigation Bar with Page Tabs -->
-    <header class="app-header specular-header">
-      <div class="header-left">
-        <div class="logo-badge">🪞</div>
-        <div>
-          <h1 class="app-title">MIRROR</h1>
-          <p class="app-subtitle">Welcome back, <strong id="header-user-name" style="color:var(--pillar-craft);">Adventurer</strong></p>
-        </div>
-      </div>
-
-      <!-- Multi-Page Tab Navigation (Zero Overwhelm!) -->
-      <nav class="app-nav-tabs" aria-label="Main Navigation">
-        <button class="nav-tab-btn active" data-page="routine">
+        <button class="nav-tab-btn active" data-target="sec-hero" id="nav-btn-hero">
+          <span class="nav-icon">✦</span>
+          <span class="nav-label">Gateway</span>
+        </button>
+        <button class="nav-tab-btn" data-target="sec-routine" id="nav-btn-routine">
           <span class="nav-icon">📜</span>
           <span class="nav-label">Daily Routine</span>
         </button>
-        <button class="nav-tab-btn" data-page="mirror">
+        <button class="nav-tab-btn" data-target="sec-mirror" id="nav-btn-mirror">
           <span class="nav-icon">🪞</span>
           <span class="nav-label">Reality Mirror</span>
         </button>
-        <button class="nav-tab-btn" data-page="career">
+        <button class="nav-tab-btn" data-target="sec-career" id="nav-btn-career">
           <span class="nav-icon">🎯</span>
           <span class="nav-label">Career Tree</span>
         </button>
-        <button class="nav-tab-btn" data-page="relationships">
+        <button class="nav-tab-btn" data-target="sec-lovedones" id="nav-btn-lovedones">
           <span class="nav-icon">🤝</span>
           <span class="nav-label">Loved Ones</span>
         </button>
-        <button class="nav-tab-btn" data-page="shop">
+        <button class="nav-tab-btn" data-target="sec-shop" id="nav-btn-shop">
           <span class="nav-icon">🛍️</span>
           <span class="nav-label">Guild Shop</span>
         </button>
       </nav>
 
       <!-- Status Indicators & Controls -->
-      <div class="header-controls">
+      <div class="nav-controls">
         <div class="streak-pill" title="Consecutive active days">
           <span>🔥</span>
           <span id="streak-count" class="mono-bold">1</span>
@@ -185,246 +80,384 @@
         <button id="sound-toggle-btn" class="icon-btn" title="Toggle audio feedback">🔔</button>
         <button id="logout-btn" class="icon-btn logout-btn" title="Logout session" aria-label="Logout">🚪</button>
       </div>
-    </header>
 
-    <!-- Dynamic Rotating Wisdom Strip (No bulky upper label) -->
-    <div id="dynamic-wisdom-strip" class="wisdom-strip">
-      <div class="wisdom-indicator">✦</div>
-      <p id="dynamic-wisdom-text" class="wisdom-text">"You do not rise to the level of your goals. You fall to the level of your systems."</p>
-      <div id="wisdom-author" class="wisdom-author">— James Clear</div>
     </div>
+  </header>
 
-    <!-- =======================================================================
-         PAGE 1: DAILY ROUTINE (FOCUSED QUESTS & TIME FILTERS)
-         ======================================================================= -->
-    <main class="page-view" id="page-routine">
-      <div class="page-header-row">
-        <div>
-          <h2 class="page-heading">Daily Routine</h2>
-          <p class="page-subheading">Execute your high-leverage habits one step at a time.</p>
+  <!-- Dynamic Rotating Wisdom Strip (No bulky upper header) -->
+  <div id="dynamic-wisdom-strip" class="wisdom-strip">
+    <div class="wisdom-indicator">✦</div>
+    <p id="dynamic-wisdom-text" class="wisdom-text">"You do not rise to the level of your goals. You fall to the level of your systems."</p>
+    <div id="wisdom-author" class="wisdom-author">— James Clear</div>
+  </div>
+
+  <!-- Main Continuous Scroll Container -->
+  <div class="linear-content-container">
+
+    <!-- =========================================================================
+         SECTION 1: HERO & AUTH GATEWAY (#sec-hero)
+         ========================================================================= -->
+    <section class="scroll-section" id="sec-hero">
+      <div class="landing-hero">
+        <div class="hackathon-tag">
+          <span class="sparkle">✦</span> Tech Zephyr Web Hackathon 2026 Submission <span class="sparkle">✦</span>
         </div>
-        <div class="page-header-actions">
-          <button id="paralysis-breaker-btn" class="pill-btn paralysis-btn">
-            <span>🌪️</span> Feeling Overwhelmed Today?
-          </button>
-          <button id="reset-day-btn" class="pill-btn secondary-btn" title="Reset routine checkmarks for a fresh day">
-            <span>🔄</span> New Day Reset
-          </button>
-        </div>
-      </div>
 
-      <!-- Routine Progress Bar -->
-      <div class="routine-progress-card specular-card">
-        <div class="routine-progress-info">
-          <span class="progress-title">Today's Execution Velocity</span>
-          <span class="progress-stats"><span id="routine-fraction">0 / 15</span> (<strong id="routine-percent">0%</strong>)</span>
-        </div>
-        <div class="progress-track">
-          <div id="routine-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
-        </div>
-      </div>
+        <h1 class="hero-headline">
+          Stop Upgrading Fictional Avatars.<br>
+          <span class="hero-gradient-text">Level Up Your True Self.</span>
+        </h1>
 
-      <!-- Time of Day & Status Filters -->
-      <div class="filters-nav" role="tablist">
-        <button class="filter-tab active" data-filter="all">All Quests <span class="filter-count" id="count-all">15</span></button>
-        <button class="filter-tab" data-filter="morning">Morning <span class="filter-count" id="count-morning">5</span></button>
-        <button class="filter-tab" data-filter="midday">Midday <span class="filter-count" id="count-midday">4</span></button>
-        <button class="filter-tab" data-filter="evening">Evening <span class="filter-count" id="count-evening">4</span></button>
-        <button class="filter-tab" data-filter="pending">Pending <span class="filter-count" id="count-pending">15</span></button>
-        <button class="filter-tab" data-filter="completed">Completed <span class="filter-count" id="count-completed">0</span></button>
-      </div>
+        <p class="hero-subtext">
+          Most productivity tools feel like boring chores. <strong>Mirror</strong> turns your daily friction, 
+          messy relationships, and career mastery into a high-dopamine, mathematically grounded progression engine.
+        </p>
 
-      <!-- Quests Feed Container -->
-      <div class="quests-list-container" id="quests-list" role="feed">
-        <!-- Injected dynamically by ui.js -->
-      </div>
-
-      <!-- All Complete Banner -->
-      <div id="all-complete-banner" class="all-complete-card hidden specular-card">
-        <div class="complete-card-art">🌿✨</div>
-        <h3 class="complete-card-title">Day Complete</h3>
-        <p class="complete-card-body">You have shown up with discipline and presence today. Enjoy unhurried, guilt-free rest.</p>
-      </div>
-    </main>
-
-    <!-- =======================================================================
-         PAGE 2: REALITY MIRROR (CHARACTER SHEET & 6 PILLARS)
-         ======================================================================= -->
-    <main class="page-view hidden" id="page-mirror">
-      <div class="page-header-row">
-        <div>
-          <h2 class="page-heading">The Reality Mirror</h2>
-          <p class="page-subheading">A tangible audit of your real-life capabilities and physical consistency.</p>
-        </div>
-      </div>
-
-      <div class="mirror-grid-layout">
-        <!-- Character Identity Card -->
-        <div class="specular-card character-main-card">
-          <div class="avatar-large-container">
-            <div class="avatar-glow-ring">
-              <img id="profile-avatar-img" class="dicebear-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed=adventurer" alt="Avatar">
+        <!-- Dynamic Gateway Center Box (Auth or Authenticated Command Center) -->
+        <div class="landing-auth-center" id="hero-gateway-box">
+          <div class="auth-card raycast-card specular-card" id="auth-card-container">
+            <div class="auth-tabs" id="auth-tab-switches">
+              <button class="auth-tab-btn active" data-tab="login">Sign In</button>
+              <button class="auth-tab-btn" data-tab="register">Create Account</button>
             </div>
-            <span class="avatar-badge-level" id="profile-avatar-lvl-badge">Lv. 1</span>
-          </div>
-          <div class="character-identity-info">
-            <h3 id="profile-user-fullname" class="char-full-name">Adventurer</h3>
-            <p id="profile-rank-title" class="char-rank-badge">Novice Builder</p>
-            <p class="char-goal-quote" id="profile-life-goal-display">"Master full-stack architecture and build a peaceful life."</p>
-          </div>
-        </div>
-
-        <!-- Non-linear Level Progression Box -->
-        <div class="specular-card level-progression-card">
-          <div class="level-header-row">
-            <div>
-              <span class="level-main-tag" id="profile-level-title">Level 1</span>
-              <span class="level-sub-desc">Non-Linear Mastery Curve</span>
+            <div id="auth-card-body">
+              <!-- Injected dynamically by ui.js -->
             </div>
-            <div class="xp-readout mono-bold" id="profile-xp-readout">0 / 100 XP</div>
           </div>
-          <div class="xp-track-large">
-            <div id="profile-xp-fill" class="xp-fill-large" style="width: 0%;"></div>
+        </div>
+
+        <!-- Interactive Floating Text Bubbles -->
+        <div class="floating-bubbles-container">
+          <div class="float-bubble bubble-1" title="Core Philosophy">
+            <span class="bubble-icon">⚡</span>
+            <span><strong>Delayed Gratification is a Trap</strong> — Get instant feedback loops</span>
           </div>
-          <div class="xp-formula-caption">
-            <span>Formula: <em>XP<sub>req</sub> = 100 · Level<sup>1.5</sup></em></span>
-            <span id="profile-xp-percent" class="mono-bold">0%</span>
+          <div class="float-bubble bubble-2" title="Real-World Logic">
+            <span class="bubble-icon">🎲</span>
+            <span><strong>Probabilities, Not Guarantees</strong> — Honest statistical odds</span>
+          </div>
+          <div class="float-bubble bubble-3" title="Loved Ones System">
+            <span class="bubble-icon">🤝</span>
+            <span><strong>Family Harmony First</strong> — Personal growth that brings peace home</span>
+          </div>
+          <div class="float-bubble bubble-4" title="Anti-Overwhelm">
+            <span class="bubble-icon">🌪️</span>
+            <span><strong>2-Minute Paralysis Breaker</strong> — Micro-habits when stuck in bed</span>
           </div>
         </div>
       </div>
 
-      <!-- 6 Life Pillars Grid -->
-      <div class="section-title-bar">
-        <h3>The 6 Core Life Pillars</h3>
-        <span>Real stats reflecting real-life habits</span>
-      </div>
+      <!-- Core Pillars Spotlight Grid -->
+      <div class="landing-features">
+        <div class="features-header">
+          <h2 class="features-title">Grounded in Reality. Not Fantasy.</h2>
+          <p class="features-subtitle">No pixel swords, no killing goblins. Every XP point feeds directly into your actual life.</p>
+        </div>
 
-      <div class="pillars-hud-grid" id="pillars-hud">
-        <!-- Injected dynamically by ui.js -->
-      </div>
+        <div class="features-grid">
+          <div class="feature-card raycast-card specular-card">
+            <div class="feature-icon-badge craft-glow">💻</div>
+            <h3 class="feature-name">Career Skill Trees</h3>
+            <p class="feature-desc">4-tier progression roadmaps designed to help you build portfolio projects, master system design, and land your dream offer.</p>
+          </div>
 
-      <!-- 30/90 Day Compounding Trajectory Forecast -->
-      <div class="specular-card trajectory-forecast-card">
-        <div class="trajectory-header">
-          <div class="trajectory-icon">📈</div>
+          <div class="feature-card raycast-card specular-card">
+            <div class="feature-icon-badge calm-glow">🪞</div>
+            <h3 class="feature-name">The Reality Mirror</h3>
+            <p class="feature-desc">Dynamic character sheet tracking Craft, Physical Resilience, Emotional Calm, Loved Ones, Discipline, and Joy with non-linear leveling.</p>
+          </div>
+
+          <div class="feature-card raycast-card specular-card">
+            <div class="feature-icon-badge lovedones-glow">🤝</div>
+            <h3 class="feature-name">Relationship Bonds</h3>
+            <p class="feature-desc">Manage delicate dynamics with parents, partners, and friends with trust meters, patience streaks, and de-escalation quests.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 2: DAILY ROUTINE (#sec-routine)
+         ========================================================================= -->
+    <section class="scroll-section" id="sec-routine">
+      <div class="section-container">
+        
+        <div class="page-header-row">
           <div>
-            <h3 class="trajectory-title">Compounding Trajectory Forecast</h3>
-            <p class="trajectory-subtitle">Calculated expectation based on your average daily habit velocity.</p>
+            <span class="section-tag">High-Leverage Execution</span>
+            <h2 class="page-heading">Daily Routine</h2>
+            <p class="page-subheading">Execute your high-leverage habits one step at a time with instant dopamine feedback.</p>
+          </div>
+          <div class="page-header-actions">
+            <button id="paralysis-breaker-btn" class="pill-btn paralysis-btn">
+              <span>🌪️</span> Feeling Overwhelmed Today?
+            </button>
+            <button id="reset-day-btn" class="pill-btn secondary-btn" title="Reset routine checkmarks for a fresh day">
+              <span>🔄</span> New Day Reset
+            </button>
           </div>
         </div>
-        <div class="trajectory-grid">
-          <div class="trajectory-stat-box">
-            <span class="stat-horizon">In 30 Days</span>
-            <span class="stat-projected" id="forecast-30-days">Level 4</span>
-            <span class="stat-detail">+1,500 XP compounded</span>
-          </div>
-          <div class="trajectory-stat-box highlight">
-            <span class="stat-horizon">In 90 Days</span>
-            <span class="stat-projected" id="forecast-90-days">Level 8</span>
-            <span class="stat-detail">Full-Stack Competency Unlocked</span>
-          </div>
-          <div class="trajectory-stat-box">
-            <span class="stat-horizon">In 1 Year</span>
-            <span class="stat-projected" id="forecast-1-year">Level 16</span>
-            <span class="stat-detail">Senior Mastery Tier</span>
-          </div>
-        </div>
-      </div>
-    </main>
 
-    <!-- =======================================================================
-         PAGE 3: CAREER TREE (4-TIER MASTERY ROADMAP)
-         ======================================================================= -->
-    <main class="page-view hidden" id="page-career">
-      <div class="page-header-row">
-        <div>
-          <h2 class="page-heading">Dream Career Mastery Tree</h2>
-          <p class="page-subheading">Step-by-step prerequisites and portfolio milestones to land your dream career.</p>
+        <!-- Routine Progress Bar -->
+        <div class="routine-progress-card raycast-card specular-card">
+          <div class="routine-progress-info">
+            <span class="progress-title">Today's Execution Velocity</span>
+            <span class="progress-stats"><span id="routine-fraction">0 / 15</span> (<strong id="routine-percent">0%</strong>)</span>
+          </div>
+          <div class="progress-track">
+            <div id="routine-progress-bar" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
         </div>
-        <div class="page-header-actions">
-          <button id="ai-generator-btn" class="pill-btn primary-btn">
-            <span>⚡</span> AI Blueprint Generator
+
+        <!-- Time of Day & Status Filters -->
+        <div class="filters-nav" role="tablist">
+          <button class="filter-tab active" data-filter="all">All Quests <span class="filter-count" id="count-all">15</span></button>
+          <button class="filter-tab" data-filter="morning">Morning <span class="filter-count" id="count-morning">5</span></button>
+          <button class="filter-tab" data-filter="midday">Midday <span class="filter-count" id="count-midday">4</span></button>
+          <button class="filter-tab" data-filter="evening">Evening <span class="filter-count" id="count-evening">4</span></button>
+          <button class="filter-tab" data-filter="pending">Pending <span class="filter-count" id="count-pending">15</span></button>
+          <button class="filter-tab" data-filter="completed">Completed <span class="filter-count" id="count-completed">0</span></button>
+        </div>
+
+        <!-- Quests Feed Container -->
+        <div class="quests-list-container" id="quests-list" role="feed">
+          <!-- Injected dynamically by ui.js -->
+        </div>
+
+        <!-- All Complete Banner -->
+        <div id="all-complete-banner" class="all-complete-card hidden raycast-card specular-card">
+          <div class="complete-card-art">🌿✨</div>
+          <h3 class="complete-card-title">Day Complete</h3>
+          <p class="complete-card-body">You have shown up with discipline and presence today. Enjoy unhurried, guilt-free rest.</p>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 3: THE REALITY MIRROR (#sec-mirror)
+         ========================================================================= -->
+    <section class="scroll-section" id="sec-mirror">
+      <div class="section-container">
+        
+        <div class="page-header-row">
+          <div>
+            <span class="section-tag">Tangible Character Sheet</span>
+            <h2 class="page-heading">The Reality Mirror</h2>
+            <p class="page-subheading">A tangible audit of your real-life capabilities, consistency, and compounding growth.</p>
+          </div>
+        </div>
+
+        <div class="mirror-grid-layout">
+          <!-- Character Identity Card -->
+          <div class="raycast-card specular-card character-main-card">
+            <div class="avatar-large-container">
+              <div class="avatar-glow-ring">
+                <img id="profile-avatar-img" class="dicebear-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed=adventurer" alt="Avatar">
+              </div>
+              <span class="avatar-badge-level" id="profile-avatar-lvl-badge">Lv. 1</span>
+            </div>
+            <div class="character-identity-info">
+              <h3 id="profile-user-fullname" class="char-full-name">Adventurer</h3>
+              <p id="profile-rank-title" class="char-rank-badge">Novice Builder</p>
+              <p class="char-goal-quote" id="profile-life-goal-display">"Master full-stack architecture and build a peaceful life."</p>
+            </div>
+          </div>
+
+          <!-- Non-linear Level Progression Box -->
+          <div class="raycast-card specular-card level-progression-card">
+            <div class="level-header-row">
+              <div>
+                <span class="level-main-tag" id="profile-level-title">Level 1</span>
+                <span class="level-sub-desc">Non-Linear Mastery Curve</span>
+              </div>
+              <div class="xp-readout mono-bold" id="profile-xp-readout">0 / 100 XP</div>
+            </div>
+            <div class="xp-track-large">
+              <div id="profile-xp-fill" class="xp-fill-large" style="width: 0%;"></div>
+            </div>
+            <div class="xp-formula-caption">
+              <span>Formula: <em>XP<sub>req</sub> = 100 · Level<sup>1.5</sup></em></span>
+              <span id="profile-xp-percent" class="mono-bold">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 Life Pillars Grid -->
+        <div class="section-title-bar">
+          <h3>The 6 Core Life Pillars</h3>
+          <span>Real metrics calibrated to real-world friction</span>
+        </div>
+
+        <div class="pillars-hud-grid" id="pillars-hud">
+          <!-- Injected dynamically by ui.js -->
+        </div>
+
+        <!-- 30/90 Day Compounding Trajectory Forecast -->
+        <div class="raycast-card specular-card trajectory-forecast-card">
+          <div class="trajectory-header">
+            <div class="trajectory-icon">📈</div>
+            <div>
+              <h3 class="trajectory-title">Compounding Trajectory Forecast</h3>
+              <p class="trajectory-subtitle">Calculated expectation based on your average daily habit velocity.</p>
+            </div>
+          </div>
+          <div class="trajectory-grid">
+            <div class="trajectory-stat-box">
+              <span class="stat-horizon">In 30 Days</span>
+              <span class="stat-projected" id="forecast-30-days">Level 4</span>
+              <span class="stat-detail">+1,500 XP compounded</span>
+            </div>
+            <div class="trajectory-stat-box highlight">
+              <span class="stat-horizon">In 90 Days</span>
+              <span class="stat-projected" id="forecast-90-days">Level 8</span>
+              <span class="stat-detail">Full-Stack Competency Unlocked</span>
+            </div>
+            <div class="trajectory-stat-box">
+              <span class="stat-horizon">In 1 Year</span>
+              <span class="stat-projected" id="forecast-1-year">Level 16</span>
+              <span class="stat-detail">Senior Mastery Tier</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 4: CAREER TREE (#sec-career)
+         ========================================================================= -->
+    <section class="scroll-section" id="sec-career">
+      <div class="section-container">
+        
+        <div class="page-header-row">
+          <div>
+            <span class="section-tag">4-Tier Mastery Roadmap</span>
+            <h2 class="page-heading">Dream Career Mastery Tree</h2>
+            <p class="page-subheading">Step-by-step prerequisites, portfolio artifacts, and milestones to land your dream career.</p>
+          </div>
+          <div class="page-header-actions">
+            <button id="ai-generator-btn" class="pill-btn primary-btn">
+              <span>⚡</span> AI Blueprint Generator
+            </button>
+            <button id="abandon-career-trigger" class="pill-btn text-icon-btn" title="Contemplate pivoting this track">
+              <span style="color:var(--text-muted); font-size:0.8rem;">Considering Quitting?</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Active Career Ambition Banner -->
+        <div class="career-track-banner raycast-card specular-card">
+          <div class="track-left">
+            <span class="track-eyebrow">Active Life Path:</span>
+            <h3 class="track-active-name" id="hero-career-track">Software Engineer & Builder</h3>
+            <p class="track-active-goal" id="hero-life-goal">"Master full-stack architecture, clean code, and production reliability."</p>
+          </div>
+          <div class="track-right">
+            <label for="career-switcher-select" class="track-switch-label">Switch Track:</label>
+            <select id="career-switcher-select" class="form-select">
+              <option value="Software Engineer & Builder">Software Engineer & Builder</option>
+              <option value="UI/UX Designer & Product Creator">UI/UX Designer & Product Creator</option>
+              <option value="Entrepreneur & Startup Founder">Entrepreneur & Startup Founder</option>
+              <option value="Writer & Intellectual Scholar">Writer & Intellectual Scholar</option>
+              <option value="Health & Athletic Resilience">Health & Athletic Resilience</option>
+              <option value="Family Guardian & Harmony">Family Guardian & Harmony</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 4-Tier Skill Tree -->
+        <div class="career-tree-container" id="career-milestones-tree">
+          <!-- Injected dynamically by ui.js -->
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 5: LOVED ONES (#sec-lovedones)
+         ========================================================================= -->
+    <section class="scroll-section" id="sec-lovedones">
+      <div class="section-container">
+        
+        <div class="page-header-row">
+          <div>
+            <span class="section-tag">Relationship Bonds & Empathy</span>
+            <h2 class="page-heading">Loved Ones & Relationship Bonds</h2>
+            <p class="page-subheading">Personal growth is meaningless if it doesn't bring peace, patience, and stability to those you love.</p>
+          </div>
+          <button id="add-bond-btn" class="pill-btn primary-btn">
+            <span>+</span> Add Loved One
           </button>
-          <button id="abandon-career-trigger" class="pill-btn text-icon-btn" title="Contemplate pivoting this track">
-            <span style="color:var(--text-muted); font-size:0.8rem;">Considering Quitting?</span>
-          </button>
+        </div>
+
+        <!-- Bonds Grid -->
+        <div class="bonds-cards-grid" id="bonds-list-container">
+          <!-- Injected dynamically by ui.js -->
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 6: GUILD SHOP (#sec-shop)
+         ========================================================================= -->
+    <section class="scroll-section" id="sec-shop">
+      <div class="section-container">
+        
+        <div class="page-header-row">
+          <div>
+            <span class="section-tag">Guilt-Free Rewards & Shields</span>
+            <h2 class="page-heading">Guild Economy & Rewards</h2>
+            <p class="page-subheading">Spend your hard-earned Life Credits on rest shields and earned real-life treats.</p>
+          </div>
+          <div class="shop-balance-display raycast-card specular-card">
+            <span>Available Capital:</span>
+            <span class="balance-number">🪙 <strong id="shop-page-balance">20</strong> LC</span>
+          </div>
+        </div>
+
+        <!-- Shop Items Grid -->
+        <div class="shop-grid-container" id="shop-page-items">
+          <!-- Injected dynamically by ui.js -->
+        </div>
+
+        <!-- Acquired Inventory List -->
+        <div class="section-title-bar" style="margin-top:40px;">
+          <h3>Your Acquired Inventory & Passes</h3>
+        </div>
+        <div class="inventory-grid" id="user-inventory-container">
+          <!-- Injected dynamically by ui.js -->
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- =========================================================================
+         SECTION 7: FOOTER & CREDITS (#sec-footer)
+         ========================================================================= -->
+    <footer class="linear-footer" id="sec-footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="brand-mirror-icon">🪞</span>
+          <span class="brand-name">MIRROR</span>
+          <span class="brand-badge">REAL-LIFE RPG</span>
+        </div>
+        <div class="footer-disclaimer">
+          <p><strong>Disclaimer:</strong> Mirror is designed as a psychological momentum engine and life simulator. Outcomes in life are probabilistic; sustained daily consistency yields the highest statistical odds of personal fulfillment.</p>
+        </div>
+        <div class="footer-credits">
+          <span>Crafted with passion for <strong>Tech Zephyr Web Hackathon 2026 (Round 1)</strong></span>
+          <span class="team-names">Developed by <strong>Anubhav Paul</strong> & <strong>Arpita Sengupta</strong></span>
         </div>
       </div>
-
-      <!-- Active Career Ambition Banner -->
-      <div class="career-track-banner specular-card">
-        <div class="track-left">
-          <span class="track-eyebrow">Active Life Path:</span>
-          <h3 class="track-active-name" id="hero-career-track">Software Engineer & Builder</h3>
-          <p class="track-active-goal" id="hero-life-goal">"Master full-stack architecture, clean code, and production reliability."</p>
-        </div>
-        <div class="track-right">
-          <label for="career-switcher-select" class="track-switch-label">Switch Track:</label>
-          <select id="career-switcher-select" class="form-select">
-            <option value="Software Engineer & Builder">Software Engineer & Builder</option>
-            <option value="UI/UX Designer & Product Creator">UI/UX Designer & Product Creator</option>
-            <option value="Entrepreneur & Startup Founder">Entrepreneur & Startup Founder</option>
-            <option value="Writer & Intellectual Scholar">Writer & Intellectual Scholar</option>
-            <option value="Health & Athletic Resilience">Health & Athletic Resilience</option>
-            <option value="Family Guardian & Harmony">Family Guardian & Harmony</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- 4-Tier Skill Tree -->
-      <div class="career-tree-container" id="career-milestones-tree">
-        <!-- Injected dynamically by ui.js -->
-      </div>
-    </main>
-
-    <!-- =======================================================================
-         PAGE 4: LOVED ONES (FAMILY & RELATIONSHIP BONDS)
-         ======================================================================= -->
-    <main class="page-view hidden" id="page-relationships">
-      <div class="page-header-row">
-        <div>
-          <h2 class="page-heading">Loved Ones & Relationship Bonds</h2>
-          <p class="page-subheading">Personal growth is meaningless if it doesn't bring peace and stability to those you love.</p>
-        </div>
-        <button id="add-bond-btn" class="pill-btn primary-btn">
-          <span>+</span> Add Loved One
-        </button>
-      </div>
-
-      <!-- Bonds Grid -->
-      <div class="bonds-cards-grid" id="bonds-list-container">
-        <!-- Injected dynamically by ui.js -->
-      </div>
-    </main>
-
-    <!-- =======================================================================
-         PAGE 5: GUILD SHOP (REWARDS & LIFE CREDITS)
-         ======================================================================= -->
-    <main class="page-view hidden" id="page-shop">
-      <div class="page-header-row">
-        <div>
-          <h2 class="page-heading">Guild Economy & Rewards</h2>
-          <p class="page-subheading">Spend your hard-earned Life Credits on rest shields and guilt-free treats.</p>
-        </div>
-        <div class="shop-balance-display specular-card">
-          <span>Available Capital:</span>
-          <span class="balance-number">🪙 <strong id="shop-page-balance">20</strong> LC</span>
-        </div>
-      </div>
-
-      <!-- Shop Items Grid -->
-      <div class="shop-grid-container" id="shop-page-items">
-        <!-- Injected dynamically by ui.js -->
-      </div>
-
-      <!-- Acquired Inventory List -->
-      <div class="section-title-bar" style="margin-top:40px;">
-        <h3>Your Acquired Inventory & Passes</h3>
-      </div>
-      <div class="inventory-grid" id="user-inventory-container">
-        <!-- Injected dynamically by ui.js -->
-      </div>
-    </main>
+    </footer>
 
   </div>
 
@@ -434,7 +467,7 @@
 
   <!-- Modal 1: 2-Minute Paralysis Breaker -->
   <div id="paralysis-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
-    <div class="modal-card specular-card">
+    <div class="modal-card raycast-card specular-card">
       <header class="modal-header">
         <div>
           <h3 class="modal-title">🌪️ The 2-Minute Paralysis Breaker</h3>
@@ -450,7 +483,7 @@
 
   <!-- Modal 2: The Hidden Crossroads (Interception Circuit-Breaker) -->
   <div id="crossroads-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
-    <div class="modal-card specular-card crossroads-modal-card">
+    <div class="modal-card raycast-card specular-card crossroads-modal-card">
       <header class="modal-header">
         <div>
           <span class="modal-badge-pause">🛑 Stage 1: The Compassionate Pause</span>
@@ -466,14 +499,14 @@
         </div>
 
         <div class="crossroads-matrix-grid">
-          <div class="crossroads-path path-stay">
+          <div class="crossroads-path path-stay raycast-card">
             <h4>Path A: Stay the Course</h4>
             <div class="path-prob">65% – 80% Success Odds</div>
             <p>Requires sustained mental energy and moving past temporary friction. Growth lives on the other side of boredom.</p>
             <button id="crossroads-choose-stay" class="pill-btn primary-btn" style="width:100%;">I Will Persist & Execute</button>
           </div>
 
-          <div class="crossroads-path path-pivot">
+          <div class="crossroads-path path-pivot raycast-card">
             <h4>Path B: Gracefully Pivot</h4>
             <div class="path-prob">Frees 8–10 hrs / week</div>
             <p>Acknowledges sunk time and reallocates bandwidth. Pivoting from a true dead-end is wisdom, not failure.</p>
@@ -486,7 +519,7 @@
 
   <!-- Modal 3: Log Relationship Interaction -->
   <div id="relationship-log-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
-    <div class="modal-card specular-card">
+    <div class="modal-card raycast-card specular-card">
       <header class="modal-header">
         <div>
           <h3 class="modal-title">🤝 Log Quiet Interaction</h3>
@@ -511,7 +544,7 @@
 
   <!-- Modal 4: Level-Up Celebration Overlay -->
   <div id="level-up-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
-    <div class="modal-card levelup-modal-card specular-card">
+    <div class="modal-card levelup-modal-card raycast-card specular-card">
       <div class="levelup-burst-center"></div>
       <div class="levelup-badge-symbol">⚜️</div>
       <span class="levelup-tag">Ascension</span>
@@ -527,7 +560,7 @@
 
   <!-- Modal 5: AI Blueprint Generator -->
   <div id="ai-generator-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
-    <div class="modal-card specular-card">
+    <div class="modal-card raycast-card specular-card">
       <header class="modal-header">
         <div>
           <h3 class="modal-title">⚡ AI Blueprint Generator</h3>
