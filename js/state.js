@@ -706,7 +706,7 @@ class StateManager {
         careerTrack: uTrack,
         careerTree: tree,
         lifeGoal: (user.userData.lifeGoal && user.userData.lifeGoal !== 'undefined') ? user.userData.lifeGoal : (user.lifeGoal || 'Master full-stack engineering and bring security to loved ones.'),
-        themeMode: user.userData.themeMode || user.themeMode || 'dark',
+        themeMode: user.userData.themeMode || user.themeMode || 'light',
         quests: (user.userData.quests && user.userData.quests.length > 0) 
           ? user.userData.quests 
           : this.getRoutineForCareer(uTrack),
@@ -728,7 +728,7 @@ class StateManager {
         totalXP: 0,
         currency: 20,
         streak: 1,
-        themeMode: 'dark',
+        themeMode: 'light',
         soundEnabled: true,
         currentProfession: 'Student & Academic Learner',
         dreamCareer: 'Software Engineer & Full-Stack Developer',
@@ -764,7 +764,7 @@ class StateManager {
       totalXP: 0,
       currency: 20,
       streak: 1,
-      themeMode: user.themeMode || 'dark',
+      themeMode: user.themeMode || 'light',
       soundEnabled: true,
       honorableArchive: [],
       completedMicroQuests: [],

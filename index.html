@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,35 +26,23 @@
         }
         document.documentElement.removeAttribute('data-palette');
 
-        // 2. Load theme immediately pre-render
+        // 2. Default to Autumn Golden Daylight Light Mode
         var savedTheme = localStorage.getItem('mirror_theme');
-        if (savedTheme === 'light') {
-          document.documentElement.setAttribute('data-theme', 'light');
-        } else {
+        if (savedTheme === 'dark') {
           document.documentElement.setAttribute('data-theme', 'dark');
+          if (document.body) document.body.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+          if (document.body) document.body.setAttribute('data-theme', 'light');
         }
       } catch (e) {}
     })();
   </script>
 
   <style id="theme-enforcer">
-    /* Flawless Dual-Theme Engine (Obsidian Midnight & Golden Autumn Daylight) */
-    html[data-theme="dark"],
-    body[data-theme="dark"],
-    html:not([data-theme="light"]) body {
-      background-color: #07080D !important;
-      --bg-app: #07080D !important;
-      --bg-surface: #0E1119 !important;
-      --bg-card: #121622 !important;
-      --bg-card-hover: #171D2B !important;
-      --bg-subtle: #161D2B !important;
-      --bg-input: #0A0D14 !important;
-      --text-primary: #F3F5F9 !important;
-      --text-secondary: #94A0B8 !important;
-      --border-color: rgba(255, 255, 255, 0.08) !important;
-      --border-card: rgba(255, 255, 255, 0.12) !important;
-    }
-
+    /* Baseline Default: Warm Whitish-Yellowish Autumn Daylight Light Mode */
+    html,
+    body,
     html[data-theme="light"],
     body[data-theme="light"],
     html[data-theme="light"] body {
@@ -71,10 +59,27 @@
       --border-color: rgba(217, 119, 6, 0.15) !important;
       --border-card: rgba(0, 0, 0, 0.08) !important;
     }
+
+    /* Raycast Midnight Obsidian Dark Mode (Only when explicitly activated) */
+    html[data-theme="dark"],
+    body[data-theme="dark"],
+    html[data-theme="dark"] body {
+      background-color: #07080D !important;
+      --bg-app: #07080D !important;
+      --bg-surface: #0E1119 !important;
+      --bg-card: #121622 !important;
+      --bg-card-hover: #171D2B !important;
+      --bg-subtle: #161D2B !important;
+      --bg-input: #0A0D14 !important;
+      --text-primary: #F3F5F9 !important;
+      --text-secondary: #94A0B8 !important;
+      --border-color: rgba(255, 255, 255, 0.08) !important;
+      --border-card: rgba(255, 255, 255, 0.12) !important;
+    }
   </style>
 
   <!-- Version-tagged to force browsers to bypass cache -->
-  <link rel="stylesheet" href="css/styles.css?v=20260912-flawless-light-v4">
+  <link rel="stylesheet" href="css/styles.css?v=20260912-autumn-daylight-v5">
 </head>
 <body>
   <!-- Screen Reader Announcements (ARIA Live) -->
