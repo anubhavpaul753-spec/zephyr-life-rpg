@@ -129,8 +129,7 @@ zephyr-life-rpg/
 
 ## 👥 The Team
 
-- **Anubhav Paul** — [@anubhavpaul753-spec](https://github.com/anubhavpaul753-spec)
-- **Arpita Sengupta** — [@senguptaarpita295-code](https://github.com/senguptaarpita295-code)
+- **Team Zephyr Innovators** — Built for Tech Zephyr Web Hackathon 2026 (Round 1)
 
 ---
 

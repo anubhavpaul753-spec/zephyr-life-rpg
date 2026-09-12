@@ -1577,6 +1577,9 @@ class StateManager {
 
   setThemeMode(mode) {
     this.state.themeMode = mode;
+    try {
+      localStorage.setItem('mirror_theme', mode);
+    } catch (e) {}
     document.documentElement.setAttribute('data-theme', mode);
     this.saveState();
     this.notify();

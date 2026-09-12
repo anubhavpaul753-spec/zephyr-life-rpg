@@ -30,19 +30,6 @@ app.include_router(career_routes.router)
 app.include_router(crossroads_routes.router)
 app.include_router(shop_routes.router)
 
-@app.get('/')
-def root():
-    return {
-        'app': 'Project Mirror: Life RPG',
-        'status': 'online',
-        'docs': '/docs',
-        'philosophy': 'Upgrade your true self in the real world.'
-    }
-
-@app.get('/health')
-def health():
-    return {'status': 'healthy'}
-
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import os
@@ -57,6 +44,29 @@ if os.path.exists(css_dir):
 if os.path.exists(js_dir):
     app.mount('/js', StaticFiles(directory=js_dir), name='js')
 
+@app.get('/')
 @app.get('/app')
 def serve_frontend():
-    return FileResponse(os.path.join(frontend_dir, 'index.html'))
+    index_path = os.path.join(frontend_dir, 'index.html')
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {
+        'app': 'Project Mirror: Life RPG',
+        'status': 'online',
+        'docs': '/docs',
+        'philosophy': 'Upgrade your true self in the real world.'
+    }
+
+@app.get('/health')
+def health():
+    return {'status': 'healthy'}
+
+@app.get('/api/status')
+def api_status():
+    return {
+        'app': 'Project Mirror: Life RPG Backend Engine',
+        'status': 'online',
+        'docs': '/docs',
+        'health': 'healthy',
+        'architecture': 'FastAPI + SQLAlchemy + SQLite/PostgreSQL + LocalStorage Resilient Sync'
+    }

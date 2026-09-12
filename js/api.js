@@ -6,7 +6,16 @@
 
 class MirrorApiClient {
   constructor(baseUrl = '') {
-    this.baseUrl = baseUrl;
+    if (!baseUrl && typeof window !== 'undefined' && window.location) {
+      // If served by VS Code Live Server (port 5500/3000) or file://, target local FastAPI backend port 8000
+      if (window.location.port === '5500' || window.location.port === '3000' || window.location.protocol === 'file:') {
+        this.baseUrl = 'http://127.0.0.1:8000';
+      } else {
+        this.baseUrl = '';
+      }
+    } else {
+      this.baseUrl = baseUrl;
+    }
     this.tokenKey = 'mirror_jwt_token';
   }
 

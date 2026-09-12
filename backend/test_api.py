@@ -11,17 +11,20 @@ client = TestClient(app)
 def test_root_and_health():
     res = client.get('/')
     assert res.status_code == 200
-    assert res.json()['status'] == 'online'
+
+    res_api = client.get('/api/status')
+    assert res_api.status_code == 200
+    assert res_api.json()['status'] == 'online'
 
     res_health = client.get('/health')
     assert res_health.status_code == 200
     assert res_health.json()['status'] == 'healthy'
-    print(' Root and health checks passed!')
+    print(' Root, API status, and health checks passed!')
 
 def test_full_user_flow():
     import uuid
     rand_suffix = uuid.uuid4().hex[:6]
-    test_user = f'anubhav_{rand_suffix}'
+    test_user = f'dev_{rand_suffix}'
     test_email = f'{test_user}@example.com'
     test_pw = 'MasteryPass123!'
 
@@ -30,7 +33,7 @@ def test_full_user_flow():
         'username': test_user,
         'email': test_email,
         'password': test_pw,
-        'full_name': 'Anubhav Paul',
+        'full_name': 'Alex Morgan',
         'career_track': 'Software Engineer & Builder'
     }
     reg_res = client.post('/api/auth/register', json=reg_payload)

@@ -169,11 +169,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (navBtn && navBtn.dataset.target) {
         const targetId = navBtn.dataset.target;
         const targetSection = document.getElementById(targetId);
-        if (targetSection && !targetSection.classList.contains('locked-section')) {
-          isSmoothScrolling = true;
-          ui.updateActiveSliderPill(targetId);
-          targetSection.scrollIntoView({ behavior: 'smooth' });
-          setTimeout(() => { isSmoothScrolling = false; }, 600);
+        if (targetSection) {
+          if (targetSection.classList.contains('locked-section')) {
+            showToast('Character details required! Please complete character setup or sign in to unlock this section.', '🔒');
+            const heroSec = document.getElementById('sec-hero');
+            if (heroSec) heroSec.scrollIntoView({ behavior: 'smooth' });
+          } else {
+            isSmoothScrolling = true;
+            ui.updateActiveSliderPill(targetId);
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => { isSmoothScrolling = false; }, 600);
+          }
         }
         return;
       }
@@ -183,11 +189,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (jumpBtn && jumpBtn.dataset.target) {
         const targetId = jumpBtn.dataset.target;
         const targetSection = document.getElementById(targetId);
-        if (targetSection && !targetSection.classList.contains('locked-section')) {
-          isSmoothScrolling = true;
-          ui.updateActiveSliderPill(targetId);
-          targetSection.scrollIntoView({ behavior: 'smooth' });
-          setTimeout(() => { isSmoothScrolling = false; }, 600);
+        if (targetSection) {
+          if (targetSection.classList.contains('locked-section')) {
+            showToast('Character details required! Please complete character setup or sign in to unlock this section.', '🔒');
+            const heroSec = document.getElementById('sec-hero');
+            if (heroSec) heroSec.scrollIntoView({ behavior: 'smooth' });
+          } else {
+            isSmoothScrolling = true;
+            ui.updateActiveSliderPill(targetId);
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => { isSmoothScrolling = false; }, 600);
+          }
         }
         return;
       }

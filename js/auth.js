@@ -27,12 +27,16 @@ class AuthManager {
   }
 
   seedDefaultUsersIfEmpty() {
-    // Seed default Arpita demo account
-    if (!this.users['arpita']) {
-      this.users['arpita'] = {
-        username: 'arpita',
+    // Remove legacy personal demo accounts if present
+    if (this.users['arpita']) delete this.users['arpita'];
+    if (this.users['anubhav']) delete this.users['anubhav'];
+
+    // Seed default Alex demo account (Software Engineer)
+    if (!this.users['alex']) {
+      this.users['alex'] = {
+        username: 'alex',
         password: '123',
-        fullName: 'Arpita Sengupta',
+        fullName: 'Alex Morgan',
         currentProfession: 'Student & Academic Learner',
         dreamCareer: 'Software Engineer & Full-Stack Developer',
         careerTrack: 'Software Engineer & Builder',
@@ -45,16 +49,16 @@ class AuthManager {
         userData: null
       };
     }
-    // Seed default Anubhav demo account
-    if (!this.users['anubhav']) {
-      this.users['anubhav'] = {
-        username: 'anubhav',
+    // Seed default Jordan demo account (UI/UX Designer & Product Visionary)
+    if (!this.users['jordan']) {
+      this.users['jordan'] = {
+        username: 'jordan',
         password: '123',
-        fullName: 'Anubhav Paul',
-        currentProfession: 'Software Engineer & Full-Stack Developer',
-        dreamCareer: 'Software Engineer & Full-Stack Developer',
-        careerTrack: 'Software Engineer & Builder',
-        lifeGoal: 'Build resilient distributed backends and provide security for my family.',
+        fullName: 'Jordan Vance',
+        currentProfession: 'UI/UX Designer & Product Visionary',
+        dreamCareer: 'UI/UX Designer & Product Visionary',
+        careerTrack: 'UI/UX Designer & Creative Visionary',
+        lifeGoal: 'Craft intuitive human experiences, build design systems, and support family.',
         themeMode: 'dark',
         dob: '2003-11-20',
         photoUrl: '',

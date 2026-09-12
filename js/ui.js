@@ -223,7 +223,7 @@ class UIManager {
           <div class="profile-form-grid">
             <div class="form-group">
               <label class="form-label">Full Name / Identity *</label>
-              <input type="text" id="setup-fullname" class="form-input" placeholder="e.g. Arpita Sengupta" required>
+              <input type="text" id="setup-fullname" class="form-input" placeholder="e.g. Alex Morgan" required>
             </div>
             <div class="form-group">
               <label class="form-label">Date of Birth / Age *</label>
@@ -234,7 +234,7 @@ class UIManager {
           <div class="profile-form-grid">
             <div class="form-group">
               <label class="form-label">Username *</label>
-              <input type="text" id="setup-username" class="form-input" placeholder="e.g. arpita" required>
+              <input type="text" id="setup-username" class="form-input" placeholder="e.g. alex" required>
             </div>
             <div class="form-group">
               <label class="form-label">Password *</label>
@@ -341,7 +341,7 @@ class UIManager {
         <form id="gateway-login-form">
           <div class="form-group" style="margin-bottom:16px;">
             <label class="form-label">Username</label>
-            <input type="text" id="login-username" class="form-input" placeholder="e.g. arpita or anubhav" required>
+            <input type="text" id="login-username" class="form-input" placeholder="e.g. alex or jordan" required>
           </div>
           <div class="form-group" style="margin-bottom:20px;">
             <label class="form-label">Password</label>
@@ -381,8 +381,8 @@ class UIManager {
         <div class="quick-demo-bar">
           <span class="quick-demo-label">Hackathon Judge Quick-Access:</span>
           <div class="quick-demo-buttons">
-            <button type="button" class="mini-btn" data-action="quick-demo" data-user="arpita">⚡ Demo: Arpita (SWE)</button>
-            <button type="button" class="mini-btn" data-action="quick-demo" data-user="anubhav">⚡ Demo: Anubhav (Architect)</button>
+            <button type="button" class="mini-btn" data-action="quick-demo" data-user="alex">⚡ Demo: Alex (SWE)</button>
+            <button type="button" class="mini-btn" data-action="quick-demo" data-user="jordan">⚡ Demo: Jordan (Designer)</button>
           </div>
         </div>
       </div>

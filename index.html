@@ -10,6 +10,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+  <script>
+    (function() {
+      try {
+        var savedTheme = localStorage.getItem('mirror_theme');
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+        var activeUser = localStorage.getItem('mirror_active_session');
+        if (activeUser) {
+          var users = JSON.parse(localStorage.getItem('mirror_users') || '{}');
+          if (users[activeUser]) {
+            if (users[activeUser].themeMode) {
+              document.documentElement.setAttribute('data-theme', users[activeUser].themeMode);
+            }
+            if (users[activeUser].activePalette) {
+              document.documentElement.setAttribute('data-palette', users[activeUser].activePalette);
+            }
+          }
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -475,7 +498,7 @@
         </div>
         <div class="footer-credits">
           <span>Crafted with passion for <strong>Tech Zephyr Web Hackathon 2026 (Round 1)</strong></span>
-          <span class="team-names">Developed by <strong>Anubhav Paul</strong> & <strong>Arpita Sengupta</strong></span>
+          <span class="team-names">Developed with precision by <strong>Team Zephyr Innovators</strong></span>
         </div>
       </div>
     </footer>
@@ -633,7 +656,7 @@
         <div class="profile-form-grid">
           <div class="form-group">
             <label class="form-label">Full Name</label>
-            <input type="text" id="cust-fullname" class="form-input" placeholder="e.g. Anubhav Paul" required>
+            <input type="text" id="cust-fullname" class="form-input" placeholder="e.g. Alex Morgan" required>
           </div>
           <div class="form-group">
             <label class="form-label">Date of Birth / Age</label>

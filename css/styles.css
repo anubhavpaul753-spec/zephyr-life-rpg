@@ -2383,10 +2383,7 @@ html[data-theme="dark"][data-palette="matrix"],
   --accent-hover: #059669;
   --accent-light: rgba(16, 185, 129, 0.15);
   --accent-glow: rgba(16, 185, 129, 0.35);
-  --bg-app: #030705;
-  --bg-surface: #06120B;
-  --bg-card: #0A1B12;
-  --border-specular: rgba(16, 185, 129, 0.25);
+  --border-specular: rgba(16, 185, 129, 0.35);
   --specular-reflection: 0 0 25px rgba(16, 185, 129, 0.12);
 }
 
@@ -2396,10 +2393,7 @@ html[data-theme="dark"][data-palette="synthwave"],
   --accent-hover: #9333EA;
   --accent-light: rgba(168, 85, 247, 0.15);
   --accent-glow: rgba(168, 85, 247, 0.35);
-  --bg-app: #0A0512;
-  --bg-surface: #120A21;
-  --bg-card: #1A102E;
-  --border-specular: rgba(168, 85, 247, 0.3);
+  --border-specular: rgba(168, 85, 247, 0.35);
   --specular-reflection: 0 0 25px rgba(168, 85, 247, 0.15);
 }
 
@@ -2409,10 +2403,7 @@ html[data-theme="dark"][data-palette="amber"],
   --accent-hover: #D97706;
   --accent-light: rgba(245, 158, 11, 0.15);
   --accent-glow: rgba(245, 158, 11, 0.35);
-  --bg-app: #0D0A05;
-  --bg-surface: #17120A;
-  --bg-card: #241C10;
-  --border-specular: rgba(245, 158, 11, 0.25);
+  --border-specular: rgba(245, 158, 11, 0.35);
   --specular-reflection: 0 0 25px rgba(245, 158, 11, 0.15);
 }
 
@@ -2422,10 +2413,7 @@ html[data-theme="dark"][data-palette="arctic"],
   --accent-hover: #0284C7;
   --accent-light: rgba(56, 189, 248, 0.15);
   --accent-glow: rgba(56, 189, 248, 0.35);
-  --bg-app: #030A12;
-  --bg-surface: #071321;
-  --bg-card: #0E2033;
-  --border-specular: rgba(56, 189, 248, 0.25);
+  --border-specular: rgba(56, 189, 248, 0.35);
   --specular-reflection: 0 0 25px rgba(56, 189, 248, 0.15);
 }
 

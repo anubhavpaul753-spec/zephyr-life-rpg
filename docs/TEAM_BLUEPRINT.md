@@ -1,5 +1,5 @@
 # 🪞 Project Mirror: The Real-Life RPG
-### *Comprehensive Team Blueprint & Architecture Guide for Arpita & Anubhav*
+### *Comprehensive Team Blueprint & Architecture Guide*
 > **Tech Zephyr Web Hackathon (Round 1) | Official Project Blueprint**
 
 ---
@@ -25,7 +25,7 @@ We are building **Project Mirror** — a full-stack, grounded Life RPG web appli
 
 ---
 
-## 🎨 2. Product Feel & Creative Direction (For Arpita)
+## 🎨 2. Product Feel & Creative Direction
 
 The judges explicitly warned: **Do NOT build a generic white/gray corporate SaaS or an unstyled Bootstrap CRUD app.** It needs personality and soul.
 
@@ -113,7 +113,7 @@ graph TD
 
 ## 🛠️ 4. The Division of Responsibilities
 
-| Area | Anubhav (Backend & Database) | Arpita (Frontend & UI/UX) |
+| Area | Backend & Database Architect | Frontend & UI/UX Specialist |
 | :--- | :--- | :--- |
 | **Tech Stack** | Python (FastAPI), PostgreSQL, SQLAlchemy, Pydantic, Groq API | React / Next.js, Tailwind CSS, Lucide Icons, Framer Motion |
 | **Authentication** | JWT Auth (`/auth/register`, `/auth/login`, password hashing) | Signup/Login pages, saving JWT in state/cookies, Protected Routes |
@@ -124,7 +124,7 @@ graph TD
 
 ---
 
-## 🔌 5. Key API Endpoints Arpita Will Call
+## 🔌 5. Key API Endpoints Frontend Will Call
 
 * `POST /auth/register` & `POST /auth/login` $\rightarrow$ Authentication
 * `GET /profile/me` $\rightarrow$ Character sheet, levels, stats, and life credits
