@@ -1719,6 +1719,47 @@ h1, h2, h3, h4, h5 {
   color: var(--text-primary);
 }
 
+.footer-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+  text-align: left;
+}
+
+.team-member-card {
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-specular);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.member-role-badge {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-primary);
+}
+
+.member-name {
+  font-size: 1rem;
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+}
+
+.member-contrib {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
 /* --------------------------------------------------------------------------
    15. MODALS & POPUPS
    -------------------------------------------------------------------------- */
