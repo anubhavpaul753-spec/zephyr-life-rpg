@@ -2594,3 +2594,135 @@ html[data-theme="light"][data-palette="arctic"] {
   color: #FFFFFF !important;
   transform: translateY(-1px);
 }
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS & CELEBRATION FLOATING BADGES (Raycast / Linear Style)
+   ========================================================================== */
+.toast-portal {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  pointer-events: none;
+  max-width: 440px;
+}
+
+.toast-item,
+.celebration-toast {
+  pointer-events: auto;
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 20px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.35;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s ease;
+  animation: toastEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* Dark Theme Toasts (Raycast Specular Obsidian) */
+[data-theme="dark"] .toast-item,
+[data-theme="dark"] .celebration-toast,
+:root:not([data-theme="light"]) .toast-item,
+:root:not([data-theme="light"]) .celebration-toast {
+  background: rgba(18, 20, 30, 0.92);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 12px 34px -4px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+/* Light Theme Toasts (Autumn Sunbeam Daylight) */
+[data-theme="light"] .toast-item,
+[data-theme="light"] .celebration-toast {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #1C1917 !important;
+  border: 1px solid rgba(217, 119, 6, 0.24) !important;
+  box-shadow: 0 14px 36px -4px rgba(120, 53, 15, 0.15), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Entrance Animation with dynamic spring pop */
+@keyframes toastEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.92);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-3px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Smooth Blend-Away / Exit Animation */
+.toast-item.toast-leaving,
+.celebration-toast.toast-leaving {
+  opacity: 0 !important;
+  transform: translateY(-12px) scale(0.94) !important;
+  pointer-events: none !important;
+}
+
+/* Celebration Badges */
+.celebration-toast .toast-main {
+  color: var(--accent);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.celebration-toast .toast-xp {
+  background: rgba(99, 102, 241, 0.14);
+  color: #818CF8;
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+[data-theme="light"] .celebration-toast .toast-xp {
+  color: #4F46E5 !important;
+  background: rgba(99, 102, 241, 0.10) !important;
+  border-color: rgba(99, 102, 241, 0.24) !important;
+}
+
+.celebration-toast .toast-coin {
+  background: rgba(245, 158, 11, 0.14);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+[data-theme="light"] .celebration-toast .toast-coin {
+  color: #D97706 !important;
+  background: rgba(217, 119, 6, 0.10) !important;
+  border-color: rgba(217, 119, 6, 0.24) !important;
+}
+
+.toast-item:hover,
+.celebration-toast:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.45);
+}

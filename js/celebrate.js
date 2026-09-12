@@ -251,31 +251,46 @@ class CelebrationSystem {
   }
 
   /**
-   * Displays floating +XP / +Credits toast + motivational quote card on completion
+   * Displays floating +XP / +Coins toast + motivational quote card on completion
    */
   showToast(x, y, xp, coins, quote) {
     const portal = document.getElementById('toast-container');
     if (!portal) return;
 
+    // Prune older toasts if stacking excessively
+    while (portal.children.length >= 4) {
+      portal.firstChild.remove();
+    }
+
     const toast = document.createElement('div');
     toast.className = 'celebration-toast';
-
-    const clampedX = Math.max(140, Math.min(window.innerWidth - 140, x));
-    const clampedY = Math.max(90, Math.min(window.innerHeight - 50, y));
-
-    toast.style.left = `${clampedX}px`;
-    toast.style.top = `${clampedY}px`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('title', 'Click to dismiss');
 
     toast.innerHTML = `
       <span class="toast-main">⚡ Cracked!</span>
       <span class="toast-xp">+${xp} XP</span>
-      <span class="toast-coin">+${coins} 🪙 Credits</span>
+      <span class="toast-coin">+${coins} 🪙 Coins</span>
     `;
 
     portal.appendChild(toast);
 
-    toast.addEventListener('animationend', () => {
-      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    // Guaranteed blend away & removal:
+    // Stays visible for 2.6s, then smoothly blends out over 350ms, then cleanly removed from DOM
+    const dismissTimer = setTimeout(() => {
+      toast.classList.add('toast-leaving');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 350);
+    }, 2600);
+
+    // Click to dismiss immediately
+    toast.addEventListener('click', () => {
+      clearTimeout(dismissTimer);
+      toast.classList.add('toast-leaving');
+      setTimeout(() => {
+        if (toast.parentNode) toast.parentNode.removeChild(toast);
+      }, 200);
     });
 
     // Update or show grounded motivational banner on dashboard
@@ -343,7 +358,7 @@ class CelebrationSystem {
 
     const sr = document.getElementById('sr-announcements');
     if (sr) {
-      sr.textContent = `Ascension! You reached Level ${newLevel}. Career milestone achieved. 20 Life Credits awarded.`;
+      sr.textContent = `Ascension! You reached Level ${newLevel}. Career milestone achieved. 20 Life Coins awarded.`;
     }
   }
 }

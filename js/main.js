@@ -35,14 +35,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   function showToast(msg, icon = '✦') {
     const portal = document.getElementById('toast-container');
     if (!portal) return;
+
+    // Prune excessive simultaneous toasts
+    while (portal.children.length >= 4) {
+      portal.firstChild.remove();
+    }
+
     const item = document.createElement('div');
     item.className = 'toast-item';
-    item.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
+    item.setAttribute('role', 'alert');
+    item.setAttribute('title', 'Click to dismiss');
+    item.innerHTML = `<span class="toast-icon">${icon}</span> <span class="toast-msg">${msg}</span>`;
     portal.appendChild(item);
-    setTimeout(() => {
-      item.style.opacity = '0';
-      setTimeout(() => item.remove(), 400);
-    }, 3800);
+
+    const dismissTimer = setTimeout(() => {
+      item.classList.add('toast-leaving');
+      setTimeout(() => item.remove(), 350);
+    }, 2800);
+
+    item.addEventListener('click', () => {
+      clearTimeout(dismissTimer);
+      item.classList.add('toast-leaving');
+      setTimeout(() => item.remove(), 200);
+    });
   }
 
   // -------------------------------------------------------------------------
