@@ -27,7 +27,7 @@ const ROTATING_WISDOM = [
 
 class UIManager {
   constructor() {
-    this.authTab = 'login';
+    this.authTab = 'register';
     this.activeSectionId = 'sec-hero';
     this.currentWisdomIndex = 0;
     this.wisdomInterval = null;
@@ -35,30 +35,67 @@ class UIManager {
 
   // Master Render Loop
   render(state) {
-    const isAuth = window.Auth && window.Auth.isAuthenticated();
+    const isAuth = !!(window.Auth && window.Auth.isAuthenticated());
+
+    // Toggle body class for locking / hiding sections and top bar items
+    if (!isAuth) {
+      document.body.classList.add('app-unauthenticated');
+    } else {
+      document.body.classList.remove('app-unauthenticated');
+    }
 
     // Apply Active Theme Mode ('dark' or 'light')
     const activeTheme = state?.themeMode || 'dark';
     document.documentElement.setAttribute('data-theme', activeTheme);
 
-    // Update Top Navigation Bar Status
+    // Update Top Navigation Bar Status (Streak, Coins, Tabs, Logout)
     this.renderHeader(state, isAuth);
 
     // Render Hero / Auth Gateway
     this.renderHeroGateway(state, isAuth);
 
-    // Render All Sections Concurrently for Continuous Scroll
-    this.renderRoutineSection(state);
-    this.renderMirrorSection(state);
-    this.renderCareerSection(state);
-    this.renderLovedOnesSection(state);
-    this.renderShopSection(state);
+    // Control downstream sections visibility (Gating: no scrolling down until setup complete!)
+    this.setSectionsVisibility(isAuth, state?.skipRelationships);
+
+    if (isAuth) {
+      // Render All Sections Concurrently for Continuous Scroll
+      this.renderRoutineSection(state);
+      this.renderMirrorSection(state);
+      this.renderCareerSection(state);
+      this.renderLovedOnesSection(state);
+      this.renderShopSection(state);
+      this.updateActiveSliderPill(this.activeSectionId);
+    }
 
     // Dynamic Rotating Wisdom Loop
     this.startWisdomRotation();
+  }
 
-    // Sync Active Slider Pill
-    this.updateActiveSliderPill(this.activeSectionId);
+  // Gating helper: locks or unlocks sections below the hero
+  setSectionsVisibility(isAuth, skipRelationships) {
+    const downstream = ['sec-routine', 'sec-mirror', 'sec-career', 'sec-lovedones', 'sec-shop'];
+    downstream.forEach(id => {
+      const sec = document.getElementById(id);
+      if (!sec) return;
+      if (!isAuth) {
+        sec.classList.add('locked-section');
+      } else {
+        if (id === 'sec-lovedones' && skipRelationships) {
+          sec.classList.add('locked-section');
+        } else {
+          sec.classList.remove('locked-section');
+        }
+      }
+    });
+
+    const lovedNav = document.getElementById('nav-btn-lovedones');
+    if (lovedNav) {
+      if (!isAuth || skipRelationships) {
+        lovedNav.classList.add('hidden');
+      } else {
+        lovedNav.classList.remove('hidden');
+      }
+    }
   }
 
   // Linear Top Slider Pill Position Controller
@@ -79,22 +116,29 @@ class UIManager {
     }
   }
 
-  // Top Nav Status Indicators
+  // Top Nav Status Indicators (Coins, Streak, Tabs, Logout)
   renderHeader(state, isAuth) {
     const streakEl = document.getElementById('streak-count');
     if (streakEl) streakEl.textContent = state?.streak || 1;
 
     const currEl = document.getElementById('currency-count');
-    if (currEl) currEl.textContent = state?.currency || 0;
+    if (currEl) currEl.textContent = state?.currency || 20;
 
+    const streakPill = document.querySelector('.streak-pill');
+    const currPill = document.querySelector('.currency-pill');
+    const navTabs = document.getElementById('nav-tabs-container');
     const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-      if (isAuth) {
-        logoutBtn.classList.remove('hidden');
-        logoutBtn.title = 'Switch session';
-      } else {
-        logoutBtn.classList.add('hidden');
-      }
+
+    if (isAuth) {
+      if (streakPill) streakPill.style.display = '';
+      if (currPill) currPill.style.display = '';
+      if (navTabs) navTabs.style.display = '';
+      if (logoutBtn) logoutBtn.classList.remove('hidden');
+    } else {
+      if (streakPill) streakPill.style.display = 'none';
+      if (currPill) currPill.style.display = 'none';
+      if (navTabs) navTabs.style.display = 'none';
+      if (logoutBtn) logoutBtn.classList.add('hidden');
     }
   }
 
@@ -103,11 +147,19 @@ class UIManager {
     const gatewayBox = document.getElementById('hero-gateway-box');
     if (!gatewayBox) return;
 
+    if (!isAuth) {
+      // Unauthenticated: render setup & account creation card
+      this.renderSetupAndAuthCard(this.authTab);
+      return;
+    }
+
+    // Authenticated: render active Command Center card
+    const name = state?.fullName || state?.username || 'Adventurer';
     const levelInfo = window.AppStore ? window.AppStore.getLevelInfo() : { level: 1 };
     const rank = this.computeRankTitle(levelInfo.level);
     const photoSrc = state?.photoUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
-    const curProf = state?.currentProfession || 'Student / Learner';
-    const dreamCar = state?.dreamCareer || state?.careerTrack || 'Software Engineer & Builder';
+    const curProf = state?.currentProfession || 'Student & Academic Learner';
+    const dreamCar = state?.dreamCareer || state?.careerTrack || 'Software Engineer & Full-Stack Developer';
 
     gatewayBox.innerHTML = `
       <div class="hero-command-card raycast-card specular-card">
@@ -140,6 +192,197 @@ class UIManager {
         </div>
       </div>
     `;
+  }
+
+  // Render Setup & Authentication Card (First Page Gating)
+  renderSetupAndAuthCard(activeTab = 'register') {
+    this.authTab = activeTab;
+    const gatewayBox = document.getElementById('hero-gateway-box');
+    if (!gatewayBox) return;
+
+    const tracks = window.CAREER_TRACKS || [];
+    const careerOptions = tracks.map(t => `<option value="${escapeHTML(t.name)}">${escapeHTML(t.name)}</option>`).join('');
+
+    let bodyHtml = '';
+
+    if (activeTab === 'register') {
+      bodyHtml = `
+        <form id="onboarding-setup-form">
+          <div class="profile-form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Name / Identity *</label>
+              <input type="text" id="setup-fullname" class="form-input" placeholder="e.g. Arpita Sengupta" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth / Age *</label>
+              <input type="date" id="setup-dob" class="form-input" value="2004-05-14" required>
+            </div>
+          </div>
+
+          <div class="profile-form-grid">
+            <div class="form-group">
+              <label class="form-label">Username *</label>
+              <input type="text" id="setup-username" class="form-input" placeholder="e.g. arpita" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password *</label>
+              <input type="password" id="setup-password" class="form-input" placeholder="Min 3 characters" value="123" required>
+            </div>
+          </div>
+
+          <!-- Photo Upload Row -->
+          <div class="onboarding-photo-row">
+            <img id="setup-photo-preview" class="onboarding-photo-preview" src="https://api.dicebear.com/7.x/notionists/svg?seed=adventurer" alt="Preview">
+            <div style="flex:1;">
+              <label style="font-size:0.8rem; font-weight:600; display:block; margin-bottom:4px;">Profile Photo (Optional)</label>
+              <input type="file" id="setup-photo-input" accept="image/*" style="font-size:0.8rem; color:var(--text-secondary);">
+              <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-top:2px;">Upload from your computer or keep default avatar.</span>
+            </div>
+          </div>
+
+          <!-- 24 Career Track Options -->
+          <div class="profile-form-grid">
+            <div class="form-group">
+              <label class="form-label">Current Profession / Starting Point *</label>
+              <select id="setup-current-profession" class="form-select">
+                ${careerOptions}
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Dream Career & Mastery Track *</label>
+              <select id="setup-dream-career" class="form-select">
+                ${careerOptions}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label">Primary Life Ambition / North Star</label>
+            <input type="text" id="setup-life-goal" class="form-input" placeholder="e.g. Master full-stack engineering, ship real tools, and cultivate calm presence." value="Master full-stack engineering, ship real tools, and cultivate calm presence.">
+          </div>
+
+          <!-- Relationships Dynamics Setup -->
+          <div class="relationships-setup-card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong>Loved Ones & Relationship Dynamics</strong>
+              <span style="font-size:0.75rem; color:var(--text-muted);">Calibrate emotional trust</span>
+            </div>
+
+            <div class="relationship-row-item">
+              <span>👨‍💼 Father</span>
+              <select id="setup-rel-father">
+                <option value="Harmonious">Harmonious & Warm (90% Trust)</option>
+                <option value="Good" selected>Good & Supportive (75% Trust)</option>
+                <option value="Neutral">Neutral / Growing (60% Trust)</option>
+                <option value="Sensitive">Sensitive / Strained (40% Trust)</option>
+                <option value="Distant">Distant / Needs Healing (25% Trust)</option>
+              </select>
+            </div>
+
+            <div class="relationship-row-item">
+              <span>👩‍💼 Mother</span>
+              <select id="setup-rel-mother">
+                <option value="Harmonious" selected>Harmonious & Warm (90% Trust)</option>
+                <option value="Good">Good & Supportive (75% Trust)</option>
+                <option value="Neutral">Neutral / Growing (60% Trust)</option>
+                <option value="Sensitive">Sensitive / Strained (40% Trust)</option>
+                <option value="Distant">Distant / Needs Healing (25% Trust)</option>
+              </select>
+            </div>
+
+            <div class="relationship-row-item">
+              <span>💖 Partner / Spouse</span>
+              <select id="setup-rel-partner">
+                <option value="Harmonious" selected>Harmonious & Deep Bond (90% Trust)</option>
+                <option value="Good">Good & Steadfast (75% Trust)</option>
+                <option value="Neutral">Neutral / Busy Season (60% Trust)</option>
+                <option value="Sensitive">Sensitive Dynamics (40% Trust)</option>
+                <option value="None">Not Applicable / Skip</option>
+              </select>
+            </div>
+
+            <div class="relationship-row-item">
+              <span>🤝 Best Friend / Companion</span>
+              <select id="setup-rel-friend">
+                <option value="Harmonious" selected>Lifelong & Harmonious (90% Trust)</option>
+                <option value="Good">Good & Steady (75% Trust)</option>
+                <option value="Neutral">Neutral (60% Trust)</option>
+                <option value="None">Not Applicable / Skip</option>
+              </select>
+            </div>
+
+            <div class="skip-relationships-box">
+              <input type="checkbox" id="setup-skip-relationships">
+              <label for="setup-skip-relationships" style="cursor:pointer;">
+                <strong>Skip Relationships Setup</strong> — Keep personal dynamics private and hide the Loved Ones section completely.
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="pill-btn primary-btn" style="width:100%; padding:14px; font-size:0.95rem; font-weight:700;">
+            ✦ Complete Setup & Enter Mirror →
+          </button>
+        </form>
+      `;
+    } else {
+      bodyHtml = `
+        <form id="gateway-login-form">
+          <div class="form-group" style="margin-bottom:16px;">
+            <label class="form-label">Username</label>
+            <input type="text" id="login-username" class="form-input" placeholder="e.g. arpita or anubhav" required>
+          </div>
+          <div class="form-group" style="margin-bottom:20px;">
+            <label class="form-label">Password</label>
+            <input type="password" id="login-password" class="form-input" placeholder="Enter password" value="123" required>
+          </div>
+          <button type="submit" class="pill-btn primary-btn" style="width:100%; padding:14px; font-size:0.95rem; font-weight:700;">
+            Sign In to Mirror →
+          </button>
+        </form>
+      `;
+    }
+
+    gatewayBox.innerHTML = `
+      <div class="auth-card raycast-card specular-card" id="auth-card-container">
+        <div class="auth-header-notice">
+          <span class="sparkle">✦</span>
+          <strong>Character Initialization & Gate</strong>
+          <p style="font-size:0.82rem; color:var(--text-muted); margin-top:4px;">
+            Set up your details first to unlock your Daily Routine, Reality Mirror, and Career Tree.
+          </p>
+        </div>
+
+        <div class="auth-tabs" id="auth-tab-switches">
+          <button type="button" class="auth-tab-btn ${activeTab === 'register' ? 'active' : ''}" data-tab="register">
+            ✦ Create Account & Setup
+          </button>
+          <button type="button" class="auth-tab-btn ${activeTab === 'login' ? 'active' : ''}" data-tab="login">
+            🔑 Sign In
+          </button>
+        </div>
+
+        <div id="auth-card-body">
+          ${bodyHtml}
+        </div>
+
+        <!-- 1-Click Quick Demo Footer for Hackathon Judges -->
+        <div class="quick-demo-bar">
+          <span class="quick-demo-label">Hackathon Judge Quick-Access:</span>
+          <div class="quick-demo-buttons">
+            <button type="button" class="mini-btn" data-action="quick-demo" data-user="arpita">⚡ Demo: Arpita (SWE)</button>
+            <button type="button" class="mini-btn" data-action="quick-demo" data-user="anubhav">⚡ Demo: Anubhav (Architect)</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Ensure Dream Career defaults to SWE if register tab
+    if (activeTab === 'register') {
+      const curSelect = document.getElementById('setup-current-profession');
+      const dreamSelect = document.getElementById('setup-dream-career');
+      if (curSelect && tracks.length > 0) curSelect.value = tracks[0].name; // Student
+      if (dreamSelect && tracks.length > 1) dreamSelect.value = tracks[1].name; // SWE
+    }
   }
 
   // SECTION 2: Daily Routine
@@ -236,7 +479,7 @@ class UIManager {
     const reqXP = levelInfo.reqXP;
     const xpPct = levelInfo.percent;
 
-        const photoSrc = state?.photoUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
+    const photoSrc = state?.photoUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
     const avatarImg = document.getElementById('profile-avatar-img');
     if (avatarImg) {
       avatarImg.src = photoSrc;
@@ -351,32 +594,34 @@ class UIManager {
 
     treeContainer.innerHTML = tiers.map(tier => {
       const milestonesHtml = (tier.milestones || []).map(m => {
-        const isCompleted = !!m.completed;
+        const isDone = !!m.completed;
         return `
-          <div class="milestone-item ${isCompleted ? 'completed' : ''}">
-            <button class="quest-checkbox ${isCompleted ? 'checked' : ''}" 
+          <div class="milestone-item ${isDone ? 'completed' : ''}">
+            <button class="milestone-checkbox ${isDone ? 'checked' : ''}" 
                     data-action="toggle-milestone" 
                     data-milestone-id="${m.id}" 
                     aria-label="Toggle milestone: ${escapeHTML(m.title)}">
-              ${isCompleted ? '✓' : ''}
+              ${isDone ? '✓' : ''}
             </button>
-            <div class="milestone-info">
-              <span class="milestone-title">${escapeHTML(m.title)}</span>
+            <div class="milestone-body">
+              <h5 class="milestone-name">${escapeHTML(m.title)}</h5>
               <p class="milestone-desc">${escapeHTML(m.desc)}</p>
-            </div>
-            <div class="milestone-rewards">
-              <span class="reward-xp">+${m.craftXP || 50} Craft XP</span>
-              <span class="reward-coins">+${m.coins || 25} 🪙</span>
+              <div class="milestone-rewards-row">
+                <span>+${m.craftXP || 30} Craft XP</span>
+                <span>+${m.discXP || 15} Discipline XP</span>
+                <span>+${m.coins || 20} 🪙</span>
+              </div>
             </div>
           </div>
         `;
       }).join('');
 
       return `
-        <div class="career-tier-block raycast-card specular-card">
-          <div class="tier-header">
-            <div class="tier-title-wrap">
-              <span class="tier-tag">${escapeHTML(tier.tierName || `Tier ${tier.tierId}`)}</span>
+        <div class="career-tier-card raycast-card specular-card">
+          <div class="tier-card-header">
+            <div class="tier-badge-pill">Tier ${tier.tierId || 1}</div>
+            <div>
+              <h4 class="tier-name">${escapeHTML(tier.tierName || 'Foundations')}</h4>
               <span class="tier-subtitle">${escapeHTML(tier.subtitle || '')}</span>
             </div>
           </div>
@@ -404,7 +649,6 @@ class UIManager {
     }
 
     const bondsContainer = document.getElementById('bonds-list-container');
-    if (!bondsContainer) return;
     if (!bondsContainer) return;
 
     const bonds = state?.relationshipBonds || state?.bonds || window.DEFAULT_RELATIONSHIP_BONDS || [];
@@ -537,34 +781,7 @@ class UIManager {
     `).join('');
   }
 
-  // Rotating Wisdom Loop (Unhurried cross-fade every 7s)
-  startWisdomRotation() {
-    if (this.wisdomInterval) return;
-    this.updateWisdomText();
-    this.wisdomInterval = setInterval(() => {
-      const textEl = document.getElementById('dynamic-wisdom-text');
-      const authorEl = document.getElementById('wisdom-author');
-      const stripEl = document.getElementById('dynamic-wisdom-strip');
-      if (stripEl) stripEl.style.opacity = '0';
-
-      setTimeout(() => {
-        this.currentWisdomIndex = (this.currentWisdomIndex + 1) % ROTATING_WISDOM.length;
-        this.updateWisdomText();
-        if (stripEl) stripEl.style.opacity = '1';
-      }, 500);
-    }, 7000);
-  }
-
-  updateWisdomText() {
-    const quote = ROTATING_WISDOM[this.currentWisdomIndex];
-    const textEl = document.getElementById('dynamic-wisdom-text');
-    const authorEl = document.getElementById('wisdom-author');
-    if (textEl && quote) textEl.textContent = `"${quote.text}"`;
-    if (authorEl && quote) authorEl.textContent = `— ${quote.author}`;
-  }
-}
-
-
+  // Populate Profile Customization Modal (inside UIManager class)
   populateProfileCustomizationModal(state) {
     const curSelect = document.getElementById('cust-current-profession');
     const dreamSelect = document.getElementById('cust-dream-career');
@@ -594,5 +811,30 @@ class UIManager {
       dreamSelect.value = state?.dreamCareer || state?.careerTrack || tracks[1]?.name || '';
     }
   }
+
+  // Rotating Wisdom Loop
+  startWisdomRotation() {
+    if (this.wisdomInterval) return;
+    this.updateWisdomText();
+    this.wisdomInterval = setInterval(() => {
+      const stripEl = document.getElementById('dynamic-wisdom-strip');
+      if (stripEl) stripEl.style.opacity = '0';
+
+      setTimeout(() => {
+        this.currentWisdomIndex = (this.currentWisdomIndex + 1) % ROTATING_WISDOM.length;
+        this.updateWisdomText();
+        if (stripEl) stripEl.style.opacity = '1';
+      }, 500);
+    }, 7000);
+  }
+
+  updateWisdomText() {
+    const quote = ROTATING_WISDOM[this.currentWisdomIndex];
+    const textEl = document.getElementById('dynamic-wisdom-text');
+    const authorEl = document.getElementById('wisdom-author');
+    if (textEl && quote) textEl.textContent = `"${quote.text}"`;
+    if (authorEl && quote) authorEl.textContent = `— ${quote.author}`;
+  }
+}
 
 window.UI = new UIManager();

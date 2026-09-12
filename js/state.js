@@ -429,20 +429,53 @@ class StateManager {
       };
     }
 
-    // Default clean state
+    // Default clean state (guest / unauthenticated vs fresh user)
+    if (!user) {
+      return {
+        isAuthenticated: false,
+        username: 'guest',
+        fullName: 'New Adventurer',
+        totalXP: 0,
+        currency: 20,
+        streak: 1,
+        themeMode: 'dark',
+        soundEnabled: true,
+        currentProfession: 'Student & Academic Learner',
+        dreamCareer: 'Software Engineer & Full-Stack Developer',
+        careerTrack: 'Software Engineer & Builder',
+        careerTree: JSON.parse(JSON.stringify(fallbackTree)),
+        lifeGoal: 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
+        relationshipBonds: JSON.parse(JSON.stringify(DEFAULT_RELATIONSHIP_BONDS)),
+        skipRelationships: false,
+        quests: [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
+        honorableArchive: [],
+        completedMicroQuests: [],
+        restDaysTaken: 0,
+        stayTheCourseCount: 0,
+        totalWisdomXP: 0,
+        history: []
+      };
+    }
+
     return {
-      username: user ? user.username : 'arpita',
-      fullName: user ? user.fullName : 'Arpita',
-      totalXP: 0,
-      currency: 20, // Initial starter Life Credits
-      streak: 1,
-      themeMode: user?.themeMode || 'dark',
-      soundEnabled: true,
-      careerTrack: defaultTrack,
+      isAuthenticated: true,
+      username: user.username,
+      fullName: user.fullName || user.username,
+      dob: user.dob || '',
+      photoUrl: user.photoUrl || '',
+      currentProfession: user.currentProfession || 'Student & Academic Learner',
+      dreamCareer: user.dreamCareer || user.careerTrack || 'Software Engineer & Full-Stack Developer',
+      careerTrack: user.careerTrack || 'Software Engineer & Builder',
       careerTree: JSON.parse(JSON.stringify(fallbackTree)),
-      lifeGoal: user ? user.lifeGoal : 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
-      relationshipBonds: JSON.parse(JSON.stringify(DEFAULT_RELATIONSHIP_BONDS)),
+      lifeGoal: user.lifeGoal || 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
+      relationshipBonds: (user.relationshipBonds && user.relationshipBonds.length > 0) ? enrichBonds(user.relationshipBonds) : enrichBonds(DEFAULT_RELATIONSHIP_BONDS),
+      skipRelationships: !!user.skipRelationships,
       quests: [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
+      totalXP: 0,
+      currency: 20,
+      streak: 1,
+      themeMode: user.themeMode || 'dark',
+      soundEnabled: true,
       honorableArchive: [],
       completedMicroQuests: [],
       restDaysTaken: 0,

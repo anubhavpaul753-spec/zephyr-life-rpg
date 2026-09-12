@@ -3,7 +3,7 @@
  */
 
 const USERS_STORAGE_KEY = 'dailylife_users_v2';
-const ACTIVE_SESSION_KEY = 'dailylife_active_user';
+const ACTIVE_SESSION_KEY = 'mirror_active_user_v3';
 
 class AuthManager {
   constructor() {
@@ -33,9 +33,14 @@ class AuthManager {
         username: 'arpita',
         password: '123',
         fullName: 'Arpita Sengupta',
+        currentProfession: 'Student & Academic Learner',
+        dreamCareer: 'Software Engineer & Full-Stack Developer',
         careerTrack: 'Software Engineer & Builder',
         lifeGoal: 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
         themeMode: 'dark',
+        dob: '2004-05-14',
+        photoUrl: '',
+        skipRelationships: false,
         createdAt: new Date().toISOString(),
         userData: null
       };
@@ -46,81 +51,72 @@ class AuthManager {
         username: 'anubhav',
         password: '123',
         fullName: 'Anubhav Paul',
+        currentProfession: 'Software Engineer & Full-Stack Developer',
+        dreamCareer: 'Software Engineer & Full-Stack Developer',
         careerTrack: 'Software Engineer & Builder',
         lifeGoal: 'Build resilient distributed backends and provide security for my family.',
         themeMode: 'dark',
+        dob: '2003-11-20',
+        photoUrl: '',
+        skipRelationships: false,
         createdAt: new Date().toISOString(),
         userData: null
       };
     }
     this.saveAllUsers();
-
-    // If no active session, default to Arpita for immediate frictionless viewing
-    if (!localStorage.getItem(ACTIVE_SESSION_KEY)) {
-      localStorage.setItem(ACTIVE_SESSION_KEY, 'arpita');
-    }
+    // Notice: We intentionally do NOT auto-set ACTIVE_SESSION_KEY so first-time users see the setup gate!
   }
 
   getActiveUsername() {
     try {
-      return localStorage.getItem(ACTIVE_SESSION_KEY) || 'arpita';
+      return localStorage.getItem(ACTIVE_SESSION_KEY) || null;
     } catch (e) {
-      return 'arpita';
+      return null;
     }
   }
 
   isAuthenticated() {
-    return true; // Always allow active exploratory experience
+    const active = this.getActiveUsername();
+    return !!(active && this.users[active]);
   }
 
   getCurrentUser() {
     const username = this.getActiveUsername();
-    return this.users[username] || this.users['arpita'] || {
-      username: 'adventurer',
-      fullName: 'Adventurer',
-      careerTrack: 'Software Engineer & Builder',
-      lifeGoal: 'Master full-stack architecture and build a peaceful life.'
-    };
+    if (!username) return null;
+    return this.users[username] || null;
   }
 
   // Register with backend + local fallback
-  async register(username, password, fullName, careerTrack = 'Software Engineer & Builder') {
+  async register(username, password, fullName, careerTrack = 'Software Engineer & Builder', details = {}) {
     const cleanUsername = username.trim().toLowerCase();
     if (!cleanUsername) return { success: false, message: 'Username cannot be blank.' };
     if (password.length < 3) return { success: false, message: 'Password must be at least 3 characters.' };
 
-    // Try FastAPI Backend
-    if (window.API) {
-      const apiRes = await window.API.register(cleanUsername, password, fullName, careerTrack);
-      if (apiRes.ok) {
-        const newUser = {
-          username: cleanUsername,
-          password: password,
-          fullName: fullName.trim() || cleanUsername,
-          careerTrack: careerTrack,
-          lifeGoal: 'Master full-stack architecture and build a peaceful life.',
-          themeMode: 'dark',
-          createdAt: new Date().toISOString(),
-          userData: null
-        };
-        this.users[cleanUsername] = newUser;
-        this.saveAllUsers();
-        localStorage.setItem(ACTIVE_SESSION_KEY, cleanUsername);
-        return { success: true, user: newUser };
-      }
-    }
-
-    // Local Fallback if backend offline or user exists
     const newUser = {
       username: cleanUsername,
       password: password,
       fullName: fullName.trim() || cleanUsername,
       careerTrack: careerTrack,
-      lifeGoal: 'Master full-stack architecture and build a peaceful life.',
+      currentProfession: details.currentProfession || 'Student & Academic Learner',
+      dreamCareer: details.dreamCareer || careerTrack,
+      dob: details.dob || '',
+      photoUrl: details.photoUrl || '',
+      lifeGoal: details.lifeGoal || 'Master high-leverage skills and build a peaceful life.',
+      skipRelationships: !!details.skipRelationships,
+      relationshipBonds: details.relationshipBonds || [],
       themeMode: 'dark',
       createdAt: new Date().toISOString(),
       userData: null
     };
+
+    // Try FastAPI Backend
+    if (window.API) {
+      try {
+        await window.API.register(cleanUsername, password, fullName, careerTrack);
+      } catch (err) {
+        console.warn('Backend register sync fallback to local:', err);
+      }
+    }
 
     this.users[cleanUsername] = newUser;
     this.saveAllUsers();
@@ -134,38 +130,34 @@ class AuthManager {
 
     // Try FastAPI Backend
     if (window.API) {
-      const apiRes = await window.API.login(cleanUsername, password);
-      if (apiRes.ok) {
-        localStorage.setItem(ACTIVE_SESSION_KEY, cleanUsername);
-        if (!this.users[cleanUsername]) {
-          this.users[cleanUsername] = {
-            username: cleanUsername,
-            password: password,
-            fullName: apiRes.data?.user?.full_name || cleanUsername,
-            careerTrack: apiRes.data?.user?.career_track || 'Software Engineer & Builder',
-            lifeGoal: 'Master full-stack architecture and build a peaceful life.',
-            themeMode: 'dark'
-          };
-          this.saveAllUsers();
+      try {
+        const apiRes = await window.API.login(cleanUsername, password);
+        if (apiRes.ok) {
+          localStorage.setItem(ACTIVE_SESSION_KEY, cleanUsername);
+          if (!this.users[cleanUsername]) {
+            this.users[cleanUsername] = {
+              username: cleanUsername,
+              password: password,
+              fullName: apiRes.data?.user?.full_name || cleanUsername,
+              careerTrack: apiRes.data?.user?.career_track || 'Software Engineer & Builder',
+              currentProfession: 'Student & Academic Learner',
+              dreamCareer: apiRes.data?.user?.career_track || 'Software Engineer & Builder',
+              lifeGoal: 'Master full-stack architecture and build a peaceful life.',
+              themeMode: 'dark'
+            };
+            this.saveAllUsers();
+          }
+          return { success: true, user: this.users[cleanUsername] };
         }
-        return { success: true, user: this.users[cleanUsername] };
+      } catch (err) {
+        console.warn('Backend login fallback to local:', err);
       }
     }
 
     // Local Fallback
     let user = this.users[cleanUsername];
     if (!user) {
-      // Auto-create local account for fast hackathon judging demo
-      user = {
-        username: cleanUsername,
-        password: password,
-        fullName: cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1),
-        careerTrack: 'Software Engineer & Builder',
-        lifeGoal: 'Master full-stack architecture and build a peaceful life.',
-        themeMode: 'dark'
-      };
-      this.users[cleanUsername] = user;
-      this.saveAllUsers();
+      return { success: false, message: 'Account not found. Please click Create Account.' };
     }
 
     localStorage.setItem(ACTIVE_SESSION_KEY, cleanUsername);
