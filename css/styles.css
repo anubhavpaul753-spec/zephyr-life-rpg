@@ -2194,3 +2194,368 @@ h1, h2, h3, h4, h5 {
   border-color: var(--accent);
   transform: translateY(-1px);
 }
+
+
+/* ==========================================================================
+   POLISHED CAREER TIER & MILESTONE STYLING
+   ========================================================================== */
+.career-tier-card {
+  padding: 24px 28px;
+  border-radius: var(--radius-xl);
+  margin-bottom: 24px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-specular);
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-fast);
+}
+
+.tier-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tier-badge-pill {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(99, 102, 241, 0.15);
+  color: #818CF8;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tier-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.tier-subtitle {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+.tier-milestones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.milestone-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.milestone-item:hover {
+  border-color: var(--border-specular);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.milestone-item.completed {
+  opacity: 0.65;
+  background: var(--bg-subtle);
+}
+
+.milestone-checkbox {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 2px solid var(--border-card);
+  background: var(--bg-subtle);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all var(--transition-fast);
+  padding: 0;
+  line-height: 1;
+}
+
+.milestone-checkbox:hover {
+  border-color: var(--accent);
+  background: var(--bg-card);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.milestone-checkbox.checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.milestone-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.milestone-name {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+.milestone-item.completed .milestone-name {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.milestone-desc {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0 0 10px 0;
+}
+
+.milestone-rewards-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.reward-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.reward-pill.craft-pill {
+  background: rgba(99, 102, 241, 0.12);
+  color: #818CF8;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.reward-pill.disc-pill {
+  background: rgba(245, 158, 11, 0.12);
+  color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.reward-pill.coin-pill {
+  background: rgba(234, 179, 8, 0.15);
+  color: #FACC15;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+/* ==========================================================================
+   THEME PALETTES & ACCESSORIES
+   ========================================================================== */
+/* Matrix Neon */
+[data-palette="matrix"] {
+  --accent: #10B981;
+  --accent-hover: #059669;
+  --accent-light: rgba(16, 185, 129, 0.15);
+  --accent-glow: rgba(16, 185, 129, 0.35);
+  --bg-app: #030705;
+  --bg-surface: #06120B;
+  --bg-card: #0A1B12;
+  --border-specular: rgba(16, 185, 129, 0.25);
+  --specular-reflection: 0 0 25px rgba(16, 185, 129, 0.12);
+}
+
+/* Tokyo Synthwave */
+[data-palette="synthwave"] {
+  --accent: #A855F7;
+  --accent-hover: #9333EA;
+  --accent-light: rgba(168, 85, 247, 0.15);
+  --accent-glow: rgba(168, 85, 247, 0.35);
+  --bg-app: #0A0512;
+  --bg-surface: #120A21;
+  --bg-card: #1A102E;
+  --border-specular: rgba(168, 85, 247, 0.3);
+  --specular-reflection: 0 0 25px rgba(168, 85, 247, 0.15);
+}
+
+/* Sunset Amber Solstice */
+[data-palette="amber"] {
+  --accent: #F59E0B;
+  --accent-hover: #D97706;
+  --accent-light: rgba(245, 158, 11, 0.15);
+  --accent-glow: rgba(245, 158, 11, 0.35);
+  --bg-app: #0D0A05;
+  --bg-surface: #17120A;
+  --bg-card: #241C10;
+  --border-specular: rgba(245, 158, 11, 0.25);
+  --specular-reflection: 0 0 25px rgba(245, 158, 11, 0.15);
+}
+
+/* Nordic Arctic Frost */
+[data-palette="arctic"] {
+  --accent: #38BDF8;
+  --accent-hover: #0284C7;
+  --accent-light: rgba(56, 189, 248, 0.15);
+  --accent-glow: rgba(56, 189, 248, 0.35);
+  --bg-app: #030A12;
+  --bg-surface: #071321;
+  --bg-card: #0E2033;
+  --border-specular: rgba(56, 189, 248, 0.25);
+  --specular-reflection: 0 0 25px rgba(56, 189, 248, 0.15);
+}
+
+/* Kyoto Zen Paper (Warm Light Mode) */
+[data-palette="zen"] {
+  --accent: #15803D;
+  --accent-hover: #166534;
+  --accent-light: rgba(21, 128, 61, 0.12);
+  --accent-glow: rgba(21, 128, 61, 0.25);
+  --bg-app: #F8F6F0;
+  --bg-surface: #EFECE3;
+  --bg-card: #FFFFFF;
+  --text-primary: #1C1917;
+  --text-secondary: #44403C;
+  --text-muted: #78716C;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-card: rgba(0, 0, 0, 0.12);
+  --border-specular: rgba(21, 128, 61, 0.25);
+  --specular-reflection: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Minimalist Obsidian */
+[data-palette="minimal"] {
+  --accent: #E2E8F0;
+  --accent-hover: #FFFFFF;
+  --accent-light: rgba(255, 255, 255, 0.1);
+  --accent-glow: rgba(255, 255, 255, 0.25);
+  --bg-app: #000000;
+  --bg-surface: #0A0A0A;
+  --bg-card: #121212;
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-card: rgba(255, 255, 255, 0.18);
+  --border-specular: rgba(255, 255, 255, 0.35);
+}
+
+/* Celestial Golden Aura */
+.golden-aura {
+  border-color: #F59E0B !important;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.6), 0 0 30px rgba(245, 158, 11, 0.3) !important;
+  animation: celestialPulse 3s infinite alternate;
+}
+
+@keyframes celestialPulse {
+  0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.5), 0 0 20px rgba(245, 158, 11, 0.2); }
+  100% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.8), 0 0 40px rgba(245, 158, 11, 0.4); }
+}
+
+/* ==========================================================================
+   EXPANDED GUILD SHOP STYLES
+   ========================================================================== */
+.shop-filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.shop-filter-tab {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.shop-filter-tab:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+.shop-filter-tab.active {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-color: var(--accent);
+}
+
+.shop-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-theme {
+  background: rgba(168, 85, 247, 0.15);
+  color: #C084FC;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.badge-accessory {
+  background: rgba(245, 158, 11, 0.15);
+  color: #FBBF24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.badge-human {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-shield {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.equipped-btn {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #10B981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+  cursor: default !important;
+  font-size: 0.82rem;
+  padding: 8px 14px;
+}
+
+.equip-btn {
+  background: var(--accent-light) !important;
+  color: var(--accent) !important;
+  border: 1px solid var(--accent) !important;
+  font-size: 0.82rem;
+  padding: 8px 14px;
+}
+
+.equip-btn:hover {
+  background: var(--accent) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+}

@@ -45,12 +45,13 @@ const CAREER_TRACKS = [
 ];
 
 // Visual Progression Tree Presets: 4 Distinct Tiers for each Career Track
+// Visual Progression Tree Presets: 4 Distinct Tiers for prominent career tracks
 const CAREER_TREE_PRESETS = {
-  'Software Engineer & Builder': [
+  'Software Engineer & Full-Stack Developer': [
     {
       tierId: 1,
-      tierName: 'Tier 1: Foundations',
-      subtitle: 'Core computer science, syntax, clean code & git hygiene',
+      tierName: 'Foundations & Algorithmic Thinking',
+      subtitle: 'Core computer science, data structures, clean code & git hygiene',
       milestones: [
         { id: 'swe_1_1', title: 'Data Structures & Algorithmic Thinking', desc: 'Implement hash maps, trees, graphs, and master space-time complexity analysis.', craftXP: 40, discXP: 15, coins: 25, completed: true },
         { id: 'swe_1_2', title: 'Clean Architecture & Testing Discipline', desc: 'Write testable modular components, SOLID principles, and CI/CD pipelines.', craftXP: 35, discXP: 15, coins: 20, completed: false }
@@ -58,8 +59,8 @@ const CAREER_TREE_PRESETS = {
     },
     {
       tierId: 2,
-      tierName: 'Tier 2: Portfolio Builder',
-      subtitle: 'Full-stack apps, scalable API design & modern state models',
+      tierName: 'Portfolio Builder & Full-Stack Mastery',
+      subtitle: 'Full-stack web services, scalable API design & resilient state models',
       milestones: [
         { id: 'swe_2_1', title: 'Ship 2 Production Full-Stack Applications', desc: 'Deploy complete web services with authentication, database persistence, and CDN hosting.', craftXP: 60, discXP: 25, coins: 40, completed: false },
         { id: 'swe_2_2', title: 'Database Optimization & Schema Mastery', desc: 'Design normalized relational schemas, indexing strategies, and resilient queries.', craftXP: 50, discXP: 20, coins: 30, completed: false }
@@ -67,8 +68,8 @@ const CAREER_TREE_PRESETS = {
     },
     {
       tierId: 3,
-      tierName: 'Tier 3: Industry Ready',
-      subtitle: 'System design, real-world concurrency & technical storytelling',
+      tierName: 'Industry Ready & Systems Architecture',
+      subtitle: 'High-availability microservices, asynchronous queues & technical storytelling',
       milestones: [
         { id: 'swe_3_1', title: 'High-Availability System Design', desc: 'Design microservices, caching layers (Redis), load balancing, and asynchronous queues.', craftXP: 75, discXP: 30, coins: 50, completed: false },
         { id: 'swe_3_2', title: 'Open Source Contribution & Tech Deep Dives', desc: 'Contribute bug fixes to active repositories and write in-depth engineering breakdowns.', craftXP: 70, discXP: 30, coins: 45, completed: false }
@@ -76,192 +77,343 @@ const CAREER_TREE_PRESETS = {
     },
     {
       tierId: 4,
-      tierName: 'Tier 4: Dream Career Offer',
-      subtitle: 'Onsite interview triumph, negotiation & family celebration',
+      tierName: 'Dream Career Offer & Scaled Impact',
+      subtitle: 'Onsite interview triumph, architectural leadership & family celebration',
       milestones: [
         { id: 'swe_4_1', title: 'Ace Technical Onsites & Negotiate Dream Offer', desc: 'Pass rigorous architectural interviews and secure the high-impact software role.', craftXP: 150, discXP: 50, coins: 100, completed: false },
-        { id: 'swe_4_2', title: 'Ship First Live Production Impact & Celebrate', desc: 'Push signature code to hundreds of thousands of users and share success with loved ones.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+        { id: 'swe_4_2', title: 'Ship Production Code to 100k+ Users & Celebrate', desc: 'Push signature code to hundreds of thousands of users and share success with loved ones.', craftXP: 100, discXP: 40, coins: 80, completed: false }
       ]
     }
   ],
-  'Product Designer': [
+  'Software Engineer & Builder': [
     {
       tierId: 1,
-      tierName: 'Tier 1: Foundations',
-      subtitle: 'Figma mastery, visual hierarchy, typography & color science',
+      tierName: 'Foundations & Algorithmic Thinking',
+      subtitle: 'Core computer science, data structures, clean code & git hygiene',
       milestones: [
-        { id: 'des_1_1', title: 'Design System & Component Token Mastery', desc: 'Construct scalable design tokens, responsive auto-layout frames, and atomic UI libraries.', craftXP: 40, discXP: 15, coins: 25, completed: true },
-        { id: 'des_1_2', title: 'User Research & Heuristic Evaluation', desc: 'Conduct usability tests, synthesize user personas, and map frictionless user journeys.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+        { id: 'swe_1_1', title: 'Data Structures & Algorithmic Thinking', desc: 'Implement hash maps, trees, graphs, and master space-time complexity analysis.', craftXP: 40, discXP: 15, coins: 25, completed: true },
+        { id: 'swe_1_2', title: 'Clean Architecture & Testing Discipline', desc: 'Write testable modular components, SOLID principles, and CI/CD pipelines.', craftXP: 35, discXP: 15, coins: 20, completed: false }
       ]
     },
     {
       tierId: 2,
-      tierName: 'Tier 2: Portfolio Builder',
-      subtitle: 'High-fidelity case studies & interactive micro-interactions',
+      tierName: 'Portfolio Builder & Full-Stack Mastery',
+      subtitle: 'Full-stack web services, scalable API design & resilient state models',
       milestones: [
-        { id: 'des_2_1', title: '2 In-Depth End-to-End Product Case Studies', desc: 'Document problem validation, wireframing, edge cases, iterations, and business outcomes.', craftXP: 60, discXP: 25, coins: 40, completed: false },
-        { id: 'des_2_2', title: 'Micro-Interactions & Motion Prototyping', desc: 'Prototype delightful physics-based animations in Figma to communicate UI intent.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+        { id: 'swe_2_1', title: 'Ship 2 Production Full-Stack Applications', desc: 'Deploy complete web services with authentication, database persistence, and CDN hosting.', craftXP: 60, discXP: 25, coins: 40, completed: false },
+        { id: 'swe_2_2', title: 'Database Optimization & Schema Mastery', desc: 'Design normalized relational schemas, indexing strategies, and resilient queries.', craftXP: 50, discXP: 20, coins: 30, completed: false }
       ]
     },
     {
       tierId: 3,
-      tierName: 'Tier 3: Industry Ready',
-      subtitle: 'Design leadership, cross-functional handoff & critique',
+      tierName: 'Industry Ready & Systems Architecture',
+      subtitle: 'High-availability microservices, asynchronous queues & technical storytelling',
       milestones: [
-        { id: 'des_3_1', title: 'Developer Handoff & Design Systems Governance', desc: 'Collaborate with frontend engineers to guarantee pixel-perfect production fidelity.', craftXP: 75, discXP: 30, coins: 50, completed: false },
-        { id: 'des_3_2', title: 'Executive Presentation & Strategic Storytelling', desc: 'Defend design decisions articulately using qualitative metrics and conversion data.', craftXP: 70, discXP: 30, coins: 45, completed: false }
+        { id: 'swe_3_1', title: 'High-Availability System Design', desc: 'Design microservices, caching layers (Redis), load balancing, and asynchronous queues.', craftXP: 75, discXP: 30, coins: 50, completed: false },
+        { id: 'swe_3_2', title: 'Open Source Contribution & Tech Deep Dives', desc: 'Contribute bug fixes to active repositories and write in-depth engineering breakdowns.', craftXP: 70, discXP: 30, coins: 45, completed: false }
       ]
     },
     {
       tierId: 4,
-      tierName: 'Tier 4: Dream Career Offer',
-      subtitle: 'Lead Product Designer appointment & impactful product launch',
+      tierName: 'Dream Career Offer & Scaled Impact',
+      subtitle: 'Onsite interview triumph, architectural leadership & family celebration',
       milestones: [
-        { id: 'des_4_1', title: 'Land Lead / Senior Product Designer Position', desc: 'Deliver an inspiring portfolio walkthrough and receive top-tier design offer.', craftXP: 150, discXP: 50, coins: 100, completed: false },
-        { id: 'des_4_2', title: 'Launch Flagship Experience to Acclaim', desc: 'Release an experience loved by thousands of daily users and celebrate with loved ones.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+        { id: 'swe_4_1', title: 'Ace Technical Onsites & Negotiate Dream Offer', desc: 'Pass rigorous architectural interviews and secure the high-impact software role.', craftXP: 150, discXP: 50, coins: 100, completed: false },
+        { id: 'swe_4_2', title: 'Ship Production Code to 100k+ Users & Celebrate', desc: 'Push signature code to hundreds of thousands of users and share success with loved ones.', craftXP: 100, discXP: 40, coins: 80, completed: false }
       ]
     }
   ],
-  'Founder/Entrepreneur': [
+  'Student & Academic Learner': [
     {
       tierId: 1,
-      tierName: 'Tier 1: Foundations',
-      subtitle: 'Problem validation, unit economics & customer discovery',
+      tierName: 'Cognitive Foundations & Study Systems',
+      subtitle: 'Active recall, spaced repetition, Cornell notes & deep work blocks',
       milestones: [
-        { id: 'fnd_1_1', title: '30 Deep Customer Discovery Interviews', desc: 'Validate painful user problems, willingness to pay, and market demand.', craftXP: 45, discXP: 20, coins: 25, completed: true },
-        { id: 'fnd_1_2', title: 'Financial Modeling & Runway Projections', desc: 'Calculate CAC, LTV, gross margins, and stress-test unit economics.', craftXP: 40, discXP: 15, coins: 20, completed: false }
+        { id: 'stu_1_1', title: 'Establish 45-Min Daily Spaced Repetition Habit', desc: 'Build an unbroken Anki/flashcard review ritual across core subjects.', craftXP: 40, discXP: 20, coins: 25, completed: true },
+        { id: 'stu_1_2', title: 'Synthesize Complete Course Cornell Notes Repository', desc: 'Structure lecture concepts, core formulas, and weekly summaries into clean notes.', craftXP: 35, discXP: 15, coins: 20, completed: false }
       ]
     },
     {
       tierId: 2,
-      tierName: 'Tier 2: Portfolio Builder',
-      subtitle: 'MVP launch, rapid iteration & first paying customers',
+      tierName: 'Examination Mastery & Problem Sprints',
+      subtitle: 'Timed mock exams, error log analysis & Feynman technique workshops',
       milestones: [
-        { id: 'fnd_2_1', title: 'Build & Ship Functional Minimum Viable Product', desc: 'Launch MVP to the world in under 30 days and onboard the first 50 early adopters.', craftXP: 65, discXP: 30, coins: 45, completed: false },
-        { id: 'fnd_2_2', title: 'Generate First $1,000 in Organic Revenue', desc: 'Prove real market value with paying, enthusiastic customers who refer peers.', craftXP: 60, discXP: 25, coins: 40, completed: false }
+        { id: 'stu_2_1', title: 'Solve 10 Complete Past Exam Papers Under Timed Conditions', desc: 'Simulate high-stakes exam conditions and build unflappable testing stamina.', craftXP: 60, discXP: 25, coins: 40, completed: false },
+        { id: 'stu_2_2', title: 'Master Error Log Post-Mortems', desc: 'Catalog every missed problem, identify root misunderstanding, and re-solve without hints.', craftXP: 50, discXP: 20, coins: 30, completed: false }
       ]
     },
     {
       tierId: 3,
-      tierName: 'Tier 3: Industry Ready',
-      subtitle: 'Product-market fit signals, scaling channels & team culture',
+      tierName: 'Honors Research & Academic Recognition',
+      subtitle: 'Undergraduate thesis, faculty mentorship & seminar presentations',
       milestones: [
-        { id: 'fnd_3_1', title: 'Scale to $10,000 Monthly Recurring Revenue', desc: 'Establish a reliable acquisition engine with low churn and strong retention cohorts.', craftXP: 85, discXP: 35, coins: 60, completed: false },
-        { id: 'fnd_3_2', title: 'Build High-Caliber Founding Team & Culture', desc: 'Hire first key collaborators aligned with mission, craftsmanship, and speed.', craftXP: 75, discXP: 30, coins: 50, completed: false }
+        { id: 'stu_3_1', title: 'Publish Academic Paper or Complete Capstone Thesis', desc: 'Conduct original research, synthesize literature review, and submit for faculty review.', craftXP: 80, discXP: 30, coins: 55, completed: false },
+        { id: 'stu_3_2', title: 'Lead Peer Study Circles & Faculty Teaching Assistantship', desc: 'Teach complex syllabus modules to junior cohorts using the Feynman method.', craftXP: 70, discXP: 30, coins: 45, completed: false }
       ]
     },
     {
       tierId: 4,
-      tierName: 'Tier 4: Dream Career Offer',
-      subtitle: 'Venture backing / profitable independence & family security',
+      tierName: 'Summa Cum Laude & Fellowship Victory',
+      subtitle: 'Top-percentile graduation, scholarship admission & family joy',
       milestones: [
-        { id: 'fnd_4_1', title: 'Achieve Sustainable High Growth or Funding', desc: 'Close a milestone funding round or reach profitable sovereign independence.', craftXP: 160, discXP: 50, coins: 120, completed: false },
-        { id: 'fnd_4_2', title: 'Bring Lasting Financial Security to Loved Ones', desc: 'Share fruits of company success with parents, family, and early team members.', craftXP: 120, discXP: 50, coins: 100, completed: false }
+        { id: 'stu_4_1', title: 'Secure Prestigious Graduate Fellowship / Top Degree Honors', desc: 'Graduate in the top percentile and earn prestigious scholarship or career offer.', craftXP: 150, discXP: 50, coins: 100, completed: false },
+        { id: 'stu_4_2', title: 'Honor Parents & Mentors at Convocation', desc: 'Celebrate academic milestone with family, expressing heartfelt gratitude for their sacrifices.', craftXP: 100, discXP: 40, coins: 80, completed: false }
       ]
     }
   ],
-  'Writer/Scholar': [
+  'Doctor & Healthcare Practitioner': [
     {
       tierId: 1,
-      tierName: 'Tier 1: Foundations',
-      subtitle: 'Daily prose practice, second brain & rigorous research habits',
+      tierName: 'Pre-Clinical Science & Diagnostic Rigor',
+      subtitle: 'Human anatomy, pathology, clinical pharmacology & diagnostic reasoning',
       milestones: [
-        { id: 'wri_1_1', title: 'Daily 1,000-Word Uninterrupted Writing Ritual', desc: 'Establish an unwavering morning writing block focused on clarity, rhythm, and depth.', craftXP: 40, discXP: 20, coins: 25, completed: true },
-        { id: 'wri_1_2', title: 'Curate a Second Brain / Zettelkasten Knowledge Vault', desc: 'Organize literature notes, primary citations, and cross-disciplinary concepts.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+        { id: 'doc_1_1', title: 'Master Clinical Anatomy & Physiological Systems', desc: 'Synthesize organic pathology, cardiovascular systems, and diagnostic criteria.', craftXP: 45, discXP: 20, coins: 25, completed: true },
+        { id: 'doc_1_2', title: 'Emergency Triage & Patient History Taking', desc: 'Conduct systematic patient examinations with grounded composure and precision.', craftXP: 40, discXP: 15, coins: 20, completed: false }
       ]
     },
     {
       tierId: 2,
-      tierName: 'Tier 2: Portfolio Builder',
-      subtitle: 'Publication cadence, newsletter expansion & long-form essays',
+      tierName: 'Clinical Rotations & Bedside Empathy',
+      subtitle: 'Ward rounds, diagnostic investigations & compassionate bedside communication',
       milestones: [
-        { id: 'wri_2_1', title: 'Publish 10 Foundational Long-Form Essays', desc: 'Write deeply researched pieces exploring technology, sociology, and human flourishing.', craftXP: 60, discXP: 25, coins: 40, completed: false },
-        { id: 'wri_2_2', title: 'Cultivate 1,000+ Engaged Weekly Readers', desc: 'Build an authentic newsletter community with open discussions and reader feedback.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+        { id: 'doc_2_1', title: 'Execute 100+ Bedside Rounds with Deep Empathy', desc: 'Deliver patient-centered consultations, balancing medical precision with warm reassurance.', craftXP: 65, discXP: 25, coins: 40, completed: false },
+        { id: 'doc_2_2', title: 'Differential Diagnosis Mastery Under Pressure', desc: 'Analyze complex multi-symptom case studies and formulate optimal treatment plans.', craftXP: 55, discXP: 20, coins: 30, completed: false }
       ]
     },
     {
       tierId: 3,
-      tierName: 'Tier 3: Industry Ready',
-      subtitle: 'Monograph proposal, peer dialogues & intellectual influence',
+      tierName: 'Residency Specialization & Surgical/Clinical Leadership',
+      subtitle: 'Specialty board exams, trauma care & clinical trial contribution',
       milestones: [
-        { id: 'wri_3_1', title: 'Draft Complete Book Proposal / Dissertation Chapter', desc: 'Structure chapter outlines, market differentiation, and rigorous intellectual arguments.', craftXP: 75, discXP: 30, coins: 50, completed: false },
-        { id: 'wri_3_2', title: 'Host Public Lectures & Literary Roundtables', desc: 'Present thought leadership at conferences and inspire the next cohort of thinkers.', craftXP: 70, discXP: 30, coins: 45, completed: false }
+        { id: 'doc_3_1', title: 'Pass Specialty Board Examinations with Distinction', desc: 'Attain board certification in chosen medical specialty with top evaluations.', craftXP: 85, discXP: 35, coins: 60, completed: false },
+        { id: 'doc_3_2', title: 'Publish Clinical Case Study in Peer-Reviewed Journal', desc: 'Document novel diagnostic discoveries and therapeutic outcomes in medical literature.', craftXP: 75, discXP: 30, coins: 50, completed: false }
       ]
     },
     {
       tierId: 4,
-      tierName: 'Tier 4: Dream Career Offer',
-      subtitle: 'Acclaimed publication, literary award & lifetime intellectual freedom',
+      tierName: 'Consultant Appointment & Lifesaving Impact',
+      subtitle: 'Attending physician leadership, community healthcare & personal peace',
       milestones: [
-        { id: 'wri_4_1', title: 'Secure Major Publishing Contract or Fellowship', desc: 'Ink publishing deal or secure prestigious research residency.', craftXP: 150, discXP: 50, coins: 100, completed: false },
-        { id: 'wri_4_2', title: 'Dedicate Published Work to Family & Mentors', desc: 'Hold printed first edition dedicated to parents and mentors who believed in the craft.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+        { id: 'doc_4_1', title: 'Appointed Consultant / Attending Specialist Physician', desc: 'Lead clinical teams, mentor junior residents, and oversee complex inpatient care.', craftXP: 160, discXP: 50, coins: 110, completed: false },
+        { id: 'doc_4_2', title: 'Restore Countless Lives While Maintaining Inner Equilibrium', desc: 'Practice empathetic, world-class medicine while sustaining deep emotional balance at home.', craftXP: 100, discXP: 40, coins: 85, completed: false }
       ]
     }
   ],
-  'Custom Ambition': [
+  'Entrepreneur & Startup Founder': [
     {
       tierId: 1,
-      tierName: 'Tier 1: Foundations',
-      subtitle: 'Clear self-definition, essentialist focus & habit consistency',
+      tierName: 'Problem Validation & Zero-to-One Sprint',
+      subtitle: 'User interviews, painful problem discovery, lean prototyping & landing test',
       milestones: [
-        { id: 'cst_1_1', title: 'Codify Personal Philosophy & Daily Non-Negotiables', desc: 'Articulate core values, morning alignment ritual, and clear life ambition goals.', craftXP: 40, discXP: 20, coins: 25, completed: true },
-        { id: 'cst_1_2', title: 'Dopamine Detox & High-Focus Environment Setup', desc: 'Eliminate digital distraction traps and design a sanctuary for focused creativity.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+        { id: 'fnd_1_1', title: 'Conduct 50 Problem Discovery Customer Interviews', desc: 'Uncover hair-on-fire problems without pitching solutions; isolate true willingness to pay.', craftXP: 45, discXP: 20, coins: 25, completed: true },
+        { id: 'fnd_1_2', title: 'Launch High-Conversion MVP Prototype in 14 Days', desc: 'Build and deploy a functional minimum viable product to test core value hypothesis.', craftXP: 40, discXP: 20, coins: 20, completed: false }
       ]
     },
     {
       tierId: 2,
-      tierName: 'Tier 2: Portfolio Builder',
-      subtitle: 'Proof of concept, 30-day consistency sprint & real artifacts',
+      tierName: 'Product-Market Fit & Repeatable Revenue',
+      subtitle: 'First 100 paying customers, unit economics & churn reduction',
       milestones: [
-        { id: 'cst_2_1', title: 'Ship First Milestone Artifact to the Public', desc: 'Translate aspiration into a tangible, observable creation that adds value to others.', craftXP: 60, discXP: 25, coins: 40, completed: false },
-        { id: 'cst_2_2', title: 'Achieve 30-Day Unbroken Habit Streak', desc: 'Execute core discipline for 30 consecutive days without relying on fleeting motivation.', craftXP: 50, discXP: 25, coins: 30, completed: false }
+        { id: 'fnd_2_1', title: 'Acquire First 50 Paying Customers Organically', desc: 'Demonstrate real value proposition with positive organic retention and customer delight.', craftXP: 70, discXP: 30, coins: 50, completed: false },
+        { id: 'fnd_2_2', title: 'Achieve Healthy Unit Economics & Positive Net Margins', desc: 'Optimize customer acquisition cost (CAC) and lifetime value (LTV) for scalability.', craftXP: 60, discXP: 25, coins: 40, completed: false }
       ]
     },
     {
       tierId: 3,
-      tierName: 'Tier 3: Industry Ready',
-      subtitle: 'Peer recognition, leadership by example & community impact',
+      tierName: 'Growth Engine & Operational Excellence',
+      subtitle: 'High-performing team hiring, distribution channels & institutional scaling',
       milestones: [
-        { id: 'cst_3_1', title: 'Attain Recognized Competence in Chosen Domain', desc: 'Gain genuine validation from respected peers and industry practitioners.', craftXP: 75, discXP: 30, coins: 50, completed: false },
-        { id: 'cst_3_2', title: 'Give Back: Mentor Another Aspiring Practitioner', desc: 'Share hard-won insights and lift someone else starting on their personal journey.', craftXP: 70, discXP: 30, coins: 45, completed: false }
+        { id: 'fnd_3_1', title: 'Scale to $10,000+ Monthly Recurring Revenue (MRR)', desc: 'Build scalable inbound loops, content flywheels, and automated onboarding.', craftXP: 90, discXP: 40, coins: 65, completed: false },
+        { id: 'fnd_3_2', title: 'Recruit Elite Core Team Aligned with Craft & Speed', desc: 'Hire first essential operators and foster an ownership culture with shared equity.', craftXP: 75, discXP: 30, coins: 50, completed: false }
       ]
     },
     {
       tierId: 4,
-      tierName: 'Tier 4: Dream Career Offer',
-      subtitle: 'Sovereign lifestyle, profound personal peace & legacy victory',
+      tierName: 'Sovereign Independence & Family Legacy',
+      subtitle: 'Profitable sovereignty or milestone exit & lifelong freedom',
       milestones: [
-        { id: 'cst_4_1', title: 'Fully Realize Ultimate Life Ambition Milestone', desc: 'Reach the pinnacle goal set when embarking on this Life RPG adventure.', craftXP: 150, discXP: 50, coins: 100, completed: false },
-        { id: 'cst_4_2', title: 'Celebrate Transformed Life with Family & Loved Ones', desc: 'Honor the journey, express lifelong gratitude, and live with grounded joy.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+        { id: 'fnd_4_1', title: 'Achieve True Financial Sovereignty & Scaled Impact', desc: 'Generate multi-million dollar enterprise value while solving real human problems.', craftXP: 170, discXP: 60, coins: 125, completed: false },
+        { id: 'fnd_4_2', title: 'Provide Lasting Generational Security for Loved Ones', desc: 'Share the fruits of enterprise with parents, family, and community pillars.', craftXP: 120, discXP: 50, coins: 100, completed: false }
+      ]
+    }
+  ],
+  'UI/UX & Product Designer': [
+    {
+      tierId: 1,
+      tierName: 'Design Systems & Heuristic Foundations',
+      subtitle: 'Figma auto-layout, design tokens, typography scales & user research',
+      milestones: [
+        { id: 'des_1_1', title: 'Architect Comprehensive Design System in Figma', desc: 'Construct scalable design tokens, responsive auto-layout components, and atomic styles.', craftXP: 40, discXP: 15, coins: 25, completed: true },
+        { id: 'des_1_2', title: 'Conduct Usability Audits & Heuristic Evaluation', desc: 'Perform usability testing, identify interaction friction, and map clean user journeys.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'High-Fidelity Case Studies & Micro-Interactions',
+      subtitle: 'Interactive prototypes, motion curves, user testing & design critique',
+      milestones: [
+        { id: 'des_2_1', title: 'Publish 2 Comprehensive End-to-End Product Case Studies', desc: 'Document discovery, wireframes, user testing data, and high-fidelity polished prototypes.', craftXP: 65, discXP: 25, coins: 40, completed: false },
+        { id: 'des_2_2', title: 'Master Micro-Interactions & Motion Choreography', desc: 'Design delightful state transitions, haptic responses, and spring physics in prototypes.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Product Strategy & Cross-Functional Influence',
+      subtitle: 'Product vision, engineering handoff precision & business metric impact',
+      milestones: [
+        { id: 'des_3_1', title: 'Design Product Feature that Moves Core Retention Metric', desc: 'Partner with engineering and product management to ship a high-converting experience.', craftXP: 80, discXP: 30, coins: 50, completed: false },
+        { id: 'des_3_2', title: 'Contribute to Open Source Design Community & Mentor', desc: 'Share free Figma community kits and mentor junior designers entering the craft.', craftXP: 70, discXP: 25, coins: 40, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Lead Staff Designer & Aesthetic Mastery',
+      subtitle: 'Design leadership at top-tier product studio & international recognition',
+      milestones: [
+        { id: 'des_4_1', title: 'Attain Principal / Staff Product Designer Title', desc: 'Direct end-to-end design language for an iconic digital application used by millions.', craftXP: 150, discXP: 50, coins: 100, completed: false },
+        { id: 'des_4_2', title: 'Design a Humane World & Celebrate with Loved Ones', desc: 'Craft software that respects human attention, creating peace for yourself and family.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+      ]
+    }
+  ],
+  'Athlete, Coach & Fitness Specialist': [
+    {
+      tierId: 1,
+      tierName: 'Physiological Base & Movement Mechanics',
+      subtitle: 'Compound movement mastery, aerobic base, nutrition & sleep tracking',
+      milestones: [
+        { id: 'ath_1_1', title: 'Master Big 4 Compound Lifts with Impeccable Form', desc: 'Establish safe, deep neural biomechanics in squat, hinge, push, and pull patterns.', craftXP: 45, discXP: 20, coins: 25, completed: true },
+        { id: 'ath_1_2', title: '60 Consecutive Days of Consistent Macro & Protein Fueling', desc: 'Track daily nutrition diligently to support muscular recovery and cellular vitality.', craftXP: 40, discXP: 25, coins: 25, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'Athletic Conditioning & Peak Performance',
+      subtitle: 'Zone 2 cardio stamina, periodized strength cycle & mobility longevity',
+      milestones: [
+        { id: 'ath_2_1', title: 'Complete 12-Week Periodized Strength/Conditioning Block', desc: 'Surpass personal athletic records in VO2 max and relative strength benchmarks.', craftXP: 65, discXP: 30, coins: 45, completed: false },
+        { id: 'ath_2_2', title: 'Master Cold/Sauna Nervous System Recovery Protocols', desc: 'Optimize heart rate variability (HRV) and deep sleep architecture for rapid repair.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Competition Triumph & Transformative Coaching',
+      subtitle: 'Podium placement, coaching methodology & inspiring hundreds to health',
+      milestones: [
+        { id: 'ath_3_1', title: 'Compete in Sanctioned Athletic Championship', desc: 'Test physical and mental fortitude on the competition floor with unwavering focus.', craftXP: 85, discXP: 35, coins: 60, completed: false },
+        { id: 'ath_3_2', title: 'Coach 25+ Clients to Life-Altering Health Transformations', desc: 'Guide individuals to reverse metabolic disease, gain strength, and discover self-worth.', craftXP: 75, discXP: 30, coins: 50, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Elite Mastery & Lifelong Somatic Freedom',
+      subtitle: 'Peak physical sovereignty, recognized sports leadership & vibrant vitality',
+      milestones: [
+        { id: 'ath_4_1', title: 'Achieve Master Coach / Elite Competitor Status', desc: 'Reach pinnacle conditioning and establish a celebrated athletic training facility or academy.', craftXP: 160, discXP: 50, coins: 110, completed: false },
+        { id: 'ath_4_2', title: 'Live as a Beacon of Vitality for Family and Community', desc: 'Maintain extraordinary physical stamina into your golden years alongside loved ones.', craftXP: 100, discXP: 40, coins: 85, completed: false }
+      ]
+    }
+  ],
+  'Writer, Journalist & Author': [
+    {
+      tierId: 1,
+      tierName: 'Prose Craft & Daily Writing Discipline',
+      subtitle: 'Daily 1,000-word uninterrupted block, reading masters & research vault',
+      milestones: [
+        { id: 'wri_1_1', title: 'Establish Unbroken 30-Day Morning Writing Ritual', desc: 'Write 1,000 words every sunrise with complete focus on clarity, rhythm, and truth.', craftXP: 40, discXP: 20, coins: 25, completed: true },
+        { id: 'wri_1_2', title: 'Curate a Second Brain Knowledge & Citation Vault', desc: 'Catalog deep non-fiction insights, historical quotes, and cross-disciplinary analogies.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'Long-Form Essays & Audience Resonance',
+      subtitle: 'Publishing cadence, substantive reporting & essay circulation',
+      milestones: [
+        { id: 'wri_2_1', title: 'Publish 10 Foundational Investigative Essays', desc: 'Release deeply researched treatises exploring human nature, science, and ethics.', craftXP: 65, discXP: 25, coins: 40, completed: false },
+        { id: 'wri_2_2', title: 'Grow Dedicated Readership of 1,500+ Thinkers', desc: 'Foster thoughtful dialogues and intellectual exchanges through an independent newsletter.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Monograph Proposal & Literary Recognition',
+      subtitle: 'Manuscript drafting, structural line editing & literary representation',
+      milestones: [
+        { id: 'wri_3_1', title: 'Complete Full 80,000-Word Non-Fiction Book Manuscript', desc: 'Craft a profound, cohesive volume that challenges conventional wisdom and illuminates truth.', craftXP: 85, discXP: 35, coins: 60, completed: false },
+        { id: 'wri_3_2', title: 'Secure Acclaimed Literary Agent & Publisher Offer', desc: 'Partner with a premier publishing house to bring your book to readers worldwide.', craftXP: 75, discXP: 30, coins: 50, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Published Book & Cultural Legacy',
+      subtitle: 'International distribution, bestselling influence & family pride',
+      milestones: [
+        { id: 'wri_4_1', title: 'Hold First Hardcover Edition of Your Published Book', desc: 'Release work that enters libraries, bookstores, and inspires readers across continents.', craftXP: 160, discXP: 50, coins: 110, completed: false },
+        { id: 'wri_4_2', title: 'Dedicate Published Book to Parents & Loved Ones', desc: 'Honor the people whose quiet love and faith made the written word possible.', craftXP: 100, discXP: 40, coins: 85, completed: false }
       ]
     }
   ]
 };
 
-// Initial baseline routine quests
-const DEFAULT_ROUTINE = [
-  { id: 'q_wake', title: 'Wake up (7:00 AM)', time: '07:00 AM', pillar: 'Discipline', xp: 15, coins: 10, note: 'Rise with morning light and set clear daily intention.', completed: false, category: 'routine' },
-  { id: 'q_water', title: 'Drink a glass of water', time: '07:10 AM', pillar: 'Resilience', xp: 5, coins: 5, note: 'Hydrate cells and activate internal organs after rest.', completed: false, category: 'routine' },
-  { id: 'q_fresh', title: 'Freshen up', time: '07:15 AM', pillar: 'Discipline', xp: 10, coins: 5, note: 'Morning hygiene, brush teeth, clean baseline.', completed: false, category: 'routine' },
-  { id: 'q_shower', title: 'Take a shower', time: '07:30 AM', pillar: 'Resilience', xp: 10, coins: 5, note: 'Invigorate physical senses and refresh alertness.', completed: false, category: 'routine' },
-  { id: 'q_meditate', title: 'Meditate / Yoga', time: '08:00 AM', pillar: 'Calm', xp: 25, coins: 15, note: 'Center consciousness, slow breathing, somatic harmony.', completed: false, category: 'routine' },
-  { id: 'q_deepwork', title: 'Deep Work Session', time: '09:00 AM', pillar: 'Craft', xp: 45, coins: 30, note: 'High-cognitive flow: uninterrupted focus on core priorities.', completed: false, category: 'routine' },
-  { id: 'q_lunch', title: 'Lunch (1:00 PM)', time: '01:00 PM', pillar: 'Resilience', xp: 10, coins: 5, note: 'Mindful nourishment with balanced, wholesome food.', completed: false, category: 'routine' },
-  { id: 'q_nap', title: 'Take a nap for 15 mins', time: '01:45 PM', pillar: 'Calm', xp: 10, coins: 5, note: 'Restorative power rest to reset adenosine buildup.', completed: false, category: 'routine' },
-  { id: 'q_work', title: 'Work & Communication', time: '02:15 PM', pillar: 'Discipline', xp: 30, coins: 20, note: 'Execution block: meetings, communications, project tasks.', completed: false, category: 'routine' },
-  { id: 'q_gym', title: 'Exercise / Hit the gym (5:00 PM)', time: '05:00 PM', pillar: 'Resilience', xp: 40, coins: 25, note: 'Heavy physical exertion, resistance training & cardio.', completed: false, category: 'routine' },
-  { id: 'q_protein', title: 'Have a healthy protein (7:00 PM)', time: '07:00 PM', pillar: 'Resilience', xp: 15, coins: 10, note: 'Fuel muscle repair & metabolic recovery.', completed: false, category: 'routine' },
-  { id: 'q_morework', title: 'Evening Wrap-Up & Planning', time: '08:00 PM', pillar: 'Craft', xp: 25, coins: 15, note: 'Review progress, prepare tomorrow, tie loose ends.', completed: false, category: 'routine' },
-  { id: 'q_sleep', title: 'Sleep by 11:00 PM', time: '11:00 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Restorative sleep and neural consolidation for tomorrow.', completed: false, category: 'routine' }
-];
+// Specialized Daily Mission Sets tailored to specific career paths
+const CAREER_ROUTINES = {
+  'Student & Academic Learner': [
+    { id: 'q_wake', title: 'Rise with sunlight & hydrate (07:00 AM)', time: '07:00 AM', pillar: 'Resilience', xp: 15, coins: 10, note: 'Signal wakefulness and hydrate neural pathways.', completed: false },
+    { id: 'q_anki', title: 'Active Recall & Spaced Repetition (45 mins)', time: '08:30 AM', pillar: 'Craft', xp: 35, coins: 20, note: 'Strengthen memory consolidation before cognitive fatigue sets in.', completed: false },
+    { id: 'q_lecture', title: 'Deep Study Sprint: Problem Set Mastery', time: '10:00 AM', pillar: 'Craft', xp: 45, coins: 30, note: 'Solve challenging syllabus problems with zero phone interruptions.', completed: false },
+    { id: 'q_lunch', title: 'Nutritious lunch & outdoor campus stroll', time: '01:00 PM', pillar: 'Resilience', xp: 10, coins: 5, note: 'Wholesome fuel and daylight for circadian reset.', completed: false },
+    { id: 'q_notes', title: 'Cornell Note Synthesis & Lecture Review', time: '02:30 PM', pillar: 'Discipline', xp: 25, coins: 15, note: 'Distill lecture concepts into concise summaries and question prompts.', completed: false },
+    { id: 'q_feynman', title: 'Feynman Technique: Explain 1 Concept Simply', time: '04:30 PM', pillar: 'Craft', xp: 30, coins: 20, note: 'Teach a complex topic to an imaginary peer in simple, plain language.', completed: false },
+    { id: 'q_exercise', title: 'Physical workout or outdoor sport (05:30 PM)', time: '05:30 PM', pillar: 'Resilience', xp: 40, coins: 25, note: 'Elevate BDNF (Brain-Derived Neurotrophic Factor) for neuroplasticity.', completed: false },
+    { id: 'q_plan_study', title: 'Review exam roadmap & organize tomorrow', time: '08:30 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Set tomorrow’s 3 study priorities so you wake up ready to execute.', completed: false },
+    { id: 'q_mom', title: 'Call parents / check in with family', time: 'Flexible', pillar: 'LovedOnes', xp: 25, coins: 20, note: 'Emotional connection and appreciation with loved ones.', completed: false },
+    { id: 'q_sleep', title: 'Sleep by 11:00 PM (8 hours rest)', time: '11:00 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Crucial for synaptic pruning and memory consolidation.', completed: false }
+  ],
+  'Software Engineer & Full-Stack Developer': [
+    { id: 'q_wake', title: 'Rise & drink glass of water (07:00 AM)', time: '07:00 AM', pillar: 'Resilience', xp: 15, coins: 10, note: 'Clean start, hydrate cells, morning sunlight.', completed: false },
+    { id: 'q_algo', title: 'Algorithmic Problem Solving / LeetCode Sprint', time: '08:30 AM', pillar: 'Craft', xp: 35, coins: 25, note: '1 medium problem: master space-time complexity analysis.', completed: false },
+    { id: 'q_deepcode', title: 'Deep Code Architecture & Feature Building', time: '10:00 AM', pillar: 'Craft', xp: 50, coins: 35, note: '90-min uninterrupted flow on core API / frontend service.', completed: false },
+    { id: 'q_lunch', title: 'Mindful lunch & 15-min screen rest', time: '01:00 PM', pillar: 'Resilience', xp: 10, coins: 5, note: 'Rest ocular muscles and recharge dopamine baseline.', completed: false },
+    { id: 'q_pr_review', title: 'Clean Git Commits, PR Review & Documentation', time: '02:30 PM', pillar: 'Discipline', xp: 25, coins: 15, note: 'Modular diffs, thorough unit tests, readable commit messages.', completed: false },
+    { id: 'q_techradar', title: 'System Design & High-Availability Architecture', time: '04:30 PM', pillar: 'Craft', xp: 35, coins: 20, note: 'Study caching layers, Redis, distributed queues, or DB indexing.', completed: false },
+    { id: 'q_gym', title: 'Heavy gym session / resistance training (05:30 PM)', time: '05:30 PM', pillar: 'Resilience', xp: 40, coins: 25, note: 'Counteract desk posture with deadlifts, pulls, and conditioning.', completed: false },
+    { id: 'q_retrospective', title: 'Evening Wrap-up & Tomorrow’s Code Objectives', time: '08:30 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Clear terminal, commit working WIP, list 2 priority tasks.', completed: false },
+    { id: 'q_mom', title: 'Call Mom or connect with partner/friend', time: 'Flexible', pillar: 'LovedOnes', xp: 25, coins: 20, note: 'Undivided presence without phone distractions.', completed: false },
+    { id: 'q_sleep', title: 'Sleep by 11:00 PM for deep recovery', time: '11:00 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Neural recovery for sharp next-day analytical thinking.', completed: false }
+  ],
+  'Doctor & Healthcare Practitioner': [
+    { id: 'q_wake', title: 'Rise & morning hydration (06:30 AM)', time: '06:30 AM', pillar: 'Resilience', xp: 15, coins: 10, note: 'Early morning physiological awakening.', completed: false },
+    { id: 'q_diagnostic', title: 'Clinical Case Study & Diagnostic Synthesis', time: '08:00 AM', pillar: 'Craft', xp: 40, coins: 25, note: 'Review differential diagnoses and patient pathology reports.', completed: false },
+    { id: 'q_bedside', title: 'Compassionate Patient Presence & Bedside Empathy', time: '10:30 AM', pillar: 'LovedOnes', xp: 35, coins: 25, note: 'Listen intently to patient concerns and build reassurance.', completed: false },
+    { id: 'q_pharma', title: 'Pharmacology Refresher & Drug Interaction Check', time: '02:00 PM', pillar: 'Discipline', xp: 30, coins: 20, note: 'Refresh therapeutic mechanisms and safety dosages.', completed: false },
+    { id: 'q_journal_read', title: 'Medical Literature Review (NEJM / Lancet)', time: '04:30 PM', pillar: 'Craft', xp: 30, coins: 20, note: 'Stay ahead of cutting-edge clinical trials and therapeutics.', completed: false },
+    { id: 'q_gym', title: 'Brisk cardio or functional mobility (06:00 PM)', time: '06:00 PM', pillar: 'Resilience', xp: 35, coins: 25, note: 'Shed mental hospital stress through physical movement.', completed: false },
+    { id: 'q_decompression', title: 'Compassion Fatigue Reset & Mindfulness', time: '08:30 PM', pillar: 'Calm', xp: 25, coins: 20, note: 'Release patient grief and clear emotional load.', completed: false },
+    { id: 'q_mom', title: 'Family dinner or quiet phone call with parents', time: 'Flexible', pillar: 'LovedOnes', xp: 25, coins: 20, note: 'Anchor personal life outside the hospital wards.', completed: false },
+    { id: 'q_sleep', title: 'Sleep by 10:30 PM (essential recovery)', time: '10:30 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Recharge diagnostic acuity and cognitive resilience.', completed: false }
+  ],
+  'Entrepreneur & Startup Founder': [
+    { id: 'q_wake', title: 'Rise early & cold shower (06:30 AM)', time: '06:30 AM', pillar: 'Resilience', xp: 15, coins: 10, note: 'Mental toughness and instant alert state.', completed: false },
+    { id: 'q_customer', title: 'Founder Focus: 3 Customer Discovery Calls', time: '08:30 AM', pillar: 'Craft', xp: 45, coins: 30, note: 'Talk directly to active users to understand pain points.', completed: false },
+    { id: 'q_product', title: 'Product Velocity: Ship 1 Meaningful Iteration', time: '11:00 AM', pillar: 'Craft', xp: 50, coins: 35, note: 'Deploy a high-leverage feature or conversion optimization.', completed: false },
+    { id: 'q_cashflow', title: 'Unit Economics & Runway Metric Audit', time: '02:30 PM', pillar: 'Discipline', xp: 30, coins: 20, note: 'Review CAC, LTV, churn rate, and monthly burn rate.', completed: false },
+    { id: 'q_distribution', title: 'Distribution Sprint: Content & Outbound Loops', time: '04:30 PM', pillar: 'Craft', xp: 35, coins: 25, note: 'Write a high-value thread, newsletter, or enterprise outreach.', completed: false },
+    { id: 'q_gym', title: 'High-intensity workout to release cortisol', time: '06:00 PM', pillar: 'Resilience', xp: 40, coins: 25, note: 'Build stamina to endure founder pressure.', completed: false },
+    { id: 'q_founder_reflect', title: 'Strategic Reflection & Tomorrow’s 3 Levers', time: '08:30 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Eliminate fake work and double down on true leverage.', completed: false },
+    { id: 'q_mom', title: 'Unplugged evening with family / loved ones', time: 'Flexible', pillar: 'LovedOnes', xp: 25, coins: 20, note: 'Protect personal relationships through startup intensity.', completed: false },
+    { id: 'q_sleep', title: 'Sleep by 11:00 PM with phone outside bedroom', time: '11:00 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Preserve vision and strategic clarity.', completed: false }
+  ],
+  'UI/UX & Product Designer': [
+    { id: 'q_wake', title: 'Rise, hydrate & morning light (07:00 AM)', time: '07:00 AM', pillar: 'Resilience', xp: 15, coins: 10, note: 'Fresh sensory alertness for visual work.', completed: false },
+    { id: 'q_mobbin', title: 'Visual Design Study: Deconstruct 3 World-Class Apps', time: '08:30 AM', pillar: 'Craft', xp: 30, coins: 20, note: 'Analyze layout hierarchy, typography contrast, and microcopy.', completed: false },
+    { id: 'q_figma_system', title: 'Figma Design System & Auto-Layout Sprint', time: '10:30 AM', pillar: 'Craft', xp: 45, coins: 30, note: 'Build clean responsive component variants and token libraries.', completed: false },
+    { id: 'q_usability', title: 'User Testing Insights & Flow Prototyping', time: '02:30 PM', pillar: 'Craft', xp: 35, coins: 25, note: 'Map friction points and refine navigation pathways.', completed: false },
+    { id: 'q_interaction', title: 'Micro-Interactions, Spring Curves & Visual Polish', time: '04:30 PM', pillar: 'Joy', xp: 30, coins: 20, note: 'Add subtle haptic delight and fluid motion animations.', completed: false },
+    { id: 'q_gym', title: 'Evening walk or gym workout (06:00 PM)', time: '06:00 PM', pillar: 'Resilience', xp: 35, coins: 20, note: 'Refresh physical stamina and step away from canvas.', completed: false },
+    { id: 'q_design_archive', title: 'Curate Design Artifacts & Document Decisions', time: '08:30 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Archive design iterations for portfolio storytelling.', completed: false },
+    { id: 'q_mom', title: 'Connect with loved ones / shared dinner', time: 'Flexible', pillar: 'LovedOnes', xp: 25, coins: 20, note: 'Cultivate empathy that informs human-centric design.', completed: false },
+    { id: 'q_sleep', title: 'Sleep by 11:00 PM (visual rest)', time: '11:00 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Rest eyes and mind for creative synthesis.', completed: false }
+  ]
+};
 
-// Special Family Gratitude & Joy Quests
-const SPECIAL_QUESTS = [
-  { id: 'q_mom', title: 'Call Mom or plan weekend tea', time: 'Flexible', pillar: 'LovedOnes', xp: 25, coins: 20, note: 'Gratitude quest: Check in with genuine presence and listening.', completed: false, category: 'family' },
-  { id: 'q_walk', title: 'Evening walk with no headphones', time: '06:30 PM', pillar: 'Joy', xp: 20, coins: 15, note: 'Joy of living: Observe the sky and environment guilt-free.', completed: false, category: 'joy' }
-];
-
-// 2-Minute Rule Micro-Habits for Overwhelmed / Stuck Days (The Paralysis Breaker)
 const PARALYSIS_MICRO_QUESTS = [
   {
     id: 'micro_blinds',
@@ -369,6 +521,142 @@ const DEFAULT_RELATIONSHIP_BONDS = [
 ];
 
 class StateManager {
+  // Helper to retrieve or procedurally generate 4-tier tree for any career track
+  getTreeForCareer(trackName) {
+    if (CAREER_TREE_PRESETS[trackName]) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS[trackName]));
+    }
+    // Check key aliases
+    if (trackName.includes('Software') || trackName.includes('Full-Stack')) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS['Software Engineer & Full-Stack Developer']));
+    }
+    if (trackName.includes('Student') || trackName.includes('Academic')) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS['Student & Academic Learner']));
+    }
+    if (trackName.includes('Doctor') || trackName.includes('Healthcare')) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS['Doctor & Healthcare Practitioner']));
+    }
+    if (trackName.includes('Entrepreneur') || trackName.includes('Founder')) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS['Entrepreneur & Startup Founder']));
+    }
+    if (trackName.includes('Designer') || trackName.includes('UI/UX')) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS['UI/UX & Product Designer']));
+    }
+    if (trackName.includes('Athlete') || trackName.includes('Fitness')) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS['Athlete, Coach & Fitness Specialist']));
+    }
+    if (trackName.includes('Writer') || trackName.includes('Author') || trackName.includes('Journalist')) {
+      return JSON.parse(JSON.stringify(CAREER_TREE_PRESETS['Writer, Journalist & Author']));
+    }
+
+    // Procedurally generate tailored 4 tiers for any domain in the 24 taxonomy
+    return this.generateCareerTreeForTrack(trackName);
+  }
+
+  generateCareerTreeForTrack(trackName) {
+    const clean = trackName || 'Domain Mastery';
+    return [
+      {
+        tierId: 1,
+        tierName: 'Foundations & Core Practice',
+        subtitle: `Essential mechanics, domain literacy & daily discipline in ${clean}`,
+        milestones: [
+          { id: `tier1_m1_${Date.now()}`, title: `Master Core Foundations of ${clean}`, desc: `Study primary literature, historical principles, and build baseline technical competence.`, craftXP: 40, discXP: 20, coins: 25, completed: true },
+          { id: `tier1_m2_${Date.now()}`, title: `Establish Unbroken 30-Day Craft Ritual`, desc: `Practice daily deliberate execution in ${clean} without relying on fleeting motivation.`, craftXP: 35, discXP: 20, coins: 20, completed: false }
+        ]
+      },
+      {
+        tierId: 2,
+        tierName: 'Execution & Practical Portfolio',
+        subtitle: `Building observable artifacts, high-leverage projects & testing feedback`,
+        milestones: [
+          { id: `tier2_m1_${Date.now()}`, title: `Ship 2 Signature Projects in ${clean}`, desc: `Produce high-quality work validated by real peers and industry mentors.`, craftXP: 65, discXP: 25, coins: 40, completed: false },
+          { id: `tier2_m2_${Date.now()}`, title: `Master Workflow Speed & Ergonomic Efficiency`, desc: `Optimize tools, eliminate operational drag, and elevate speed of execution.`, craftXP: 50, discXP: 20, coins: 30, completed: false }
+        ]
+      },
+      {
+        tierId: 3,
+        tierName: 'Industry Mastery & Leadership',
+        subtitle: `Advanced problem solving, public influence & mentoring junior peers`,
+        milestones: [
+          { id: `tier3_m1_${Date.now()}`, title: `Lead Major High-Impact Initiative`, desc: `Direct and deliver complex projects that move tangible outcomes in ${clean}.`, craftXP: 85, discXP: 35, coins: 55, completed: false },
+          { id: `tier3_m2_${Date.now()}`, title: `Peer Recognition & Thought Leadership`, desc: `Share hard-won insights through public writing, talks, or open source frameworks.`, craftXP: 70, discXP: 30, coins: 45, completed: false }
+        ]
+      },
+      {
+        tierId: 4,
+        tierName: 'Pinnacle Mastery & Sovereign Legacy',
+        subtitle: `Industry pinnacle offer/sovereignty, deep personal peace & family security`,
+        milestones: [
+          { id: `tier4_m1_${Date.now()}`, title: `Attain Pinnacle Milestone in ${clean}`, desc: `Secure the dream appointment, founding sovereign freedom, or prestigious fellowship.`, craftXP: 160, discXP: 50, coins: 110, completed: false },
+          { id: `tier4_m2_${Date.now()}`, title: `Share Fruits of Success with Loved Ones`, desc: `Honor parents and family who supported the long journey to true mastery.`, craftXP: 100, discXP: 40, coins: 85, completed: false }
+        ]
+      }
+    ];
+  }
+
+  // Helper to retrieve or generate tailored daily routine for any career track
+  getRoutineForCareer(trackName) {
+    if (CAREER_ROUTINES[trackName]) {
+      return JSON.parse(JSON.stringify(CAREER_ROUTINES[trackName]));
+    }
+    // Check aliases
+    if (trackName.includes('Student') || trackName.includes('Academic')) {
+      return JSON.parse(JSON.stringify(CAREER_ROUTINES['Student & Academic Learner']));
+    }
+    if (trackName.includes('Software') || trackName.includes('Full-Stack')) {
+      return JSON.parse(JSON.stringify(CAREER_ROUTINES['Software Engineer & Full-Stack Developer']));
+    }
+    if (trackName.includes('Doctor') || trackName.includes('Healthcare')) {
+      return JSON.parse(JSON.stringify(CAREER_ROUTINES['Doctor & Healthcare Practitioner']));
+    }
+    if (trackName.includes('Entrepreneur') || trackName.includes('Founder')) {
+      return JSON.parse(JSON.stringify(CAREER_ROUTINES['Entrepreneur & Startup Founder']));
+    }
+    if (trackName.includes('Designer') || trackName.includes('UI/UX')) {
+      return JSON.parse(JSON.stringify(CAREER_ROUTINES['UI/UX & Product Designer']));
+    }
+
+    // Procedural tailored daily routine for any domain
+    const clean = trackName || 'Craft Mastery';
+    return [
+      { id: 'q_wake', title: 'Rise & morning hydration (07:00 AM)', time: '07:00 AM', pillar: 'Resilience', xp: 15, coins: 10, note: 'Baseline physical activation and hydration.', completed: false },
+      { id: 'q_core_study', title: `Deep Study & Theoretical Foundations in ${clean}`, time: '08:30 AM', pillar: 'Craft', xp: 35, coins: 25, note: 'High-cognitive study of fundamental principles.', completed: false },
+      { id: 'q_deep_craft', title: `Core Execution & Project Sprint: ${clean}`, time: '10:30 AM', pillar: 'Craft', xp: 50, coins: 35, note: 'Uninterrupted deep work producing tangible output.', completed: false },
+      { id: 'q_lunch', title: 'Mindful lunch & outdoor walk (01:00 PM)', time: '01:00 PM', pillar: 'Resilience', xp: 10, coins: 5, note: 'Wholesome fuel and mental decompression.', completed: false },
+      { id: 'q_skill_drill', title: `Technical Skill Drill & Review: ${clean}`, time: '02:30 PM', pillar: 'Discipline', xp: 30, coins: 20, note: 'Deliberate practice isolating weak areas.', completed: false },
+      { id: 'q_portfolio', title: `Portfolio Synthesis & Artifact Documentation`, time: '04:30 PM', pillar: 'Craft', xp: 30, coins: 20, note: 'Log key milestones and archive progress.', completed: false },
+      { id: 'q_exercise', title: 'Physical exercise & stamina conditioning (05:30 PM)', time: '05:30 PM', pillar: 'Resilience', xp: 40, coins: 25, note: 'Resistance training and cardiovascular endurance.', completed: false },
+      { id: 'q_review', title: 'Evening Progress Review & Tomorrow’s Plan', time: '08:30 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Set top priorities for the next morning.', completed: false },
+      { id: 'q_mom', title: 'Call parents or connect with partner/friend', time: 'Flexible', pillar: 'LovedOnes', xp: 25, coins: 20, note: 'Relational connection and genuine gratitude.', completed: false },
+      { id: 'q_sleep', title: 'Restorative sleep by 11:00 PM', time: '11:00 PM', pillar: 'Discipline', xp: 20, coins: 15, note: 'Essential recovery for high-leverage execution.', completed: false }
+    ];
+  }
+
+  // Upgraded Career Switcher: dynamically updates tree, routine, and north star
+  setCareerTrack(trackName) {
+    if (!trackName) return;
+    this.state.careerTrack = trackName;
+    this.state.dreamCareer = trackName;
+    this.state.careerTree = this.getTreeForCareer(trackName);
+    this.state.quests = this.getRoutineForCareer(trackName);
+
+    const trackDef = CAREER_TRACKS.find(t => t.name === trackName);
+    if (trackDef && trackDef.defaultGoal) {
+      this.state.lifeGoal = trackDef.defaultGoal;
+    }
+
+    this.saveState();
+    this.notify();
+  }
+
+  // Equip active UI theme palette (Matrix, Synthwave, Amber, Arctic, Zen, Minimalist)
+  equipPalette(paletteKey) {
+    this.state.activePalette = paletteKey;
+    this.saveState();
+    this.notify();
+  }
+
   constructor() {
     this.listeners = [];
     this.state = this.getInitialState();
@@ -447,7 +735,7 @@ class StateManager {
         lifeGoal: 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
         relationshipBonds: JSON.parse(JSON.stringify(DEFAULT_RELATIONSHIP_BONDS)),
         skipRelationships: false,
-        quests: [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
+        quests: this.getRoutineForCareer(defaultTrack),
         honorableArchive: [],
         completedMicroQuests: [],
         restDaysTaken: 0,
@@ -470,7 +758,7 @@ class StateManager {
       lifeGoal: user.lifeGoal || 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
       relationshipBonds: (user.relationshipBonds && user.relationshipBonds.length > 0) ? enrichBonds(user.relationshipBonds) : enrichBonds(DEFAULT_RELATIONSHIP_BONDS),
       skipRelationships: !!user.skipRelationships,
-      quests: [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
+      quests: this.getRoutineForCareer(defaultTrack),
       totalXP: 0,
       currency: 20,
       streak: 1,

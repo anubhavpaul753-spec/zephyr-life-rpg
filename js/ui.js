@@ -31,6 +31,7 @@ class UIManager {
     this.activeSectionId = 'sec-hero';
     this.currentWisdomIndex = 0;
     this.wisdomInterval = null;
+    this.shopFilter = 'all';
   }
 
   // Master Render Loop
@@ -47,6 +48,17 @@ class UIManager {
     // Apply Active Theme Mode ('dark' or 'light')
     const activeTheme = state?.themeMode || 'dark';
     document.documentElement.setAttribute('data-theme', activeTheme);
+
+    // Apply Active Equipped Palette
+    const activePalette = state?.activePalette || 'default';
+    document.documentElement.setAttribute('data-palette', activePalette);
+
+    // Apply Golden Avatar Aura if unlocked
+    const hasAura = (state?.inventory || []).some(it => it.key === 'golden_aura' || it.key === 'accessory_aura');
+    const avatarImg = document.getElementById('profile-avatar-img');
+    if (avatarImg) {
+      avatarImg.classList.toggle('golden-aura', hasAura);
+    }
 
     // Update Top Navigation Bar Status (Streak, Coins, Tabs, Logout)
     this.renderHeader(state, isAuth);
@@ -560,10 +572,10 @@ class UIManager {
     return 'Grandmaster Polymath';
   }
 
-  // SECTION 4: Career Skill Tree
+  // SECTION 4: Career Skill Tree (Polished Indentation, Clean Badges & Specular Cards)
   renderCareerSection(state) {
-    const track = state?.careerTrack || 'Software Engineer & Builder';
-    const goal = state?.lifeGoal || 'Master full-stack architecture, clean code, and production reliability.';
+    const track = state?.careerTrack || 'Software Engineer & Full-Stack Developer';
+    const goal = state?.lifeGoal || 'Master high-leverage skills and build a peaceful life.';
 
     const trackNameEl = document.getElementById('hero-career-track');
     if (trackNameEl) trackNameEl.textContent = track;
@@ -585,7 +597,7 @@ class UIManager {
 
     const tiers = (state?.careerTree && state.careerTree.length > 0)
       ? state.careerTree
-      : (window.CAREER_TREE_PRESETS ? (window.CAREER_TREE_PRESETS[track] || window.CAREER_TREE_PRESETS['Software Engineer & Builder']) : []);
+      : (window.AppStore ? window.AppStore.getTreeForCareer(track) : []);
 
     if (!tiers || tiers.length === 0) {
       treeContainer.innerHTML = `<div style="text-align:center; padding:30px; color:var(--text-muted);">No career milestones loaded yet. Click <strong>AI Blueprint Generator</strong> to generate one!</div>`;
@@ -593,6 +605,10 @@ class UIManager {
     }
 
     treeContainer.innerHTML = tiers.map(tier => {
+      // Clean duplicate Tier prefixes (e.g. "Tier 2: Portfolio Builder" -> "Portfolio Builder")
+      const rawName = tier.tierName || 'Foundations';
+      const cleanName = rawName.replace(/^Tier\s*\d+\s*:\s*/i, '');
+
       const milestonesHtml = (tier.milestones || []).map(m => {
         const isDone = !!m.completed;
         return `
@@ -607,9 +623,9 @@ class UIManager {
               <h5 class="milestone-name">${escapeHTML(m.title)}</h5>
               <p class="milestone-desc">${escapeHTML(m.desc)}</p>
               <div class="milestone-rewards-row">
-                <span>+${m.craftXP || 30} Craft XP</span>
-                <span>+${m.discXP || 15} Discipline XP</span>
-                <span>+${m.coins || 20} 🪙</span>
+                <span class="reward-pill craft-pill">+${m.craftXP || 35} Craft XP</span>
+                <span class="reward-pill disc-pill">+${m.discXP || 15} Discipline XP</span>
+                <span class="reward-pill coin-pill">🪙 ${m.coins || 20} Coins</span>
               </div>
             </div>
           </div>
@@ -621,7 +637,7 @@ class UIManager {
           <div class="tier-card-header">
             <div class="tier-badge-pill">Tier ${tier.tierId || 1}</div>
             <div>
-              <h4 class="tier-name">${escapeHTML(tier.tierName || 'Foundations')}</h4>
+              <h4 class="tier-name">${escapeHTML(cleanName)}</h4>
               <span class="tier-subtitle">${escapeHTML(tier.subtitle || '')}</span>
             </div>
           </div>
@@ -697,52 +713,235 @@ class UIManager {
     }).join('');
   }
 
-  // SECTION 6: Guild Shop & Economy
+  // SECTION 6: Guild Shop & Economy (Themes, Accessories & Human Rewards)
   renderShopSection(state) {
     const balEl = document.getElementById('shop-page-balance');
     if (balEl) balEl.textContent = state?.currency || 20;
 
     const itemsContainer = document.getElementById('shop-page-items');
-    if (itemsContainer) {
-      const shopItems = [
-        { key: 'streak_freeze', name: 'Streak Freeze Shield', cost: 40, icon: '🛡️', desc: 'Protects your habit streak when illness or urgent emergencies happen.' },
-        { key: 'protein_feast', name: 'High-Protein Feast Pass', cost: 35, icon: '🥩', desc: 'Earned guilt-free dinner at your favorite restaurant after 5 days of consistency.' },
-        { key: 'gaming_pass', name: 'Guilt-Free Gaming Pass', cost: 50, icon: '🎮', desc: '2 hours of unhurried gaming with zero guilt after hitting daily high-leverage milestones.' },
-        { key: 'nature_walk', name: 'Deep Nature Walk Pass', cost: 25, icon: '🌲', desc: 'A serene afternoon walk in the forest/park to decompress and recharge mental stamina.' },
-        { key: 'espresso_book', name: 'Espresso & Quiet Book Pass', cost: 20, icon: '☕', desc: '90 minutes in a quiet cafe reading foundational non-fiction without checking phone.' }
-      ];
+    if (!itemsContainer) return;
 
-      itemsContainer.innerHTML = shopItems.map(item => `
+    const shopCatalog = [
+      // 🎨 UI Themes & Palettes
+      {
+        key: 'theme_matrix',
+        name: 'Cyberpunk Matrix Theme',
+        cost: 30,
+        icon: '🟢',
+        category: 'themes',
+        palette: 'matrix',
+        desc: 'Neon emerald matrix glow, obsidian background & terminal hacker aesthetic.'
+      },
+      {
+        key: 'theme_synthwave',
+        name: 'Tokyo Synthwave Theme',
+        cost: 35,
+        icon: '🟣',
+        category: 'themes',
+        palette: 'synthwave',
+        desc: 'Electric neon violet & magenta accents on deep midnight indigo.'
+      },
+      {
+        key: 'theme_amber',
+        name: 'Sunset Amber Solstice',
+        cost: 25,
+        icon: '🌅',
+        category: 'themes',
+        palette: 'amber',
+        desc: 'Radiant golden amber and twilight gradients with raycast specular shading.'
+      },
+      {
+        key: 'theme_arctic',
+        name: 'Nordic Arctic Frost',
+        cost: 25,
+        icon: '❄️',
+        category: 'themes',
+        palette: 'arctic',
+        desc: 'Glacial cyan & cool iceberg blues with ultra-crisp contrast.'
+      },
+      {
+        key: 'theme_zen',
+        name: 'Kyoto Zen Paper (Warm Light)',
+        cost: 30,
+        icon: '🍵',
+        category: 'themes',
+        palette: 'zen',
+        desc: 'Authentic Japanese washi paper warmth, calming bamboo green & sumi ink typography.'
+      },
+      {
+        key: 'theme_minimal',
+        name: 'Monochrome Obsidian',
+        cost: 20,
+        icon: '🖤',
+        category: 'themes',
+        palette: 'minimal',
+        desc: 'Ultra-distraction-free pure black & stark white high-focus architecture.'
+      },
+
+      // 👑 Accessories & Flairs
+      {
+        key: 'golden_aura',
+        name: 'Celestial Golden Avatar Aura',
+        cost: 45,
+        icon: '👑',
+        category: 'accessories',
+        desc: 'Unlocks a luminous, pulsating celestial golden border ring around your avatar.'
+      },
+      {
+        key: 'sound_8bit',
+        name: '8-Bit Retro Arcade Soundpack',
+        cost: 30,
+        icon: '🕹️',
+        category: 'accessories',
+        desc: 'Replaces standard quest chimes with crisp, nostalgic 8-bit game victory jingles.'
+      },
+
+      // 🛡️ Habit Shields
+      {
+        key: 'streak_freeze',
+        name: 'Streak Freeze Shield',
+        cost: 40,
+        icon: '🛡️',
+        category: 'shields',
+        desc: 'Protects your habit streak when illness or urgent emergencies happen.'
+      },
+
+      // 🌿 Grounded Real-Life Human Treats
+      {
+        key: 'rest_day',
+        name: 'Guilt-Free 100% Rest Day Pass',
+        cost: 60,
+        icon: '🏖️',
+        category: 'human',
+        desc: 'A complete 24-hour Sabbath with zero work, study, or checklists and total peace.'
+      },
+      {
+        key: 'protein_feast',
+        name: 'High-Protein Feast Pass',
+        cost: 35,
+        icon: '🥩',
+        category: 'human',
+        desc: 'Earned dinner at your favorite restaurant after days of disciplined consistency.'
+      },
+      {
+        key: 'sleep_sanctuary',
+        name: 'Deep Sleep Sanctuary Night',
+        cost: 25,
+        icon: '🌙',
+        category: 'human',
+        desc: 'Sleep by 9:30 PM with zero screens, ambient sounds & nervous system recovery.'
+      },
+      {
+        key: 'gaming_pass',
+        name: 'Guilt-Free Gaming Pass',
+        cost: 50,
+        icon: '🎮',
+        category: 'human',
+        desc: '2 hours of unhurried gaming with zero guilt after hitting daily high-leverage milestones.'
+      },
+      {
+        key: 'espresso_book',
+        name: 'Espresso & Quiet Book Pass',
+        cost: 20,
+        icon: '☕',
+        category: 'human',
+        desc: '90 minutes in a quiet cafe reading foundational non-fiction without checking phone.'
+      },
+      {
+        key: 'lovedone_dinner',
+        name: 'Celebration Dinner with Loved One',
+        cost: 75,
+        icon: '🥂',
+        category: 'human',
+        desc: 'Take parents, partner, or best friend out for dinner to celebrate mutual growth.'
+      }
+    ];
+
+    // Filter items based on active category
+    const activeFilter = this.shopFilter || 'all';
+    let filtered = shopCatalog;
+    if (activeFilter !== 'all') {
+      filtered = shopCatalog.filter(it => it.category === activeFilter);
+    }
+
+    const inventory = state?.inventory || [];
+    const activePalette = state?.activePalette || 'default';
+
+    // Inject filter tabs above items
+    const tabsHtml = `
+      <div class="shop-filter-tabs" style="grid-column: 1 / -1;">
+        <button class="shop-filter-tab ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">All Rewards (${shopCatalog.length})</button>
+        <button class="shop-filter-tab ${activeFilter === 'themes' ? 'active' : ''}" data-filter="themes">🎨 UI Themes</button>
+        <button class="shop-filter-tab ${activeFilter === 'accessories' ? 'active' : ''}" data-filter="accessories">👑 Accessories</button>
+        <button class="shop-filter-tab ${activeFilter === 'human' ? 'active' : ''}" data-filter="human">🌿 Human Treats</button>
+        <button class="shop-filter-tab ${activeFilter === 'shields' ? 'active' : ''}" data-filter="shields">🛡️ Shields</button>
+      </div>
+    `;
+
+    const cardsHtml = filtered.map(item => {
+      const isOwned = inventory.some(inv => inv.key === item.key);
+      const isEquipped = item.palette && activePalette === item.palette;
+
+      let actionButtonHtml = '';
+      if (!isOwned) {
+        actionButtonHtml = `
+          <button class="pill-btn primary-btn" 
+                  data-action="buy-shop-item" 
+                  data-item-key="${item.key}" 
+                  data-item-name="${escapeHTML(item.name)}" 
+                  data-item-cost="${item.cost}">
+            Purchase
+          </button>
+        `;
+      } else if (item.palette) {
+        if (isEquipped) {
+          actionButtonHtml = `<button class="pill-btn equipped-btn" disabled>✓ Equipped</button>`;
+        } else {
+          actionButtonHtml = `
+            <button class="pill-btn equip-btn" 
+                    data-action="equip-palette" 
+                    data-palette-key="${item.palette}" 
+                    data-palette-name="${escapeHTML(item.name)}">
+              ⚡ Equip Theme
+            </button>
+          `;
+        }
+      } else {
+        actionButtonHtml = `<button class="pill-btn secondary-btn" disabled style="opacity:0.75; font-size:0.8rem;">✓ Owned</button>`;
+      }
+
+      const badgeClass = item.category === 'themes' ? 'badge-theme' : (item.category === 'accessories' ? 'badge-accessory' : (item.category === 'shields' ? 'badge-shield' : 'badge-human'));
+      const badgeLabel = item.category === 'themes' ? 'Theme' : (item.category === 'accessories' ? 'Accessory' : (item.category === 'shields' ? 'Shield' : 'Human Treat'));
+
+      return `
         <div class="shop-item-card raycast-card specular-card">
           <div class="shop-item-header">
             <span class="shop-item-icon">${item.icon}</span>
-            <div>
-              <h4 class="shop-item-name">${escapeHTML(item.name)}</h4>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <h4 class="shop-item-name" style="margin:0;">${escapeHTML(item.name)}</h4>
+                <span class="shop-badge ${badgeClass}">${badgeLabel}</span>
+              </div>
               <p class="shop-item-desc">${escapeHTML(item.desc)}</p>
             </div>
           </div>
           <div class="shop-item-footer">
             <span class="shop-item-cost">🪙 ${item.cost} Coins</span>
-            <button class="pill-btn primary-btn" 
-                    data-action="buy-shop-item" 
-                    data-item-key="${item.key}" 
-                    data-item-name="${escapeHTML(item.name)}" 
-                    data-item-cost="${item.cost}">
-              Purchase
-            </button>
+            ${actionButtonHtml}
           </div>
         </div>
-      `).join('');
-    }
+      `;
+    }).join('');
+
+    itemsContainer.innerHTML = tabsHtml + cardsHtml;
 
     // Acquired Inventory
     const invContainer = document.getElementById('user-inventory-container');
     if (invContainer) {
-      const inv = state?.inventory || [];
-      if (inv.length === 0) {
-        invContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:24px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-md);">No purchased rewards in inventory yet. Complete daily quests to earn Life Credits!</div>`;
+      if (inventory.length === 0) {
+        invContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:24px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-md);">No purchased rewards in inventory yet. Complete daily missions to earn Life Coins!</div>`;
       } else {
-        invContainer.innerHTML = inv.map(it => `
+        invContainer.innerHTML = inventory.map(it => `
           <div class="inventory-item-card">
             <span>✨</span>
             <div>

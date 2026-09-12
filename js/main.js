@@ -353,6 +353,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      // 5.20 Equip Theme Palette
+      const equipBtn = e.target.closest('[data-action="equip-palette"]');
+      if (equipBtn) {
+        const paletteKey = equipBtn.dataset.paletteKey;
+        const paletteName = equipBtn.dataset.paletteName || 'Theme';
+        store.equipPalette(paletteKey);
+        document.documentElement.setAttribute('data-palette', paletteKey);
+        if (celebrate) celebrate.playChime('levelup');
+        ui.renderShopSection(store.state);
+        showToast(`Equipped ${paletteName}! Interface transformed. 🎨`);
+        return;
+      }
+
+      // 5.21 Shop Category Filter Tabs
+      const shopFilterTab = e.target.closest('.shop-filter-tab');
+      if (shopFilterTab && shopFilterTab.dataset.filter) {
+        ui.shopFilter = shopFilterTab.dataset.filter;
+        ui.renderShopSection(store.state);
+        return;
+      }
+
       // 5.20 Dismiss Level Up Modal
       if (e.target.id === 'dismiss-levelup-btn') {
         closeModal('level-up-modal');
@@ -627,11 +648,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // 7.3 Career Switcher Change
+    // 7.3 Career Switcher Change (Updates both Career Tree and Daily Missions!)
     if (e.target.id === 'career-switcher-select') {
-      store.switchCareerTrack(e.target.value);
+      const newTrack = e.target.value;
+      store.switchCareerTrack(newTrack);
       ui.renderCareerSection(store.state);
-      showToast(`Active career switched to ${e.target.value}.`);
+      ui.renderRoutineSection(store.state);
+      ui.renderMirrorSection(store.state);
+      if (celebrate) celebrate.playChime('success');
+      showToast(`Career switched to ${newTrack}! Daily routine & milestones updated. 🎯`);
       return;
     }
   });
