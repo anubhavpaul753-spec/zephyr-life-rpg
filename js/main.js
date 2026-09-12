@@ -27,6 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (urlParams.get('openBondModal')) {
     ui.openInteractionModal(urlParams.get('openBondModal'));
   }
+  if (urlParams.get('openParalysisModal')) {
+    ui.renderParalysisModal();
+    openModal('paralysis-modal');
+  }
+  if (urlParams.get('openCrossroadsModal')) {
+    ui.renderCrossroadsModal(parseInt(urlParams.get('crossroadsStage') || '1', 10));
+    openModal('crossroads-modal');
+  }
 
   // Play Netflix-style intro sound on initial load if user clicks anywhere or hits replay
   const replayBtn = document.getElementById('replay-netflix-intro');
@@ -110,8 +118,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const mId = microBtn.dataset.microId;
       const res = store.completeMicroQuest(mId);
       if (res) {
-        celebrate.celebrateQuestCompletion(microBtn, res);
-        closeModal('paralysis-modal');
+        celebrate.playChime('quest');
+        const rect = microBtn.getBoundingClientRect();
+        celebrate.spawnBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 22);
+        celebrate.showQuoteToast(`Micro-Habit Complete: ${res.quest.title}! +${res.xpGained} ${res.quest.pillar} XP awarded.`);
+        ui.renderParalysisModal();
+        if (res.leveledUp) {
+          setTimeout(() => {
+            const bonusEl = document.getElementById('levelup-bonuses');
+            if (bonusEl) bonusEl.textContent = `You broke paralysis and ascended to Level ${res.newLevel}!`;
+            openModal('level-up-modal');
+            celebrate.playChime('levelup');
+          }, 350);
+        }
       }
       return;
     }
@@ -144,10 +163,52 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Open Paralysis Breaker Modal
-    if (e.target.closest('#paralysis-breaker-btn')) {
+    // Open Paralysis Breaker Modal (Hero button or Routine banner button)
+    if (e.target.closest('#paralysis-breaker-btn') || e.target.closest('#open-paralysis-routine-btn') || e.target.closest('[data-action="open-paralysis-modal"]')) {
       ui.renderParalysisModal();
       openModal('paralysis-modal');
+      return;
+    }
+
+    // Open The Crossroads Decision Matrix Modal
+    if (e.target.closest('#crossroads-btn') || e.target.closest('#career-crossroads-btn') || e.target.closest('[data-action="open-crossroads-modal"]')) {
+      ui.renderCrossroadsModal(1);
+      openModal('crossroads-modal');
+      return;
+    }
+
+    // Navigate Crossroads Stages (Stage 1 -> 2 -> 3)
+    const stageBtn = e.target.closest('[data-action="crossroads-goto-stage"]');
+    if (stageBtn && stageBtn.dataset.stage) {
+      ui.renderCrossroadsModal(parseInt(stageBtn.dataset.stage, 10));
+      return;
+    }
+
+    // Crossroads Action: Take Earned Rest Day
+    if (e.target.closest('[data-action="take-rest-day"]')) {
+      const res = store.takeEarnedRestDay();
+      celebrate.playChime('quest');
+      celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 20);
+      celebrate.showQuoteToast("Earned Rest Day activated (+15 Calm XP). Honor your physiological baseline.");
+      closeModal('crossroads-modal');
+      return;
+    }
+
+    // Crossroads Action: Stay the Course
+    if (e.target.closest('[data-action="stay-the-course"]')) {
+      const res = store.stayTheCourseCrossroads();
+      celebrate.playChime('levelup');
+      celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 28, true);
+      celebrate.showQuoteToast(`Commitment Renewed! +30 Discipline XP, +15 Life Credits.`);
+      if (res.leveledUp) {
+        setTimeout(() => {
+          const bonusEl = document.getElementById('levelup-bonuses');
+          if (bonusEl) bonusEl.textContent = `Ascended in Level through sheer fortitude and discipline!`;
+          openModal('level-up-modal');
+          celebrate.playChime('levelup');
+        }, 350);
+      }
+      closeModal('crossroads-modal');
       return;
     }
 
@@ -317,6 +378,29 @@ document.addEventListener('DOMContentLoaded', () => {
         celebrate.showQuoteToast(`Bond with ${name} (${role}) added to your inner circle.`);
         closeModal('add-bond-modal');
         e.target.reset();
+      }
+      return;
+    }
+
+    // Crossroads Pivot Form Submit
+    if (e.target.id === 'crossroads-pivot-form') {
+      e.preventDefault();
+      const newTrack = document.getElementById('pivot-new-track').value;
+      const note = document.getElementById('pivot-reflection-note').value;
+      const res = store.resolveCrossroadsPivot(newTrack, note);
+      if (res) {
+        celebrate.playChime('levelup');
+        celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 32, true);
+        celebrate.showQuoteToast(`Pivoted with honor to: ${newTrack}! +${res.wisdomXP} Wisdom XP converted.`);
+        if (res.leveledUp) {
+          setTimeout(() => {
+            const bonusEl = document.getElementById('levelup-bonuses');
+            if (bonusEl) bonusEl.textContent = `Ascended in Level through self-awareness and wisdom!`;
+            openModal('level-up-modal');
+            celebrate.playChime('levelup');
+          }, 350);
+        }
+        closeModal('crossroads-modal');
       }
       return;
     }

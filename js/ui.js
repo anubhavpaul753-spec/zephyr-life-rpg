@@ -340,6 +340,9 @@ class UIRenderer {
       }).join('');
     }
 
+    // Honorable Archive Drawer
+    this.renderHonorableArchive(state);
+
     // 5. Relationship Bonds System (Mom, Dad, Partner)
     const bondsContainer = document.getElementById('relationship-bonds-list');
     if (bondsContainer && state.relationshipBonds) {
@@ -447,16 +450,286 @@ class UIRenderer {
     const container = document.getElementById('paralysis-items-container');
     if (!container) return;
 
-    container.innerHTML = window.PARALYSIS_MICRO_QUESTS.map(m => `
-      <div class="micro-quest-item">
-        <div>
-          <span style="font-size:0.75rem; color:var(--pillar-craft); font-weight:700;">⏱️ ${m.duration} • 2-Minute Rule</span>
-          <h4 style="font-size:0.95rem; font-weight:600; margin:3px 0;">${escapeHTML(m.title)}</h4>
-          <p style="font-size:0.775rem; color:var(--text-secondary);">${escapeHTML(m.note)}</p>
-        </div>
-        <button class="pill-btn primary-btn" data-action="do-micro-quest" data-micro-id="${m.id}">Crack It (+${m.xp} XP)</button>
+    const microQuests = window.PARALYSIS_MICRO_QUESTS || [];
+    const completedIds = (window.AppStore?.state?.completedMicroQuests || []).map(m => m.id);
+
+    container.innerHTML = `
+      <div class="paralysis-modal-intro">
+        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.45;">
+          When executive function feels blocked, do not force a massive sprint. 
+          Pick <strong>just one</strong> micro-action below to lower activation energy to zero and break the freeze state.
+        </p>
       </div>
-    `).join('');
+
+      <div class="micro-quests-stack">
+        ${microQuests.map(m => {
+          const isDone = completedIds.includes(m.id);
+          const pillarData = (window.PILLARS && window.PILLARS[m.pillar]) || { name: m.pillar, color: '#6366F1', icon: '⚡' };
+          return `
+            <div class="micro-quest-card ${isDone ? 'is-completed' : ''}" data-micro-id="${m.id}">
+              <div class="micro-quest-left">
+                <span class="micro-quest-icon">${m.icon || '⚡'}</span>
+                <div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="micro-duration-badge">⏱️ ${m.duration}</span>
+                    <span class="micro-pillar-badge" style="color:${pillarData.color}; border-color:${pillarData.color};">${pillarData.icon} +10 ${m.pillar} XP</span>
+                  </div>
+                  <h4 class="micro-quest-title">${escapeHTML(m.title)}</h4>
+                  <p class="micro-quest-note">${escapeHTML(m.note)}</p>
+                </div>
+              </div>
+              <button 
+                type="button" 
+                class="pill-btn primary-btn micro-action-btn" 
+                data-action="do-micro-quest" 
+                data-micro-id="${m.id}"
+                style="background:${pillarData.color}; border-color:${pillarData.color};"
+              >
+                ${isDone ? '✓ Completed' : 'Crack It (+10 XP) →'}
+              </button>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  // Render The Crossroads Decision Matrix (3-Stage Life Fork)
+  renderCrossroadsModal(stage = 1) {
+    this.crossroadsStage = stage;
+    const container = document.getElementById('crossroads-stage-container');
+    if (!container) return;
+
+    // Update Stepper
+    for (let i = 1; i <= 3; i++) {
+      const ind = document.getElementById(`step-ind-${i}`);
+      if (ind) {
+        ind.classList.toggle('active', i === stage);
+        ind.classList.toggle('completed', i < stage);
+      }
+    }
+
+    const state = window.AppStore.state;
+    const currentTrack = state.careerTrack || 'Software Engineer & Builder';
+
+    if (stage === 1) {
+      // Stage 1: Compassionate Pause
+      container.innerHTML = `
+        <div class="crossroads-stage-view" data-stage="1">
+          <div class="compassionate-pause-card">
+            <div style="display:flex; align-items:center; gap:14px;">
+              <span class="pause-icon-badge">🛑</span>
+              <div>
+                <h4 style="font-family:var(--font-serif); font-size:1.25rem; font-weight:700;">Never Quit on a Bad Day</h4>
+                <p style="font-size:0.825rem; color:var(--text-secondary); margin-top:3px; line-height:1.4;">
+                  Low sleep, high stress, and temporary dopamine depletion distort reality. Before an irreversible decision, honor your physiological needs first.
+                </p>
+              </div>
+            </div>
+            <div class="pause-question-box">
+              <span class="pause-question-label">Honest Self-Inquiry</span>
+              <p class="pause-question-text">
+                "Is this desire to quit caused by <strong>temporary nervous system exhaustion</strong>, or is it a true, foundational <strong>values mismatch</strong>?"
+              </p>
+            </div>
+          </div>
+
+          <div class="crossroads-stage-actions">
+            <button type="button" class="pill-btn rest-day-btn" data-action="take-rest-day">
+              <span>🛌</span> Take an Earned Rest Day (+15 Calm XP)
+            </button>
+            <button type="button" class="pill-btn primary-btn" data-action="crossroads-goto-stage" data-stage="2">
+              Examine Trade-Off Matrix ➔
+            </button>
+          </div>
+        </div>
+      `;
+    } else if (stage === 2) {
+      // Stage 2: Realistic Trade-Off Matrix
+      container.innerHTML = `
+        <div class="crossroads-stage-view" data-stage="2">
+          <div class="tradeoff-matrix-grid">
+            
+            <!-- Path A: Stay the Course -->
+            <div class="tradeoff-card path-stay">
+              <div class="tradeoff-card-header">
+                <span class="tradeoff-path-tag tag-stay">Path A</span>
+                <span class="tradeoff-prob-badge">65% – 80% Breakthrough Rate</span>
+              </div>
+              <h4 class="tradeoff-title">🧗‍♂️ Stay the Course</h4>
+              <p class="tradeoff-subtitle">Continue on: <strong>${escapeHTML(currentTrack)}</strong></p>
+              
+              <ul class="tradeoff-bullet-list">
+                <li>
+                  <strong>Neuroplasticity Friction:</strong> The dip before mastery feels painful, but it is the physical rewiring of neural circuits.
+                </li>
+                <li>
+                  <strong>Statistical Reality:</strong> 6 more weeks of small, consistent effort yields exponential compounding and unexpected momentum.
+                </li>
+                <li>
+                  <strong>Low-Friction Compromise:</strong> Lower your daily minimum bar to 20 minutes instead of abandoning the tree.
+                </li>
+              </ul>
+
+              <div class="tradeoff-cost-box">
+                <small>Short-Term Friction:</small>
+                <span>Enduring discomfort & protecting focus boundaries against distractions.</span>
+              </div>
+            </div>
+
+            <!-- Path B: Pivot to a New Path -->
+            <div class="tradeoff-card path-pivot">
+              <div class="tradeoff-card-header">
+                <span class="tradeoff-path-tag tag-pivot">Path B</span>
+                <span class="tradeoff-prob-badge badge-pivot">Frees ~8 Hours / Week</span>
+              </div>
+              <h4 class="tradeoff-title">🧭 Pivot with Honor</h4>
+              <p class="tradeoff-subtitle">Choose a new, more aligned life ambition</p>
+              
+              <ul class="tradeoff-bullet-list">
+                <li>
+                  <strong>Sunk Cost Honored:</strong> Zero shame. Sunk cost fallacy drains life energy. Pivoting with conscious intention is wisdom, not failure.
+                </li>
+                <li>
+                  <strong>Wisdom Conversion:</strong> Past effort is permanently converted into <strong>Wisdom & Self-Awareness XP</strong>.
+                </li>
+                <li>
+                  <strong>Honorable Archive:</strong> Your journey in ${escapeHTML(currentTrack)} is enshrined with dignity in your personal archive.
+                </li>
+              </ul>
+
+              <div class="tradeoff-cost-box">
+                <small>Short-Term Friction:</small>
+                <span>Starting anew on Tier 1 foundations of a different craft.</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="crossroads-stage-actions" style="justify-content:space-between;">
+            <button type="button" class="pill-btn" data-action="crossroads-goto-stage" data-stage="1">
+              ⬅ Back to Pause
+            </button>
+            <button type="button" class="pill-btn primary-btn" data-action="crossroads-goto-stage" data-stage="3">
+              Make Honest Autonomy Choice ➔
+            </button>
+          </div>
+        </div>
+      `;
+    } else if (stage === 3) {
+      // Stage 3: Autonomy & Honorable Decision
+      const otherTracks = (window.CAREER_TRACKS || []).filter(t => t.name !== currentTrack);
+
+      container.innerHTML = `
+        <div class="crossroads-stage-view" data-stage="3">
+          <div class="autonomy-intro">
+            <h4 style="font-family:var(--font-serif); font-size:1.25rem; font-weight:700;">Stage 3: Honest Sovereign Autonomy</h4>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:3px;">
+              You are the sovereign author of your life. Neither path is wrong. Make your choice with grounded calm.
+            </p>
+          </div>
+
+          <div class="autonomy-choices-grid">
+            <!-- Choice 1: Stay the Course -->
+            <div class="autonomy-choice-box choice-stay">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:2rem;">🧗‍♂️</span>
+                <div>
+                  <h5 style="font-size:1.05rem; font-weight:700;">I Will Stay the Course</h5>
+                  <p style="font-size:0.775rem; color:var(--text-secondary); margin-top:2px;">Renew commitment, lower friction, and push through the dip.</p>
+                </div>
+              </div>
+              <div class="choice-rewards-preview">
+                <span class="reward-chip chip-disc">+30 Discipline XP</span>
+                <span class="reward-chip chip-coin">+15 🪙 Life Credits</span>
+              </div>
+              <button type="button" class="pill-btn primary-btn stay-course-btn" data-action="stay-the-course">
+                Confirm: Stay the Course ➔
+              </button>
+            </div>
+
+            <!-- Choice 2: Pivot with Honor -->
+            <div class="autonomy-choice-box choice-pivot">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:2rem;">🧭</span>
+                <div>
+                  <h5 style="font-size:1.05rem; font-weight:700;">Pivot with Honor (Zero Shame)</h5>
+                  <p style="font-size:0.775rem; color:var(--text-secondary); margin-top:2px;">Convert past effort to permanent Wisdom XP and archive ambition.</p>
+                </div>
+              </div>
+
+              <form id="crossroads-pivot-form" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size:0.75rem;">Select New Career Ambition</label>
+                  <select id="pivot-new-track" class="form-select" style="font-size:0.825rem; padding:8px 12px;">
+                    ${otherTracks.map(t => `<option value="${escapeHTML(t.name)}">${escapeHTML(t.name)}</option>`).join('')}
+                    <option value="Custom Ambition">Custom Ambition</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" style="font-size:0.75rem;">Personal Reflection Note</label>
+                  <textarea id="pivot-reflection-note" class="form-textarea" rows="2" style="font-size:0.8rem;" placeholder="e.g. Learned deeply about my true strengths; shifting to where my genuine curiosity lives."></textarea>
+                </div>
+
+                <div class="choice-rewards-preview">
+                  <span class="reward-chip chip-craft">+50+ Wisdom & Self-Awareness XP</span>
+                  <span class="reward-chip chip-calm">🏛️ Honorable Archive Enshrined</span>
+                </div>
+
+                <button type="submit" class="pill-btn pivot-confirm-btn">
+                  Enshrine Archive & Pivot ➔
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; text-align:left;">
+            <button type="button" class="pill-btn" data-action="crossroads-goto-stage" data-stage="2">
+              ⬅ Back to Trade-Off Matrix
+            </button>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Render Honorable Archive in Career Ambition section
+  renderHonorableArchive(state) {
+    const container = document.getElementById('honorable-archive-container');
+    if (!container) return;
+
+    const archive = state?.honorableArchive || [];
+    if (archive.length === 0) {
+      container.classList.add('hidden');
+      container.innerHTML = '';
+      return;
+    }
+
+    container.classList.remove('hidden');
+    container.innerHTML = `
+      <div class="honorable-archive-card">
+        <div class="archive-card-header">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>🏛️</span>
+            <span style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-secondary);">Honorable Archive</span>
+          </div>
+          <span class="archive-count-pill">${archive.length} Pivots (Zero Shame)</span>
+        </div>
+        <div class="archive-items-list">
+          ${archive.map(a => `
+            <div class="archive-entry">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h6 style="font-size:0.825rem; font-weight:700; color:var(--text-primary);">${escapeHTML(a.previousTrack)}</h6>
+                <span class="wisdom-chip">+${a.wisdomXPAwarded} Wisdom XP</span>
+              </div>
+              <p style="font-size:0.725rem; font-style:italic; color:var(--text-secondary); margin-top:2px;">"${escapeHTML(a.note)}"</p>
+              <div style="font-size:0.65rem; color:var(--text-muted); margin-top:3px;">Archived on ${escapeHTML(a.archivedAt || 'Recently')} • ${a.milestonesCompleted || 0} milestones honored</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
   }
 
   /**

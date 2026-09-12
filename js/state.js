@@ -241,6 +241,40 @@ const SPECIAL_QUESTS = [
   { id: 'q_walk', title: 'Evening walk with no headphones', time: '06:30 PM', pillar: 'Joy', xp: 20, coins: 15, note: 'Joy of living: Observe the sky and environment guilt-free.', completed: false, category: 'joy' }
 ];
 
+// 2-Minute Rule Micro-Habits for Overwhelmed / Stuck Days (The Paralysis Breaker)
+const PARALYSIS_MICRO_QUESTS = [
+  {
+    id: 'micro_blinds',
+    title: 'Open the blinds and let natural sunlight in',
+    duration: '30 sec',
+    pillar: 'Calm',
+    icon: '🪟',
+    xp: 10,
+    coins: 5,
+    note: 'Let natural photons reset cortisol and signal wakefulness to your circadian rhythm.'
+  },
+  {
+    id: 'micro_water',
+    title: 'Drink a tall glass of cold water right now',
+    duration: '1 min',
+    pillar: 'Resilience',
+    icon: '💧',
+    xp: 10,
+    coins: 5,
+    note: 'Hydrate neural synapses and immediately break physical inertia.'
+  },
+  {
+    id: 'micro_workspace',
+    title: 'Open your workspace and write just one line of code or notes',
+    duration: '2 min',
+    pillar: 'Craft',
+    icon: '💻',
+    xp: 10,
+    coins: 5,
+    note: 'Lower activation energy to absolute zero. A single line dissolves task dread.'
+  }
+];
+
 // Pre-populated Relationship Bonds & Loved Ones (Relational Harmony & De-escalation)
 const DEFAULT_RELATIONSHIP_BONDS = [
   {
@@ -366,7 +400,12 @@ class StateManager {
         quests: (user.userData.quests && user.userData.quests.length > 0) 
           ? user.userData.quests 
           : [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
-        relationshipBonds: enrichBonds(user.userData.relationshipBonds)
+        relationshipBonds: enrichBonds(user.userData.relationshipBonds),
+        honorableArchive: Array.isArray(user.userData.honorableArchive) ? user.userData.honorableArchive : [],
+        completedMicroQuests: Array.isArray(user.userData.completedMicroQuests) ? user.userData.completedMicroQuests : [],
+        restDaysTaken: user.userData.restDaysTaken || 0,
+        stayTheCourseCount: user.userData.stayTheCourseCount || 0,
+        totalWisdomXP: user.userData.totalWisdomXP || 0
       };
     }
 
@@ -384,6 +423,11 @@ class StateManager {
       lifeGoal: user ? user.lifeGoal : 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
       relationshipBonds: JSON.parse(JSON.stringify(DEFAULT_RELATIONSHIP_BONDS)),
       quests: [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
+      honorableArchive: [],
+      completedMicroQuests: [],
+      restDaysTaken: 0,
+      stayTheCourseCount: 0,
+      totalWisdomXP: 0,
       history: []
     };
   }
@@ -506,6 +550,27 @@ class StateManager {
       });
     }
 
+    // Points from completed micro-quests (Paralysis Breaker)
+    if (this.state.completedMicroQuests && Array.isArray(this.state.completedMicroQuests)) {
+      this.state.completedMicroQuests.forEach(m => {
+        if (points.hasOwnProperty(m.pillar)) {
+          points[m.pillar] += (m.xp || 10);
+        }
+      });
+    }
+
+    // Points from Earned Rest Days & Crossroads decisions
+    if (this.state.restDaysTaken) {
+      points.Calm += (this.state.restDaysTaken * 15);
+    }
+    if (this.state.stayTheCourseCount) {
+      points.Discipline += (this.state.stayTheCourseCount * 30);
+    }
+    if (this.state.totalWisdomXP) {
+      points.Craft += Math.round(this.state.totalWisdomXP * 0.5);
+      points.Calm += Math.round(this.state.totalWisdomXP * 0.5);
+    }
+
     const pillarLevels = {};
     const pillarProgress = {};
     const maxTargets = {
@@ -586,11 +651,28 @@ class StateManager {
     if (!micro) return null;
 
     const oldLevel = this.getLevel();
-    this.state.totalXP += micro.xp;
-    this.state.currency += micro.coins;
+    const earnedXP = micro.xp || 10;
+    const earnedCoins = micro.coins || 5;
+
+    this.state.totalXP = (this.state.totalXP || 0) + earnedXP;
+    this.state.currency = (this.state.currency || 0) + earnedCoins;
+
+    if (!Array.isArray(this.state.completedMicroQuests)) {
+      this.state.completedMicroQuests = [];
+    }
+    this.state.completedMicroQuests.push({
+      id: micro.id,
+      title: micro.title,
+      pillar: micro.pillar,
+      xp: earnedXP,
+      completedAt: new Date().toISOString()
+    });
 
     const newLevel = this.getLevel();
     const didLevelUp = newLevel > oldLevel;
+    if (didLevelUp) {
+      this.state.currency += 20;
+    }
 
     this.saveState();
     this.notify();
@@ -598,12 +680,151 @@ class StateManager {
     return {
       quest: micro,
       isCompleted: true,
-      xpGained: micro.xp,
-      coinsGained: micro.coins,
+      completed: true,
+      xpGained: earnedXP,
+      coinsGained: earnedCoins,
       oldLevel,
       newLevel,
       careerTrack: this.state.careerTrack,
-      didLevelUp
+      didLevelUp,
+      leveledUp: didLevelUp
+    };
+  }
+
+  // The Crossroads — Stage 1: Take an Earned Rest Day
+  takeEarnedRestDay(reason = 'Honoring physiological limits and resetting nervous system.') {
+    const oldLevel = this.getLevel();
+    const earnedXP = 15;
+    this.state.totalXP = (this.state.totalXP || 0) + earnedXP;
+    this.state.restDaysTaken = (this.state.restDaysTaken || 0) + 1;
+
+    if (!Array.isArray(this.state.history)) {
+      this.state.history = [];
+    }
+    this.state.history.unshift({
+      id: `rest_${Date.now()}`,
+      type: 'earned_rest_day',
+      title: 'Earned Rest Day Taken',
+      desc: reason,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      xp: earnedXP
+    });
+
+    const newLevel = this.getLevel();
+    const didLevelUp = newLevel > oldLevel;
+    if (didLevelUp) {
+      this.state.currency += 20;
+    }
+
+    this.saveState();
+    this.notify();
+
+    return {
+      earnedXP,
+      restDaysTaken: this.state.restDaysTaken,
+      oldLevel,
+      newLevel,
+      didLevelUp,
+      leveledUp: didLevelUp
+    };
+  }
+
+  // The Crossroads — Stage 3 Option A: Stay the Course
+  stayTheCourseCrossroads(commitmentNote = 'Friction is neuroplasticity. Pushing for the 6-week consistency breakthrough.') {
+    const oldLevel = this.getLevel();
+    const earnedXP = 30;
+    const earnedCoins = 15;
+    this.state.totalXP = (this.state.totalXP || 0) + earnedXP;
+    this.state.currency = (this.state.currency || 0) + earnedCoins;
+    this.state.stayTheCourseCount = (this.state.stayTheCourseCount || 0) + 1;
+
+    if (!Array.isArray(this.state.history)) {
+      this.state.history = [];
+    }
+    this.state.history.unshift({
+      id: `stay_${Date.now()}`,
+      type: 'crossroads_stay',
+      title: `Renewed Commitment: ${this.state.careerTrack}`,
+      desc: commitmentNote,
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      xp: earnedXP
+    });
+
+    const newLevel = this.getLevel();
+    const didLevelUp = newLevel > oldLevel;
+    if (didLevelUp) {
+      this.state.currency += 20;
+    }
+
+    this.saveState();
+    this.notify();
+
+    return {
+      earnedXP,
+      earnedCoins,
+      oldLevel,
+      newLevel,
+      didLevelUp,
+      leveledUp: didLevelUp
+    };
+  }
+
+  // The Crossroads — Stage 3 Option B: Pivot with Honor & Convert to Wisdom XP
+  resolveCrossroadsPivot(newTrackName, reflectionNote) {
+    if (!newTrackName) return null;
+    const oldLevel = this.getLevel();
+
+    // Calculate completed milestones from current tree to honor past effort
+    let completedCount = 0;
+    if (this.state.careerTree && Array.isArray(this.state.careerTree)) {
+      this.state.careerTree.forEach(tier => {
+        (tier.milestones || []).forEach(m => {
+          if (m.completed) completedCount++;
+        });
+      });
+    }
+
+    // Convert past effort into permanent Wisdom & Self-Awareness XP
+    const wisdomXP = 50 + (completedCount * 25);
+    this.state.totalXP = (this.state.totalXP || 0) + wisdomXP;
+    this.state.totalWisdomXP = (this.state.totalWisdomXP || 0) + wisdomXP;
+
+    if (!Array.isArray(this.state.honorableArchive)) {
+      this.state.honorableArchive = [];
+    }
+
+    const archivedEntry = {
+      id: `arch_${Date.now()}`,
+      previousTrack: this.state.careerTrack,
+      newTrack: newTrackName,
+      milestonesCompleted: completedCount,
+      wisdomXPAwarded: wisdomXP,
+      note: reflectionNote || 'Pivoted with intention and zero shame. All past effort converted to self-awareness.',
+      archivedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    };
+    this.state.honorableArchive.unshift(archivedEntry);
+
+    // Switch career track and load clean progression tree
+    const validTrack = CAREER_TREE_PRESETS[newTrackName] ? newTrackName : 'Software Engineer & Builder';
+    this.state.careerTrack = validTrack;
+    this.state.careerTree = JSON.parse(JSON.stringify(CAREER_TREE_PRESETS[validTrack]));
+
+    const newLevel = this.getLevel();
+    const didLevelUp = newLevel > oldLevel;
+    if (didLevelUp) {
+      this.state.currency += 20;
+    }
+
+    this.saveState();
+    this.notify();
+
+    return {
+      archivedEntry,
+      wisdomXP,
+      oldLevel,
+      newLevel,
+      didLevelUp,
+      leveledUp: didLevelUp
     };
   }
 

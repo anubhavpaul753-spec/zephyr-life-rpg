@@ -146,8 +146,11 @@
         <button id="ai-generator-btn" class="pill-btn primary-btn">
           <span>⚡</span> AI Blueprint Generator
         </button>
-        <button id="paralysis-breaker-btn" class="pill-btn paralysis-btn">
-          <span>🛑</span> I'm feeling overwhelmed today
+        <button id="paralysis-breaker-btn" class="pill-btn paralysis-btn" data-action="open-paralysis-modal">
+          <span>🌪️</span> Feeling Overwhelmed / Stuck?
+        </button>
+        <button id="crossroads-btn" class="pill-btn crossroads-btn" data-action="open-crossroads-modal">
+          <span>⚖️</span> The Crossroads
         </button>
       </div>
     </section>
@@ -250,6 +253,24 @@
           <div class="career-tree-container" id="career-tree-container">
             <!-- Dynamically populated by ui.js -->
           </div>
+
+          <!-- Career Crossroads Prompt Card -->
+          <div class="career-crossroads-card">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+              <div>
+                <span style="font-size:0.8rem; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:5px;">⚖️ The Crossroads</span>
+                <p style="font-size:0.725rem; color:var(--text-secondary); margin-top:2px;">Facing friction? Weigh trade-offs honestly before deciding.</p>
+              </div>
+              <button id="career-crossroads-btn" class="pill-btn crossroads-mini-btn" data-action="open-crossroads-modal">
+                Life Fork →
+              </button>
+            </div>
+          </div>
+
+          <!-- Honorable Archive Drawer (Zero Shame Pivots) -->
+          <div id="honorable-archive-container" class="honorable-archive-wrapper">
+            <!-- Injected by ui.js -->
+          </div>
         </div>
 
         <!-- 3. Relationship Bonds System (Mom, Dad, Partner) -->
@@ -267,6 +288,23 @@
       <!-- Quests Section -->
       <main class="quests-section">
         
+        <!-- The Paralysis Breaker Banner (Prominent Calming Banner above Daily Routine) -->
+        <div class="paralysis-breaker-banner">
+          <div class="paralysis-breaker-left">
+            <div class="paralysis-icon-ring">🌪️</div>
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <h4 class="paralysis-banner-title">Feeling Overwhelmed / Stuck?</h4>
+                <span class="paralysis-rule-badge">2-Minute Rule</span>
+              </div>
+              <p class="paralysis-banner-desc">Lower activation energy to zero with low-friction micro-habits. Instant momentum, no task dread.</p>
+            </div>
+          </div>
+          <button id="open-paralysis-routine-btn" class="pill-btn paralysis-cta-btn" data-action="open-paralysis-modal">
+            <span>🌪️</span> Break Paralysis (+10 XP)
+          </button>
+        </div>
+
         <!-- Filter Tabs & Actions -->
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
           <nav class="filter-tabs-nav">
@@ -311,13 +349,51 @@
     <div class="modal-card">
       <div class="modal-header">
         <div>
-          <h3 id="paralysis-modal-title" style="font-family:var(--font-serif); font-size:1.3rem;">🛑 The Paralysis Breaker</h3>
-          <p style="font-size:0.8rem; color:var(--text-secondary);">When overwhelmed, do not force a 3-hour marathon. Win the 2-minute rule.</p>
+          <h3 id="paralysis-modal-title" style="font-family:var(--font-serif); font-size:1.35rem;">🌪️ The Paralysis Breaker</h3>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">When overwhelmed, do not force a 3-hour marathon. Break the paralysis with the 2-minute rule.</p>
         </div>
         <button class="icon-btn modal-close-btn" aria-label="Close modal">✕</button>
       </div>
       <div class="modal-body" id="paralysis-items-container">
         <!-- Injected by ui.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: The Crossroads Decision Matrix (3-Stage Life Fork) -->
+  <div id="crossroads-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="crossroads-modal-title">
+    <div class="modal-card modal-card-wide" id="crossroads-card-wrapper">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:1.8rem;">⚖️</span>
+          <div>
+            <h3 id="crossroads-modal-title" style="font-family:var(--font-serif); font-size:1.35rem;">The Crossroads: Honest Life Trade-Offs</h3>
+            <p style="font-size:0.8rem; color:var(--text-secondary);">Honest navigation when facing friction or wanting to quit a major ambition.</p>
+          </div>
+        </div>
+        <button class="icon-btn modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+
+      <!-- Stepper Indicator (Stage 1 -> Stage 2 -> Stage 3) -->
+      <div class="crossroads-stepper" id="crossroads-stepper">
+        <div class="crossroads-step-indicator active" id="step-ind-1">
+          <span class="step-num">1</span>
+          <span class="step-label">Compassionate Pause</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="crossroads-step-indicator" id="step-ind-2">
+          <span class="step-num">2</span>
+          <span class="step-label">Trade-Off Matrix</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="crossroads-step-indicator" id="step-ind-3">
+          <span class="step-num">3</span>
+          <span class="step-label">Honest Autonomy</span>
+        </div>
+      </div>
+
+      <div class="modal-body" id="crossroads-stage-container">
+        <!-- Injected dynamically by ui.js based on active stage -->
       </div>
     </div>
   </div>
