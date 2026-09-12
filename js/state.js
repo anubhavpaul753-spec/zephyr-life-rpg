@@ -73,7 +73,17 @@ class StateManager {
         fullName: user.fullName || user.username,
         careerTrack: user.careerTrack || 'Software Engineer & Builder',
         lifeGoal: user.lifeGoal || 'Master full-stack engineering and bring security to loved ones.',
-        themeMode: user.themeMode || 'dark'
+        themeMode: user.userData.themeMode || user.themeMode || 'dark',
+        quests: (user.userData.quests && user.userData.quests.length > 0) 
+          ? user.userData.quests 
+          : [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
+        relationshipBonds: (user.userData.relationshipBonds && user.userData.relationshipBonds.length > 0)
+          ? user.userData.relationshipBonds
+          : [
+              { id: 'bond_mom', name: 'Mom', role: 'Mother', status: 'Warm', statusColor: '#10B981', trust: 90, note: 'Values consistent check-ins and shared peaceful meals.' },
+              { id: 'bond_dad', name: 'Dad', role: 'Father', status: 'Neutral', statusColor: '#6B7280', trust: 70, note: 'Appreciates quiet demonstrations of career competence.' },
+              { id: 'bond_partner', name: 'Partner / Best Friend', role: 'Companion', status: 'Warm', statusColor: '#F43F5E', trust: 85, note: 'Deep mutual encouragement and shared aspirations.' }
+            ]
       };
     }
 

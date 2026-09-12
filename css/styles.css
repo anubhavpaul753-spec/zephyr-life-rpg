@@ -1,101 +1,171 @@
 /* ==========================================================================
-   DAILYLIFE (PROJECT MIRROR) — OBSIDIAN CYBER-HUD & MINDFUL IVORY
-   Dual-Theme System, Netflix-Style Cinematic Intro, 6 Life Pillars & Tactical Micro-Interactions
+   DAILYLIFE (PROJECT MIRROR) — MASTER AESTHETIC THEMES
+   1. Dark Mode: "Midnight Obsidian with Specular Reflection"
+   2. Light Mode: "Golden Autumn & Warm Parchment"
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. COLOR SYSTEM & CSS VARIABLES
+   1. DESIGN TOKENS & SYSTEM VARIABLES
    -------------------------------------------------------------------------- */
 :root {
+  /* Fonts */
   --font-serif: 'Fraunces', 'Newsreader', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* The 6 Life Pillar Signature Jewel-Tone Accents */
+  /* Sizing & Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-smooth: 500ms cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-xp: 650ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-theme: 400ms ease;
+
+  /* The 6 Life Pillar Signature Jewel Tones */
   --pillar-craft: #6366F1;       /* Electric Violet / Indigo */
   --pillar-resilience: #10B981;  /* Emerald Jade */
   --pillar-calm: #0EA5E9;        /* Azure Sky */
   --pillar-lovedones: #F43F5E;   /* Rose Pink */
   --pillar-discipline: #F59E0B;  /* Radiant Gold */
   --pillar-joy: #FB923C;         /* Sunset Coral */
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-full: 9999px;
-
-  --transition-fast: 150ms ease;
-  --transition-normal: 250ms ease;
-  --transition-smooth: 500ms cubic-bezier(0.25, 1, 0.5, 1);
-  --transition-xp: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/* --- THEME 1: Obsidian Cyber-HUD (Default Dark Mode) --- */
-:root, [data-theme="dark"] {
-  --bg-app: #0D0F12;
-  --bg-card: #16191E;
-  --bg-card-hover: #1C2027;
-  --bg-subtle: #21262F;
-  --bg-input: #121418;
-
-  --border-color: #262B34;
-  --border-subtle: #1E232B;
-  --border-focus: #6366F1;
-
-  --text-primary: #F3F4F6;
-  --text-secondary: #9CA3AF;
-  --text-muted: #6B7280;
-  --text-inverse: #0D0F12;
-
-  --accent: #6366F1;
-  --accent-light: rgba(99, 102, 241, 0.15);
-  --accent-hover: #4F46E5;
-  --accent-glow: rgba(99, 102, 241, 0.35);
-
-  --coin-gold: #F59E0B;
-  --coin-bg: rgba(245, 158, 11, 0.15);
-  --fire-orange: #FB923C;
-  --fire-bg: rgba(251, 146, 60, 0.15);
-
-  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.35);
-  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.45);
-  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.7);
-}
-
-/* --- THEME 2: Mindful Ivory (Light Mode) --- */
-[data-theme="light"] {
-  --bg-app: #FBF9F4;
-  --bg-card: #FFFFFF;
-  --bg-card-hover: #FCFBFA;
-  --bg-subtle: #F3EFE6;
-  --bg-input: #F8F6F0;
-
-  --border-color: #E5E0D4;
-  --border-subtle: #ECE7DC;
-  --border-focus: #4F46E5;
-
-  --text-primary: #1F2421;
-  --text-secondary: #5C625E;
-  --text-muted: #8E9490;
-  --text-inverse: #FFFFFF;
-
-  --accent: #4F46E5;
-  --accent-light: #EEF2FF;
-  --accent-hover: #4338CA;
-  --accent-glow: rgba(79, 70, 229, 0.2);
-
-  --coin-gold: #D97706;
-  --coin-bg: #FEF3C7;
-  --fire-orange: #EA580C;
-  --fire-bg: #FFEDD5;
-
-  --shadow-subtle: 0 2px 10px rgba(40, 36, 30, 0.05);
-  --shadow-card: 0 6px 20px rgba(40, 36, 30, 0.07);
-  --shadow-modal: 0 20px 45px rgba(35, 30, 25, 0.14);
 }
 
 /* --------------------------------------------------------------------------
-   2. RESET & BASE STYLES
+   2. THEME 1: MIDNIGHT OBSIDIAN WITH SPECULAR REFLECTION (DARK MODE)
+   -------------------------------------------------------------------------- */
+:root, [data-theme="dark"] {
+  /* Background: Deep midnight gradient with subtle, non-distracting radial mesh glow */
+  --bg-app: #07090E;
+  --body-bg: 
+    radial-gradient(circle at 18% 12%, rgba(99, 102, 241, 0.08) 0%, transparent 42%),
+    radial-gradient(circle at 82% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 50% 45%, rgba(14, 165, 233, 0.04) 0%, transparent 55%),
+    linear-gradient(180deg, #07090E 0%, #0E121A 100%);
+
+  /* Card Surfaces: Subtle Glassmorphism with top-down sheen */
+  --bg-card: #12151C;
+  --bg-card-sheen: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0) 100%);
+  --bg-card-hover: #171B24;
+  --bg-subtle: rgba(255, 255, 255, 0.04);
+  --bg-input: #0A0D13;
+
+  /* Specular Shine & Border Reflection: 1px metallic/glass edge */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-focus: #6366F1;
+  --border-specular: linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.02) 100%);
+
+  /* Typography */
+  --text-primary: #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --text-inverse: #07090E;
+
+  /* Accent */
+  --accent: #6366F1;
+  --accent-light: rgba(99, 102, 241, 0.16);
+  --accent-hover: #4F46E5;
+  --accent-glow: rgba(99, 102, 241, 0.4);
+
+  /* Currencies */
+  --coin-gold: #F59E0B;
+  --coin-bg: rgba(245, 158, 11, 0.16);
+  --fire-orange: #FB923C;
+  --fire-bg: rgba(251, 146, 60, 0.16);
+
+  /* Deep Midnight Shadows */
+  --shadow-subtle: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.09);
+  --shadow-card-hover: 0 14px 38px -8px rgba(0, 0, 0, 0.75), inset 0 1px 2px 0 rgba(255, 255, 255, 0.15);
+  --shadow-modal: 0 25px 60px -12px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.1);
+
+  /* Crisp Pillar Text & Badge Backgrounds for Dark Mode */
+  --badge-craft-text: #818CF8;
+  --badge-craft-bg: rgba(99, 102, 241, 0.18);
+  --badge-resilience-text: #34D399;
+  --badge-resilience-bg: rgba(16, 185, 129, 0.18);
+  --badge-calm-text: #38BDF8;
+  --badge-calm-bg: rgba(14, 165, 233, 0.18);
+  --badge-lovedones-text: #FB7185;
+  --badge-lovedones-bg: rgba(244, 63, 94, 0.18);
+  --badge-discipline-text: #FBBF24;
+  --badge-discipline-bg: rgba(245, 158, 11, 0.18);
+  --badge-joy-text: #FDBA74;
+  --badge-joy-bg: rgba(251, 146, 60, 0.18);
+}
+
+/* --------------------------------------------------------------------------
+   3. THEME 2: GOLDEN AUTUMN & WARM PARCHMENT (LIGHT MODE)
+   -------------------------------------------------------------------------- */
+[data-theme="light"] {
+  /* Background: Warm, soothing honeyed parchment with diffuse autumn glow */
+  --bg-app: #FAF6EE;
+  --body-bg: 
+    radial-gradient(circle at 15% 15%, rgba(217, 119, 6, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(234, 88, 12, 0.05) 0%, transparent 48%),
+    radial-gradient(circle at 50% 50%, rgba(180, 83, 9, 0.03) 0%, transparent 60%),
+    linear-gradient(180deg, #FAF6EE 0%, #F5EFE1 100%);
+
+  /* Card Surfaces: Creamy white with golden-tan borders */
+  --bg-card: #FFFFFF;
+  --bg-card-sheen: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(254, 252, 248, 1) 100%);
+  --bg-card-hover: #FFFDF9;
+  --bg-subtle: #F4ECE0;
+  --bg-input: #F9F5EC;
+
+  /* Borders & Shadows: Soft golden-tan & diffuse autumn amber */
+  --border-color: #E8DFD0;
+  --border-subtle: #EFE8DC;
+  --border-focus: #D97706;
+  --border-specular: linear-gradient(135deg, rgba(217, 119, 6, 0.25) 0%, rgba(232, 223, 208, 0.8) 100%);
+
+  /* Typography: Warm Espresso & Roasted Coffee Bean */
+  --text-primary: #292524;
+  --text-secondary: #57534E;
+  --text-muted: #78716C;
+  --text-inverse: #FFFFFF;
+
+  /* Accent: Warm Roasted Amber & Terracotta */
+  --accent: #B45309;
+  --accent-light: #FEF3C7;
+  --accent-hover: #92400E;
+  --accent-glow: rgba(217, 119, 6, 0.28);
+
+  /* Currencies */
+  --coin-gold: #B45309;
+  --coin-bg: #FEF3C7;
+  --fire-orange: #C2410C;
+  --fire-bg: #FFEDD5;
+
+  /* Warm Diffuse Autumn Shadows */
+  --shadow-subtle: 0 2px 10px rgba(120, 53, 15, 0.04);
+  --shadow-card: 0 4px 20px -2px rgba(120, 53, 15, 0.07), 0 1px 3px 0 rgba(120, 53, 15, 0.03);
+  --shadow-card-hover: 0 8px 24px -4px rgba(120, 53, 15, 0.12), 0 2px 6px 0 rgba(120, 53, 15, 0.04);
+  --shadow-modal: 0 22px 50px -10px rgba(120, 53, 15, 0.18), 0 0 0 1px #E8DFD0;
+
+  /* Crisp Pillar Text & Badge Backgrounds for Autumn Light Mode */
+  --badge-craft-text: #4338CA;
+  --badge-craft-bg: #EEF2FF;
+  --badge-resilience-text: #065F46;
+  --badge-resilience-bg: #ECFDF5;
+  --badge-calm-text: #0369A1;
+  --badge-calm-bg: #F0F9FF;
+  --badge-lovedones-text: #BE123C;
+  --badge-lovedones-bg: #FFF1F2;
+  --badge-discipline-text: #92400E;
+  --badge-discipline-bg: #FFFBEB;
+  --badge-joy-text: #C2410C;
+  --badge-joy-bg: #FFF7ED;
+}
+
+/* --------------------------------------------------------------------------
+   4. BASE RESETS & GLOBAL STRUCTURE
    -------------------------------------------------------------------------- */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -108,14 +178,17 @@ html {
   line-height: 1.6;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   font-family: var(--font-sans);
+  background: var(--body-bg);
   background-color: var(--bg-app);
+  background-attachment: fixed;
   color: var(--text-primary);
   min-height: 100vh;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition: background var(--transition-theme), background-color var(--transition-theme), color var(--transition-theme);
 }
 
 .sr-only {
@@ -135,7 +208,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   3. NETFLIX-STYLE CINEMATIC INTRO & AUTH GATEWAY
+   5. NETFLIX-STYLE CINEMATIC INTRO & AUTH GATEWAY
    -------------------------------------------------------------------------- */
 .auth-overlay {
   min-height: 100vh;
@@ -144,62 +217,61 @@ body {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: radial-gradient(circle at 50% 30%, var(--bg-card) 0%, var(--bg-app) 100%);
   position: relative;
   overflow: hidden;
 }
 
-/* Background Cyber Grid lines */
+/* Background Cyber/Parchment Ambient Grid */
 .auth-overlay::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background-image: 
-    linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(to right, rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
   pointer-events: none;
 }
 
-/* Netflix-Style Cinematic Brand Animation Container */
+[data-theme="light"] .auth-overlay::before {
+  background-image: 
+    linear-gradient(to right, rgba(217, 119, 6, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 119, 6, 0.04) 1px, transparent 1px);
+}
+
+/* Netflix-Style Cinematic Brand Animation */
 .netflix-brand-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
   text-align: center;
   position: relative;
 }
 
 .netflix-logo-text {
   font-family: var(--font-serif);
-  font-size: 3.4rem;
+  font-size: 3.6rem;
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #FFFFFF;
+  color: var(--text-primary);
   display: inline-block;
   position: relative;
   text-shadow: 
-    0 0 15px var(--accent-glow),
-    0 0 35px var(--accent),
-    0 0 70px rgba(99, 102, 241, 0.6);
+    0 0 16px var(--accent-glow),
+    0 0 36px var(--accent);
   animation: netflixCinematicZoom 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-[data-theme="light"] .netflix-logo-text {
-  color: #1F2421;
-}
-
-/* Beam shimmer line below Netflix-style logo */
 .netflix-beam-flare {
-  width: 160px;
+  width: 180px;
   height: 3px;
-  background: linear-gradient(90deg, transparent, var(--pillar-craft), var(--pillar-calm), var(--pillar-resilience), transparent);
+  background: linear-gradient(90deg, transparent, var(--pillar-craft), var(--pillar-calm), var(--pillar-discipline), transparent);
   border-radius: var(--radius-full);
   margin-top: 6px;
-  box-shadow: 0 0 16px var(--accent);
+  box-shadow: 0 0 18px var(--accent);
   animation: beamFlarePulse 2s ease-in-out infinite alternate;
 }
 
@@ -230,11 +302,12 @@ body {
 }
 
 .netflix-tagline {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
   margin-top: 10px;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .replay-intro-btn {
@@ -242,10 +315,11 @@ body {
   align-items: center;
   gap: 6px;
   font-size: 0.775rem;
+  font-weight: 600;
   color: var(--accent);
   background: var(--accent-light);
   border: 1px solid var(--accent);
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: var(--radius-full);
   margin-top: 10px;
   cursor: pointer;
@@ -257,19 +331,20 @@ body {
   box-shadow: 0 0 14px var(--accent-glow);
 }
 
-/* Auth Card */
+/* Auth Card: Specular Reflection & Glassmorphism */
 .auth-card {
   width: 100%;
-  max-width: 460px;
-  background: var(--bg-card);
+  max-width: 470px;
+  background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 32px;
+  padding: 34px;
   box-shadow: var(--shadow-card);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   position: relative;
   z-index: 10;
-  animation: cardFadeIn 0.6s ease forwards;
+  animation: cardFadeIn 0.5s ease forwards;
 }
 
 @keyframes cardFadeIn {
@@ -277,7 +352,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Auth Switch Tabs (Sign In vs Register) */
+/* Auth Tabs */
 .auth-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -286,6 +361,7 @@ body {
   padding: 4px;
   margin-bottom: 24px;
   gap: 4px;
+  border: 1px solid var(--border-subtle);
 }
 
 .auth-tab-btn {
@@ -307,7 +383,7 @@ body {
   box-shadow: var(--shadow-subtle);
 }
 
-/* Form Styles */
+/* Forms */
 .auth-form {
   display: flex;
   flex-direction: column;
@@ -322,7 +398,7 @@ body {
 
 .form-label {
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-secondary);
   letter-spacing: 0.02em;
 }
@@ -347,17 +423,17 @@ body {
 
 .auth-submit-btn {
   width: 100%;
-  padding: 12px;
+  padding: 13px;
   background: var(--accent);
   color: #FFFFFF;
   border: none;
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   margin-top: 8px;
-  box-shadow: 0 4px 14px var(--accent-glow);
+  box-shadow: 0 4px 16px var(--accent-glow);
   transition: all var(--transition-fast);
 }
 
@@ -378,7 +454,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   4. APP DASHBOARD LAYOUT
+   6. APP DASHBOARD LAYOUT & SPECULAR CARDS
    -------------------------------------------------------------------------- */
 .app-layout {
   max-width: 1280px;
@@ -389,15 +465,18 @@ body {
   gap: 24px;
 }
 
+/* Header */
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: var(--bg-card);
+  background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-subtle);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   flex-wrap: wrap;
   gap: 16px;
 }
@@ -419,6 +498,7 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.4rem;
+  box-shadow: 0 0 16px var(--accent-glow);
 }
 
 .app-title {
@@ -440,16 +520,15 @@ body {
   flex-wrap: wrap;
 }
 
-.streak-pill, .currency-pill, .user-badge-pill {
+.streak-pill, .currency-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
   border-radius: var(--radius-full);
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   border: 1px solid var(--border-color);
-  background: var(--bg-subtle);
 }
 
 .streak-pill {
@@ -464,14 +543,45 @@ body {
   color: var(--coin-gold);
 }
 
-.user-badge-pill {
-  color: var(--text-primary);
-  border-color: var(--border-color);
+/* --------------------------------------------------------------------------
+   7. SMOOTH ROTATING THEME TOGGLE BUTTON (AUTUMN SUN & MIDNIGHT MOON)
+   -------------------------------------------------------------------------- */
+#theme-toggle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+#theme-toggle-btn:hover {
+  transform: rotate(35deg) scale(1.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+#theme-toggle-btn svg {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+[data-theme="dark"] #theme-toggle-btn {
+  color: #FBBF24; /* Golden sun icon ready to rotate into dawn */
+}
+
+[data-theme="light"] #theme-toggle-btn {
+  color: #6366F1; /* Radiant indigo moon ready to rotate into twilight */
 }
 
 .icon-btn {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   background: var(--bg-card);
@@ -490,19 +600,24 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   5. GROUNDED MOTIVATIONAL QUOTE BANNER
+   8. MOTIVATIONAL QUOTE BANNER (GROUNDED WISDOM)
    -------------------------------------------------------------------------- */
 .motivational-banner {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(16, 185, 129, 0.12) 100%);
   border: 1px solid var(--accent);
   border-radius: var(--radius-md);
-  padding: 14px 20px;
+  padding: 14px 22px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  box-shadow: 0 4px 20px var(--accent-glow);
+  box-shadow: var(--shadow-card), 0 0 20px var(--accent-glow);
   transition: all var(--transition-normal);
+}
+
+[data-theme="light"] .motivational-banner {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FFEDD5 100%);
+  border-color: #D97706;
 }
 
 .quote-content {
@@ -515,8 +630,12 @@ body {
   font-size: 0.725rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--pillar-craft);
+}
+
+[data-theme="light"] .quote-label {
+  color: #B45309;
 }
 
 .quote-text {
@@ -529,11 +648,11 @@ body {
 .quote-author {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .quote-pop-anim {
-  animation: quotePulse 0.6s ease;
+  animation: quotePulse 0.5s ease;
 }
 
 @keyframes quotePulse {
@@ -543,19 +662,21 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   6. CAREER TRACK & LIFE AMBITION HERO BANNER
+   9. CAREER TRACK & LIFE AMBITION HERO CARD
    -------------------------------------------------------------------------- */
 .career-hero-card {
-  background: var(--bg-card);
+  background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 26px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 18px;
-  box-shadow: var(--shadow-subtle);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   position: relative;
   overflow: hidden;
 }
@@ -563,7 +684,7 @@ body {
 .career-hero-card::after {
   content: '';
   position: absolute;
-  top: 0; right: 0; width: 280px; height: 100%;
+  top: 0; right: 0; width: 320px; height: 100%;
   background: radial-gradient(circle at top right, var(--accent-light) 0%, transparent 70%);
   pointer-events: none;
 }
@@ -586,9 +707,13 @@ body {
   color: var(--pillar-craft);
 }
 
+[data-theme="light"] .career-track-tag {
+  color: #B45309;
+}
+
 .career-title {
   font-family: var(--font-serif);
-  font-size: 1.6rem;
+  font-size: 1.65rem;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -614,7 +739,7 @@ body {
   border-radius: var(--radius-full);
   font-family: var(--font-sans);
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   border: 1px solid var(--border-color);
   transition: all var(--transition-fast);
@@ -629,6 +754,7 @@ body {
 .primary-btn:hover {
   background: var(--accent-hover);
   box-shadow: 0 4px 16px var(--accent-glow);
+  transform: translateY(-1px);
 }
 
 .paralysis-btn {
@@ -639,10 +765,11 @@ body {
 
 .paralysis-btn:hover {
   background: rgba(239, 68, 68, 0.22);
+  transform: translateY(-1px);
 }
 
 /* --------------------------------------------------------------------------
-   7. THE 6 LIFE PILLARS HUD (IMAGE 2)
+   10. THE 6 LIFE PILLARS HUD (SPECULAR METERS)
    -------------------------------------------------------------------------- */
 .pillars-hud-grid {
   display: grid;
@@ -651,21 +778,29 @@ body {
 }
 
 .pillar-card {
-  background: var(--bg-card);
+  background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 14px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: relative;
   overflow: hidden;
   transition: all var(--transition-fast);
 }
 
 .pillar-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--text-muted);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+[data-theme="light"] .pillar-card:hover {
+  border-color: #D6C7B2;
 }
 
 .pillar-top-row {
@@ -675,7 +810,7 @@ body {
 }
 
 .pillar-icon {
-  font-size: 1.25rem;
+  font-size: 1.3rem;
 }
 
 .pillar-points {
@@ -689,7 +824,7 @@ body {
   font-size: 0.75rem;
   font-weight: 700;
   color: var(--text-secondary);
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .pillar-bar-track {
@@ -706,16 +841,15 @@ body {
   transition: width var(--transition-smooth);
 }
 
-/* Pillar Signature Colors */
-.fill-craft { background: var(--pillar-craft); }
-.fill-resilience { background: var(--pillar-resilience); }
-.fill-calm { background: var(--pillar-calm); }
-.fill-lovedones { background: var(--pillar-lovedones); }
-.fill-discipline { background: var(--pillar-discipline); }
-.fill-joy { background: var(--pillar-joy); }
+.fill-craft { background: var(--pillar-craft); box-shadow: 0 0 10px var(--pillar-craft); }
+.fill-resilience { background: var(--pillar-resilience); box-shadow: 0 0 10px var(--pillar-resilience); }
+.fill-calm { background: var(--pillar-calm); box-shadow: 0 0 10px var(--pillar-calm); }
+.fill-lovedones { background: var(--pillar-lovedones); box-shadow: 0 0 10px var(--pillar-lovedones); }
+.fill-discipline { background: var(--pillar-discipline); box-shadow: 0 0 10px var(--pillar-discipline); }
+.fill-joy { background: var(--pillar-joy); box-shadow: 0 0 10px var(--pillar-joy); }
 
 /* --------------------------------------------------------------------------
-   8. MAIN CONTENT GRID (PROFILE SIDEBAR & QUEST FEED)
+   11. MAIN CONTENT GRID (PROFILE SIDEBAR & QUEST FEED)
    -------------------------------------------------------------------------- */
 .app-main-grid {
   display: grid;
@@ -726,17 +860,18 @@ body {
 
 /* Profile Sidebar */
 .profile-panel {
-  background: var(--bg-card);
+  background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 24px;
-  box-shadow: var(--shadow-subtle);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
-/* Level & 100 XP Bar */
 .level-xp-box {
   background: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
@@ -760,9 +895,14 @@ body {
   color: var(--pillar-craft);
 }
 
+[data-theme="light"] .level-title {
+  color: #B45309;
+}
+
 .xp-numbers {
   font-family: var(--font-mono);
   font-size: 0.85rem;
+  font-weight: 700;
   color: var(--text-secondary);
 }
 
@@ -780,9 +920,14 @@ body {
   background: linear-gradient(90deg, var(--pillar-craft), var(--pillar-resilience));
   border-radius: var(--radius-full);
   transition: width var(--transition-xp);
+  box-shadow: 0 0 14px var(--accent-glow);
 }
 
-/* Relationship Bonds Section (from Image 3) */
+[data-theme="light"] .xp-bar-fill {
+  background: linear-gradient(90deg, #D97706, #10B981);
+}
+
+/* Relationship Bonds (Image 3) */
 .bonds-container {
   display: flex;
   flex-direction: column;
@@ -798,8 +943,8 @@ body {
 .section-label {
   font-size: 0.775rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-weight: 800;
   color: var(--text-secondary);
 }
 
@@ -807,11 +952,16 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 12px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  transition: border-color var(--transition-fast);
+  gap: 5px;
+  transition: border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.bond-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--text-muted);
 }
 
 .bond-header {
@@ -821,7 +971,7 @@ body {
 }
 
 .bond-name {
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.9rem;
 }
 
@@ -839,7 +989,7 @@ body {
   background: var(--bg-subtle);
   border-radius: var(--radius-full);
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .bond-trust-fill {
@@ -854,7 +1004,6 @@ body {
   gap: 18px;
 }
 
-/* Filter Bar */
 .filter-tabs-nav {
   display: flex;
   align-items: center;
@@ -867,13 +1016,18 @@ body {
   padding: 7px 14px;
   border-radius: var(--radius-full);
   font-size: 0.825rem;
-  font-weight: 600;
+  font-weight: 700;
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
+}
+
+.filter-tab:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
 }
 
 .filter-tab.active {
@@ -883,9 +1037,9 @@ body {
   box-shadow: var(--shadow-subtle);
 }
 
-/* Quest Card */
+/* Quest Card: Tactile Obsidian / Parchment Specular Cards */
 .quest-card {
-  background: var(--bg-card);
+  background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 16px 20px;
@@ -893,17 +1047,25 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: all var(--transition-normal);
 }
 
 .quest-card:hover {
-  border-color: var(--text-muted);
-  box-shadow: var(--shadow-subtle);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .quest-card:hover {
+  border-color: #D6C7B2;
 }
 
 .quest-card.is-completed {
   background: var(--bg-subtle);
-  opacity: 0.8;
+  opacity: 0.78;
 }
 
 .quest-card.is-completed .quest-title {
@@ -936,7 +1098,7 @@ body {
 
 .quest-checkbox:hover {
   border-color: var(--accent);
-  transform: scale(1.06);
+  transform: scale(1.08);
 }
 
 .quest-card.is-completed .quest-checkbox {
@@ -963,13 +1125,14 @@ body {
 .quest-time-tag {
   font-family: var(--font-mono);
   font-size: 0.725rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-secondary);
   background: var(--bg-subtle);
   padding: 2px 7px;
   border-radius: var(--radius-sm);
 }
 
+/* Pillar Badges */
 .pillar-badge {
   font-size: 0.7rem;
   font-weight: 700;
@@ -979,16 +1142,16 @@ body {
   border-radius: var(--radius-sm);
 }
 
-.badge-craft { background: rgba(99, 102, 241, 0.15); color: var(--pillar-craft); }
-.badge-resilience { background: rgba(16, 185, 129, 0.15); color: var(--pillar-resilience); }
-.badge-calm { background: rgba(14, 165, 233, 0.15); color: var(--pillar-calm); }
-.badge-lovedones { background: rgba(244, 63, 94, 0.15); color: var(--pillar-lovedones); }
-.badge-discipline { background: rgba(245, 158, 11, 0.15); color: var(--pillar-discipline); }
-.badge-joy { background: rgba(251, 146, 60, 0.15); color: var(--pillar-joy); }
+.badge-craft { background: var(--badge-craft-bg); color: var(--badge-craft-text); }
+.badge-resilience { background: var(--badge-resilience-bg); color: var(--badge-resilience-text); }
+.badge-calm { background: var(--badge-calm-bg); color: var(--badge-calm-text); }
+.badge-lovedones { background: var(--badge-lovedones-bg); color: var(--badge-lovedones-text); }
+.badge-discipline { background: var(--badge-discipline-bg); color: var(--badge-discipline-text); }
+.badge-joy { background: var(--badge-joy-bg); color: var(--badge-joy-text); }
 
 .quest-title {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
@@ -1012,7 +1175,7 @@ body {
 .chip-coin { color: var(--coin-gold); background: var(--coin-bg); }
 
 /* --------------------------------------------------------------------------
-   9. CELEBRATION TOASTS & BURSTS
+   12. CELEBRATION TOASTS & JEWEL-TONE PARTICLES
    -------------------------------------------------------------------------- */
 .toast-portal {
   position: fixed;
@@ -1026,7 +1189,7 @@ body {
   transform: translate(-50%, -100%);
   background: var(--bg-card);
   border: 1px solid var(--accent);
-  box-shadow: var(--shadow-card), 0 0 20px var(--accent-glow);
+  box-shadow: var(--shadow-card), 0 0 24px var(--accent-glow);
   border-radius: var(--radius-full);
   padding: 8px 18px;
   display: flex;
@@ -1070,13 +1233,14 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   10. MODALS (PARALYSIS BREAKER, CAREER SETUP, LEVEL UP)
+   13. MODALS (SPECULAR GLASS OVERLAYS)
    -------------------------------------------------------------------------- */
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(13, 15, 18, 0.65);
-  backdrop-filter: blur(6px);
+  background: rgba(7, 9, 14, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1084,11 +1248,17 @@ body {
   padding: 20px;
 }
 
+[data-theme="light"] .modal-backdrop {
+  background: rgba(41, 37, 36, 0.35);
+}
+
 .modal-card {
-  background: var(--bg-card);
+  background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-modal);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   width: 100%;
   max-width: 540px;
   max-height: 90vh;
@@ -1114,7 +1284,6 @@ body {
   gap: 16px;
 }
 
-/* Micro-Habits in Paralysis Breaker */
 .micro-quest-item {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
@@ -1129,11 +1298,11 @@ body {
 
 .micro-quest-item:hover {
   border-color: var(--accent);
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
 /* --------------------------------------------------------------------------
-   11. RESPONSIVENESS
+   14. RESPONSIVE BREAKPOINTS
    -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .pillars-hud-grid {
@@ -1149,7 +1318,7 @@ body {
     grid-template-columns: repeat(2, 1fr);
   }
   .netflix-logo-text {
-    font-size: 2.4rem;
+    font-size: 2.5rem;
   }
   .app-header {
     flex-direction: column;
