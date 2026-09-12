@@ -10,6 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const auth = window.Auth;
 
   // 1. Initial Render & Sound Unlock
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('demo') === 'true' && !auth.isAuthenticated()) {
+    auth.login('arpita', '123');
+    store.loadActiveUserState();
+  }
+  if (urlParams.get('theme')) {
+    store.setThemeMode(urlParams.get('theme'));
+  }
+
   ui.render(store.state);
 
   // Play Netflix-style intro sound on initial load if user clicks anywhere or hits replay
@@ -50,6 +59,41 @@ document.addEventListener('DOMContentLoaded', () => {
       if (res && res.isCompleted) {
         celebrate.celebrateQuestCompletion(toggleBtn, res);
       }
+      return;
+    }
+
+    // Career Milestone Toggle
+    const milestoneBtn = e.target.closest('[data-action="toggle-career-milestone"]');
+    if (milestoneBtn) {
+      const mId = milestoneBtn.dataset.milestoneId;
+      const res = store.toggleCareerMilestone(mId);
+      if (res && res.isCompleted) {
+        celebrate.playChime(res.didLevelUp ? 'levelup' : 'quest');
+        const rect = milestoneBtn.getBoundingClientRect();
+        celebrate.spawnBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 24);
+        celebrate.showQuoteToast(`Milestone Achieved: ${res.milestone.title}! (+${res.xpGained} XP, +${res.coinsGained} 🪙)`);
+        if (res.didLevelUp) {
+          setTimeout(() => {
+            const lvlEl = document.getElementById('modal-new-level');
+            const bonusEl = document.getElementById('modal-level-bonus');
+            if (lvlEl) lvlEl.textContent = `Level ${res.newLevel}!`;
+            if (bonusEl) bonusEl.textContent = `You unlocked +20 Life Credits & advanced your ${res.careerTrack} mastery!`;
+            openModal('level-up-modal');
+            celebrate.playChime('levelup');
+          }, 350);
+        }
+      }
+      return;
+    }
+
+    // Pillar Mini Card Click (Filter / Highlight)
+    const pillarCard = e.target.closest('.pillar-mini-card');
+    if (pillarCard && pillarCard.dataset.pillar) {
+      const pKey = pillarCard.dataset.pillar;
+      celebrate.playChime('quest');
+      const rect = pillarCard.getBoundingClientRect();
+      celebrate.spawnBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 16);
+      celebrate.showQuoteToast(`Pillar Focused: ${pKey} Matrix Active.`);
       return;
     }
 
@@ -191,7 +235,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 5. Keyboard Accessibility
+  // 5. Career Track Dropdown Selector Change
+  document.addEventListener('change', e => {
+    if (e.target && e.target.id === 'career-track-select') {
+      const newTrack = e.target.value;
+      store.setCareerTrack(newTrack);
+      celebrate.playChime('quest');
+      celebrate.showQuoteToast(`Switched career ambition to: ${newTrack}`);
+    }
+  });
+
+  // 6. Keyboard Accessibility
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.add('hidden'));

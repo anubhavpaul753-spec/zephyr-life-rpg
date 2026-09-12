@@ -858,25 +858,184 @@ body {
   align-items: start;
 }
 
-/* Profile Sidebar */
+/* Profile Sidebar: Reality Mirror & Career Progression Tree */
 .profile-panel {
   background: var(--bg-card-sheen), var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
   box-shadow: var(--shadow-card);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 
+/* 1. The Reality Mirror (Character Sheet) */
+.reality-mirror-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mirror-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pillar-resilience);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.mirror-status-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pillar-resilience);
+  box-shadow: 0 0 8px var(--pillar-resilience);
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Character Sheet Card (Avatar + Identity) */
+.character-sheet-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.character-sheet-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; width: 100px; height: 100%;
+  background: radial-gradient(circle at top right, var(--accent-light) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.avatar-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar-glow-ring {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--pillar-craft) 0%, var(--pillar-resilience) 100%);
+  box-shadow: 0 0 16px var(--accent-glow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="light"] .avatar-glow-ring {
+  background: linear-gradient(135deg, #D97706 0%, #10B981 100%);
+  box-shadow: 0 0 14px rgba(217, 119, 6, 0.25);
+}
+
+.dicebear-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--bg-card);
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-badge-level {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: var(--pillar-craft);
+  color: #FFFFFF;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--bg-card);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+[data-theme="light"] .avatar-badge-level {
+  background: #D97706;
+}
+
+.character-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.character-name {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.character-rank {
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--pillar-craft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme="light"] .character-rank {
+  color: #B45309;
+}
+
+.character-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.char-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Level & Non-linear XP Box ($XP_{req} = 100 \times L^{1.5}$) */
 .level-xp-box {
   background: var(--bg-subtle);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -885,12 +1044,17 @@ body {
 .level-row {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+}
+
+.level-badge-pill {
+  display: inline-flex;
+  align-items: center;
 }
 
 .level-title {
   font-family: var(--font-serif);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--pillar-craft);
 }
@@ -927,11 +1091,417 @@ body {
   background: linear-gradient(90deg, #D97706, #10B981);
 }
 
+.xp-formula-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.725rem;
+  color: var(--text-muted);
+}
+
+.xp-formula-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  background: var(--bg-card);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.xp-formula-label em {
+  font-style: normal;
+  color: var(--pillar-craft);
+  font-weight: 700;
+}
+
+[data-theme="light"] .xp-formula-label em {
+  color: #D97706;
+}
+
+.xp-percent-text {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Interactive 6 Pillar Stat Matrix */
+.pillar-stat-grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-sublabel-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-sublabel {
+  font-size: 0.725rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.pillar-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.pillar-mini-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.pillar-mini-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pillar-accent), transparent);
+  opacity: 0.5;
+}
+
+.pillar-mini-card:hover, .pillar-mini-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--pillar-accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 10px var(--pillar-accent);
+}
+
+.pillar-mini-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pillar-mini-icon {
+  font-size: 0.95rem;
+}
+
+.pillar-mini-lvl {
+  font-family: var(--font-mono);
+  font-size: 0.675rem;
+  font-weight: 800;
+  color: var(--pillar-accent);
+  padding: 1px 5px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-full);
+}
+
+.pillar-mini-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pillar-mini-bar-track {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: 2px;
+}
+
+.pillar-mini-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+
+.pillar-mini-pts {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-align: right;
+  font-weight: 600;
+}
+
+/* 2. Dream Career & Skill Mastery Trees */
+.career-ambition-section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 18px;
+}
+
+.track-tier-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  color: var(--pillar-craft);
+}
+
+[data-theme="light"] .track-tier-count {
+  color: #B45309;
+}
+
+.career-selector-box {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.career-select-label {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.career-track-dropdown {
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Visual Progression Tree (4 Tiers) */
+.career-tree-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tree-tier-card {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.tree-tier-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0; width: 3px;
+  background: var(--border-color);
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.tree-tier-card.is-tier-completed {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%), var(--bg-subtle);
+}
+
+.tree-tier-card.is-tier-completed::before {
+  background: var(--pillar-resilience);
+  box-shadow: 0 0 8px var(--pillar-resilience);
+}
+
+.tier-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.tier-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tier-number-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--pillar-craft);
+}
+
+[data-theme="light"] .tier-number-badge {
+  color: #B45309;
+}
+
+.tier-name {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.tier-subtitle {
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.tier-status-pill {
+  font-family: var(--font-mono);
+  font-size: 0.675rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.tier-status-pill.pill-completed {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: var(--pillar-resilience);
+}
+
+.tier-milestones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 6px;
+}
+
+.milestone-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-fast);
+}
+
+.milestone-item:hover {
+  border-color: var(--border-color);
+  transform: translateX(2px);
+}
+
+.milestone-item.is-completed {
+  background: var(--bg-subtle);
+  border-color: transparent;
+  opacity: 0.85;
+}
+
+.milestone-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-input);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.milestone-checkbox:hover {
+  border-color: var(--pillar-craft);
+}
+
+.milestone-checkbox svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 3;
+  stroke: #FFFFFF;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all var(--transition-fast);
+}
+
+.milestone-checkbox.checked {
+  background: var(--pillar-resilience);
+  border-color: var(--pillar-resilience);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+}
+
+.milestone-checkbox.checked svg {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.milestone-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.milestone-title {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  transition: color var(--transition-fast);
+}
+
+.milestone-item.is-completed .milestone-title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.milestone-desc {
+  font-size: 0.725rem;
+  color: var(--text-secondary);
+  line-height: 1.35;
+}
+
+.milestone-rewards {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.chip-craft {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--pillar-craft);
+  border-color: rgba(99, 102, 241, 0.25);
+}
+
+.chip-disc {
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--pillar-discipline);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
 /* Relationship Bonds (Image 3) */
 .bonds-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 18px;
 }
 
 .section-label-row {

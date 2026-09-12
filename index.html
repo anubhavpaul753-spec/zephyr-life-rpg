@@ -166,24 +166,93 @@
     <div class="app-main-grid">
       
       <!-- Profile Sidebar -->
-      <aside class="profile-panel">
+      <!-- Profile Sidebar: Reality Mirror & Career Tree -->
+      <aside class="profile-panel" id="profile-panel">
         
-        <!-- Level & 100 XP Bar -->
-        <div class="level-xp-box">
-          <div class="level-row">
-            <span id="profile-level-title" class="level-title">Level 1</span>
-            <span id="profile-xp-readout" class="xp-numbers">0 / 100 XP</span>
+        <!-- 1. The Reality Mirror (Character Sheet) -->
+        <div class="reality-mirror-section">
+          <div class="section-label-row">
+            <span class="section-label">🪞 Reality Mirror • Character Sheet</span>
+            <span class="mirror-status-badge">Online</span>
           </div>
-          <div class="xp-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-            <div id="profile-xp-fill" class="xp-bar-fill" style="width: 0%;"></div>
+
+          <!-- Character Identity Card (DiceBear Avatar + Name + Title) -->
+          <div class="character-sheet-card">
+            <div class="avatar-container">
+              <div class="avatar-glow-ring">
+                <img id="profile-avatar-img" class="dicebear-avatar" src="https://api.dicebear.com/7.x/notionists/svg?seed=arpita" alt="Character Avatar" loading="lazy">
+              </div>
+              <span class="avatar-badge-level" id="profile-avatar-lvl-badge">Lv. 1</span>
+            </div>
+            
+            <div class="character-details">
+              <h3 id="profile-user-fullname" class="character-name">Arpita</h3>
+              <p id="profile-rank-title" class="character-rank">Novice Builder</p>
+              <div class="character-tags">
+                <span class="char-tag">🔥 <span id="profile-streak-tag">1</span>d streak</span>
+                <span class="char-tag">🪙 <span id="profile-coins-tag">20</span> LC</span>
+              </div>
+            </div>
           </div>
-          <div style="font-size:0.75rem; color:var(--text-muted); display:flex; justify-content:space-between;">
-            <span id="profile-rank-title">Novice Builder</span>
-            <span>100 XP per level</span>
+
+          <!-- Non-Linear XP Bar with Formula ($XP_{req} = 100 \times L^{1.5}$) -->
+          <div class="level-xp-box">
+            <div class="level-row">
+              <div class="level-badge-pill">
+                <span id="profile-level-title" class="level-title">Level 1</span>
+              </div>
+              <span id="profile-xp-readout" class="xp-numbers">0 / 100 XP</span>
+            </div>
+            <div class="xp-bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div id="profile-xp-fill" class="xp-bar-fill" style="width: 0%;"></div>
+            </div>
+            <div class="xp-formula-footer">
+              <span class="xp-formula-label" title="Non-Linear Progression Formula">
+                <span class="formula-icon">📐</span>
+                <span>Formula: <em>XP<sub>req</sub> = 100 · L<sup>1.5</sup></em></span>
+              </span>
+              <span id="profile-xp-percent" class="xp-percent-text">0%</span>
+            </div>
+          </div>
+
+          <!-- Interactive 6 Pillar Stat Grid -->
+          <div class="pillar-stat-grid-wrapper">
+            <div class="section-sublabel-row">
+              <span class="section-sublabel">Pillar Stat Matrix</span>
+              <small style="font-size:0.7rem; color:var(--text-muted);">Lv. Up every 30 pts</small>
+            </div>
+            <div class="pillar-stat-grid" id="profile-pillar-stat-grid">
+              <!-- Dynamically populated by ui.js -->
+            </div>
           </div>
         </div>
 
-        <!-- Relationship Bonds System (Mom, Dad, Partner) -->
+        <!-- 2. Dream Career & Skill Mastery Trees -->
+        <div class="career-ambition-section">
+          <div class="section-label-row">
+            <span class="section-label">🌳 Career Ambition & Skill Tree</span>
+            <span class="track-tier-count" id="career-completed-badge">1/8 Done</span>
+          </div>
+
+          <!-- Career Track Selector -->
+          <div class="career-selector-box">
+            <label for="career-track-select" class="career-select-label">Active Career Track</label>
+            <select id="career-track-select" class="form-select career-track-dropdown">
+              <option value="Software Engineer & Builder">Software Engineer & Builder</option>
+              <option value="Product Designer">Product Designer</option>
+              <option value="Founder/Entrepreneur">Founder/Entrepreneur</option>
+              <option value="Writer/Scholar">Writer/Scholar</option>
+              <option value="Custom Ambition">Custom Ambition</option>
+            </select>
+          </div>
+
+          <!-- Visual Progression Tree (4 Tiers) -->
+          <div class="career-tree-container" id="career-tree-container">
+            <!-- Dynamically populated by ui.js -->
+          </div>
+        </div>
+
+        <!-- 3. Relationship Bonds System (Mom, Dad, Partner) -->
         <div class="bonds-container">
           <div class="section-label-row">
             <span class="section-label">🤝 Relationship Bonds</span>

@@ -15,16 +15,208 @@ const PILLARS = {
   Joy: { name: 'Joy, Play & Savoring Life', color: '#FB923C', icon: '☀️', key: 'Joy' }
 };
 
-// Available Career Tracks
+// Available Career Tracks (Presets)
 const CAREER_TRACKS = [
   { id: 'swe', name: 'Software Engineer & Builder', defaultGoal: 'Master full-stack architecture, ship portfolio apps, and land a high-impact engineering role.' },
-  { id: 'design', name: 'UI/UX Designer & Product Creator', defaultGoal: 'Craft clean design systems, conduct deep user research, and build beautiful intuitive experiences.' },
-  { id: 'founder', name: 'Entrepreneur & Startup Founder', defaultGoal: 'Validate genuine market problems, build an MVP, and create a profitable, mission-driven business.' },
-  { id: 'scholar', name: 'Writer & Intellectual Scholar', defaultGoal: 'Deepen domain mastery, write daily with unhurried clarity, and publish foundational work.' },
-  { id: 'health', name: 'Health & Athletic Resilience', defaultGoal: 'Build functional strength, master metabolic recovery, and sustain peak physical vitality.' },
-  { id: 'family', name: 'Family Guardian & Harmony', defaultGoal: 'Strengthen family bonds, provide steadfast financial and emotional security, and cultivate warmth at home.' },
-  { id: 'custom', name: 'Custom Life Ambition', defaultGoal: 'Design a bespoke path of grounded discipline, creative mastery, and authentic living.' }
+  { id: 'design', name: 'Product Designer', defaultGoal: 'Craft clean design systems, conduct deep user research, and build beautiful intuitive experiences.' },
+  { id: 'founder', name: 'Founder/Entrepreneur', defaultGoal: 'Validate genuine market problems, build an MVP, and create a profitable, mission-driven business.' },
+  { id: 'scholar', name: 'Writer/Scholar', defaultGoal: 'Deepen domain mastery, write daily with unhurried clarity, and publish foundational work.' },
+  { id: 'custom', name: 'Custom Ambition', defaultGoal: 'Design a bespoke path of grounded discipline, creative mastery, and authentic living.' }
 ];
+
+// Visual Progression Tree Presets: 4 Distinct Tiers for each Career Track
+const CAREER_TREE_PRESETS = {
+  'Software Engineer & Builder': [
+    {
+      tierId: 1,
+      tierName: 'Tier 1: Foundations',
+      subtitle: 'Core computer science, syntax, clean code & git hygiene',
+      milestones: [
+        { id: 'swe_1_1', title: 'Data Structures & Algorithmic Thinking', desc: 'Implement hash maps, trees, graphs, and master space-time complexity analysis.', craftXP: 40, discXP: 15, coins: 25, completed: true },
+        { id: 'swe_1_2', title: 'Clean Architecture & Testing Discipline', desc: 'Write testable modular components, SOLID principles, and CI/CD pipelines.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'Tier 2: Portfolio Builder',
+      subtitle: 'Full-stack apps, scalable API design & modern state models',
+      milestones: [
+        { id: 'swe_2_1', title: 'Ship 2 Production Full-Stack Applications', desc: 'Deploy complete web services with authentication, database persistence, and CDN hosting.', craftXP: 60, discXP: 25, coins: 40, completed: false },
+        { id: 'swe_2_2', title: 'Database Optimization & Schema Mastery', desc: 'Design normalized relational schemas, indexing strategies, and resilient queries.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Tier 3: Industry Ready',
+      subtitle: 'System design, real-world concurrency & technical storytelling',
+      milestones: [
+        { id: 'swe_3_1', title: 'High-Availability System Design', desc: 'Design microservices, caching layers (Redis), load balancing, and asynchronous queues.', craftXP: 75, discXP: 30, coins: 50, completed: false },
+        { id: 'swe_3_2', title: 'Open Source Contribution & Tech Deep Dives', desc: 'Contribute bug fixes to active repositories and write in-depth engineering breakdowns.', craftXP: 70, discXP: 30, coins: 45, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Tier 4: Dream Career Offer',
+      subtitle: 'Onsite interview triumph, negotiation & family celebration',
+      milestones: [
+        { id: 'swe_4_1', title: 'Ace Technical Onsites & Negotiate Dream Offer', desc: 'Pass rigorous architectural interviews and secure the high-impact software role.', craftXP: 150, discXP: 50, coins: 100, completed: false },
+        { id: 'swe_4_2', title: 'Ship First Live Production Impact & Celebrate', desc: 'Push signature code to hundreds of thousands of users and share success with loved ones.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+      ]
+    }
+  ],
+  'Product Designer': [
+    {
+      tierId: 1,
+      tierName: 'Tier 1: Foundations',
+      subtitle: 'Figma mastery, visual hierarchy, typography & color science',
+      milestones: [
+        { id: 'des_1_1', title: 'Design System & Component Token Mastery', desc: 'Construct scalable design tokens, responsive auto-layout frames, and atomic UI libraries.', craftXP: 40, discXP: 15, coins: 25, completed: true },
+        { id: 'des_1_2', title: 'User Research & Heuristic Evaluation', desc: 'Conduct usability tests, synthesize user personas, and map frictionless user journeys.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'Tier 2: Portfolio Builder',
+      subtitle: 'High-fidelity case studies & interactive micro-interactions',
+      milestones: [
+        { id: 'des_2_1', title: '2 In-Depth End-to-End Product Case Studies', desc: 'Document problem validation, wireframing, edge cases, iterations, and business outcomes.', craftXP: 60, discXP: 25, coins: 40, completed: false },
+        { id: 'des_2_2', title: 'Micro-Interactions & Motion Prototyping', desc: 'Prototype delightful physics-based animations in Figma to communicate UI intent.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Tier 3: Industry Ready',
+      subtitle: 'Design leadership, cross-functional handoff & critique',
+      milestones: [
+        { id: 'des_3_1', title: 'Developer Handoff & Design Systems Governance', desc: 'Collaborate with frontend engineers to guarantee pixel-perfect production fidelity.', craftXP: 75, discXP: 30, coins: 50, completed: false },
+        { id: 'des_3_2', title: 'Executive Presentation & Strategic Storytelling', desc: 'Defend design decisions articulately using qualitative metrics and conversion data.', craftXP: 70, discXP: 30, coins: 45, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Tier 4: Dream Career Offer',
+      subtitle: 'Lead Product Designer appointment & impactful product launch',
+      milestones: [
+        { id: 'des_4_1', title: 'Land Lead / Senior Product Designer Position', desc: 'Deliver an inspiring portfolio walkthrough and receive top-tier design offer.', craftXP: 150, discXP: 50, coins: 100, completed: false },
+        { id: 'des_4_2', title: 'Launch Flagship Experience to Acclaim', desc: 'Release an experience loved by thousands of daily users and celebrate with loved ones.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+      ]
+    }
+  ],
+  'Founder/Entrepreneur': [
+    {
+      tierId: 1,
+      tierName: 'Tier 1: Foundations',
+      subtitle: 'Problem validation, unit economics & customer discovery',
+      milestones: [
+        { id: 'fnd_1_1', title: '30 Deep Customer Discovery Interviews', desc: 'Validate painful user problems, willingness to pay, and market demand.', craftXP: 45, discXP: 20, coins: 25, completed: true },
+        { id: 'fnd_1_2', title: 'Financial Modeling & Runway Projections', desc: 'Calculate CAC, LTV, gross margins, and stress-test unit economics.', craftXP: 40, discXP: 15, coins: 20, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'Tier 2: Portfolio Builder',
+      subtitle: 'MVP launch, rapid iteration & first paying customers',
+      milestones: [
+        { id: 'fnd_2_1', title: 'Build & Ship Functional Minimum Viable Product', desc: 'Launch MVP to the world in under 30 days and onboard the first 50 early adopters.', craftXP: 65, discXP: 30, coins: 45, completed: false },
+        { id: 'fnd_2_2', title: 'Generate First $1,000 in Organic Revenue', desc: 'Prove real market value with paying, enthusiastic customers who refer peers.', craftXP: 60, discXP: 25, coins: 40, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Tier 3: Industry Ready',
+      subtitle: 'Product-market fit signals, scaling channels & team culture',
+      milestones: [
+        { id: 'fnd_3_1', title: 'Scale to $10,000 Monthly Recurring Revenue', desc: 'Establish a reliable acquisition engine with low churn and strong retention cohorts.', craftXP: 85, discXP: 35, coins: 60, completed: false },
+        { id: 'fnd_3_2', title: 'Build High-Caliber Founding Team & Culture', desc: 'Hire first key collaborators aligned with mission, craftsmanship, and speed.', craftXP: 75, discXP: 30, coins: 50, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Tier 4: Dream Career Offer',
+      subtitle: 'Venture backing / profitable independence & family security',
+      milestones: [
+        { id: 'fnd_4_1', title: 'Achieve Sustainable High Growth or Funding', desc: 'Close a milestone funding round or reach profitable sovereign independence.', craftXP: 160, discXP: 50, coins: 120, completed: false },
+        { id: 'fnd_4_2', title: 'Bring Lasting Financial Security to Loved Ones', desc: 'Share fruits of company success with parents, family, and early team members.', craftXP: 120, discXP: 50, coins: 100, completed: false }
+      ]
+    }
+  ],
+  'Writer/Scholar': [
+    {
+      tierId: 1,
+      tierName: 'Tier 1: Foundations',
+      subtitle: 'Daily prose practice, second brain & rigorous research habits',
+      milestones: [
+        { id: 'wri_1_1', title: 'Daily 1,000-Word Uninterrupted Writing Ritual', desc: 'Establish an unwavering morning writing block focused on clarity, rhythm, and depth.', craftXP: 40, discXP: 20, coins: 25, completed: true },
+        { id: 'wri_1_2', title: 'Curate a Second Brain / Zettelkasten Knowledge Vault', desc: 'Organize literature notes, primary citations, and cross-disciplinary concepts.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'Tier 2: Portfolio Builder',
+      subtitle: 'Publication cadence, newsletter expansion & long-form essays',
+      milestones: [
+        { id: 'wri_2_1', title: 'Publish 10 Foundational Long-Form Essays', desc: 'Write deeply researched pieces exploring technology, sociology, and human flourishing.', craftXP: 60, discXP: 25, coins: 40, completed: false },
+        { id: 'wri_2_2', title: 'Cultivate 1,000+ Engaged Weekly Readers', desc: 'Build an authentic newsletter community with open discussions and reader feedback.', craftXP: 50, discXP: 20, coins: 30, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Tier 3: Industry Ready',
+      subtitle: 'Monograph proposal, peer dialogues & intellectual influence',
+      milestones: [
+        { id: 'wri_3_1', title: 'Draft Complete Book Proposal / Dissertation Chapter', desc: 'Structure chapter outlines, market differentiation, and rigorous intellectual arguments.', craftXP: 75, discXP: 30, coins: 50, completed: false },
+        { id: 'wri_3_2', title: 'Host Public Lectures & Literary Roundtables', desc: 'Present thought leadership at conferences and inspire the next cohort of thinkers.', craftXP: 70, discXP: 30, coins: 45, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Tier 4: Dream Career Offer',
+      subtitle: 'Acclaimed publication, literary award & lifetime intellectual freedom',
+      milestones: [
+        { id: 'wri_4_1', title: 'Secure Major Publishing Contract or Fellowship', desc: 'Ink publishing deal or secure prestigious research residency.', craftXP: 150, discXP: 50, coins: 100, completed: false },
+        { id: 'wri_4_2', title: 'Dedicate Published Work to Family & Mentors', desc: 'Hold printed first edition dedicated to parents and mentors who believed in the craft.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+      ]
+    }
+  ],
+  'Custom Ambition': [
+    {
+      tierId: 1,
+      tierName: 'Tier 1: Foundations',
+      subtitle: 'Clear self-definition, essentialist focus & habit consistency',
+      milestones: [
+        { id: 'cst_1_1', title: 'Codify Personal Philosophy & Daily Non-Negotiables', desc: 'Articulate core values, morning alignment ritual, and clear life ambition goals.', craftXP: 40, discXP: 20, coins: 25, completed: true },
+        { id: 'cst_1_2', title: 'Dopamine Detox & High-Focus Environment Setup', desc: 'Eliminate digital distraction traps and design a sanctuary for focused creativity.', craftXP: 35, discXP: 15, coins: 20, completed: false }
+      ]
+    },
+    {
+      tierId: 2,
+      tierName: 'Tier 2: Portfolio Builder',
+      subtitle: 'Proof of concept, 30-day consistency sprint & real artifacts',
+      milestones: [
+        { id: 'cst_2_1', title: 'Ship First Milestone Artifact to the Public', desc: 'Translate aspiration into a tangible, observable creation that adds value to others.', craftXP: 60, discXP: 25, coins: 40, completed: false },
+        { id: 'cst_2_2', title: 'Achieve 30-Day Unbroken Habit Streak', desc: 'Execute core discipline for 30 consecutive days without relying on fleeting motivation.', craftXP: 50, discXP: 25, coins: 30, completed: false }
+      ]
+    },
+    {
+      tierId: 3,
+      tierName: 'Tier 3: Industry Ready',
+      subtitle: 'Peer recognition, leadership by example & community impact',
+      milestones: [
+        { id: 'cst_3_1', title: 'Attain Recognized Competence in Chosen Domain', desc: 'Gain genuine validation from respected peers and industry practitioners.', craftXP: 75, discXP: 30, coins: 50, completed: false },
+        { id: 'cst_3_2', title: 'Give Back: Mentor Another Aspiring Practitioner', desc: 'Share hard-won insights and lift someone else starting on their personal journey.', craftXP: 70, discXP: 30, coins: 45, completed: false }
+      ]
+    },
+    {
+      tierId: 4,
+      tierName: 'Tier 4: Dream Career Offer',
+      subtitle: 'Sovereign lifestyle, profound personal peace & legacy victory',
+      milestones: [
+        { id: 'cst_4_1', title: 'Fully Realize Ultimate Life Ambition Milestone', desc: 'Reach the pinnacle goal set when embarking on this Life RPG adventure.', craftXP: 150, discXP: 50, coins: 100, completed: false },
+        { id: 'cst_4_2', title: 'Celebrate Transformed Life with Family & Loved Ones', desc: 'Honor the journey, express lifelong gratitude, and live with grounded joy.', craftXP: 100, discXP: 40, coins: 80, completed: false }
+      ]
+    }
+  ]
+};
 
 // Initial baseline routine quests
 const DEFAULT_ROUTINE = [
@@ -65,13 +257,21 @@ class StateManager {
   // Generate initial or load per-user state from AuthManager
   getInitialState() {
     const user = window.Auth ? window.Auth.getCurrentUser() : null;
+    const defaultTrack = (user && user.careerTrack) ? user.careerTrack : 'Software Engineer & Builder';
+    const fallbackTree = CAREER_TREE_PRESETS[defaultTrack] || CAREER_TREE_PRESETS['Software Engineer & Builder'];
 
     if (user && user.userData) {
+      const uTrack = user.userData.careerTrack || user.careerTrack || 'Software Engineer & Builder';
+      const tree = (user.userData.careerTree && Array.isArray(user.userData.careerTree) && user.userData.careerTree.length > 0)
+        ? user.userData.careerTree
+        : JSON.parse(JSON.stringify(CAREER_TREE_PRESETS[uTrack] || CAREER_TREE_PRESETS['Software Engineer & Builder']));
+
       return {
         ...user.userData,
         username: user.username,
         fullName: user.fullName || user.username,
-        careerTrack: user.careerTrack || 'Software Engineer & Builder',
+        careerTrack: uTrack,
+        careerTree: tree,
         lifeGoal: user.lifeGoal || 'Master full-stack engineering and bring security to loved ones.',
         themeMode: user.userData.themeMode || user.themeMode || 'dark',
         quests: (user.userData.quests && user.userData.quests.length > 0) 
@@ -96,14 +296,9 @@ class StateManager {
       streak: 1,
       themeMode: user?.themeMode || 'dark', // 'dark' (Obsidian Cyber-HUD) or 'light' (Mindful Ivory)
       soundEnabled: true,
-      careerTrack: user ? user.careerTrack : 'Software Engineer & Builder',
+      careerTrack: defaultTrack,
+      careerTree: JSON.parse(JSON.stringify(fallbackTree)),
       lifeGoal: user ? user.lifeGoal : 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
-      careerMilestones: [
-        { id: 'tier_1', title: 'Tier 1: Foundations', desc: 'Core syntax, data models, clean modular architecture.', completed: true, xp: 50 },
-        { id: 'tier_2', title: 'Tier 2: Builder', desc: 'Build 2 full-stack projects, responsive HUD, deploy live.', completed: false, xp: 100 },
-        { id: 'tier_3', title: 'Tier 3: Industry Ready', desc: 'System design, portfolio showcase, technical storytelling.', completed: false, xp: 150 },
-        { id: 'tier_dream', title: 'Dream Milestone: Offer Landed', desc: 'Secure the dream offer & celebrate with family!', completed: false, xp: 300 }
-      ],
       relationshipBonds: [
         { id: 'bond_mom', name: 'Mom', role: 'Mother', status: 'Warm', statusColor: '#10B981', trust: 90, note: 'Values consistent check-ins and shared peaceful meals.' },
         { id: 'bond_dad', name: 'Dad', role: 'Father', status: 'Neutral', statusColor: '#6B7280', trust: 70, note: 'Appreciates quiet demonstrations of career competence.' },
@@ -138,17 +333,47 @@ class StateManager {
     this.listeners.forEach(fn => fn(this.state));
   }
 
-  // Exactly 100 XP per level formula
+  // Non-linear XP formula: XP_req = 100 * L^1.5
+  getXPReqForLevel(level) {
+    return Math.round(100 * Math.pow(level, 1.5));
+  }
+
+  // Calculate Level, progress XP, and required XP under the non-linear formula
+  getLevelInfo() {
+    let level = 1;
+    let xpRemaining = Math.max(0, this.state.totalXP || 0);
+    let req = this.getXPReqForLevel(level);
+
+    while (xpRemaining >= req) {
+      xpRemaining -= req;
+      level++;
+      req = this.getXPReqForLevel(level);
+    }
+
+    const percent = Math.min(100, Math.max(0, Math.round((xpRemaining / req) * 100)));
+
+    return {
+      level,
+      currentXP: xpRemaining,
+      reqXP: req,
+      percent
+    };
+  }
+
   getLevel() {
-    return Math.floor(this.state.totalXP / XP_PER_LEVEL) + 1;
+    return this.getLevelInfo().level;
   }
 
   getLevelProgressXP() {
-    return this.state.totalXP % XP_PER_LEVEL;
+    return this.getLevelInfo().currentXP;
+  }
+
+  getLevelReqXP() {
+    return this.getLevelInfo().reqXP;
   }
 
   getLevelProgressPercent() {
-    return (this.getLevelProgressXP() / XP_PER_LEVEL) * 100;
+    return this.getLevelInfo().percent;
   }
 
   // Get current career title based on level and track
@@ -163,7 +388,7 @@ class StateManager {
     return track;
   }
 
-  // Compute points accumulated for each of the 6 pillars
+  // Compute points and level for each of the 6 pillars
   getPillarStats() {
     const points = {
       Craft: 0,
@@ -174,22 +399,42 @@ class StateManager {
       Joy: 0
     };
 
-    this.state.quests.forEach(q => {
+    // Points from completed quests
+    (this.state.quests || []).forEach(q => {
       if (q.completed && points.hasOwnProperty(q.pillar)) {
-        points[q.pillar] += q.xp;
+        points[q.pillar] += (q.xp || 0);
       }
     });
 
+    // Points from completed career milestones (awards Craft and Discipline)
+    if (this.state.careerTree && Array.isArray(this.state.careerTree)) {
+      this.state.careerTree.forEach(tier => {
+        (tier.milestones || []).forEach(m => {
+          if (m.completed) {
+            points.Craft += (m.craftXP || 0);
+            points.Discipline += (m.discXP || 0);
+          }
+        });
+      });
+    }
+
+    const pillarLevels = {};
+    const pillarProgress = {};
     const maxTargets = {
-      Craft: 70,
-      Resilience: 80,
-      Calm: 45,
-      LovedOnes: 50,
-      Discipline: 75,
-      Joy: 40
+      Craft: 100,
+      Resilience: 100,
+      Calm: 100,
+      LovedOnes: 100,
+      Discipline: 100,
+      Joy: 100
     };
 
-    return { points, maxTargets };
+    Object.keys(points).forEach(k => {
+      pillarLevels[k] = Math.floor(points[k] / 30) + 1;
+      pillarProgress[k] = Math.min(100, Math.round(((points[k] % 30) / 30) * 100));
+    });
+
+    return { points, pillarLevels, pillarProgress, maxTargets };
   }
 
   // Toggle quest completion
@@ -272,6 +517,87 @@ class StateManager {
       careerTrack: this.state.careerTrack,
       didLevelUp
     };
+  }
+
+  // Toggle Career Progression Tree milestone
+  toggleCareerMilestone(milestoneId) {
+    if (!this.state.careerTree || !Array.isArray(this.state.careerTree)) return null;
+
+    let targetMilestone = null;
+    let targetTier = null;
+
+    for (const tier of this.state.careerTree) {
+      const found = (tier.milestones || []).find(m => m.id === milestoneId);
+      if (found) {
+        targetMilestone = found;
+        targetTier = tier;
+        break;
+      }
+    }
+
+    if (!targetMilestone) return null;
+
+    const oldLevel = this.getLevel();
+    const earnedXP = (targetMilestone.craftXP || 0) + (targetMilestone.discXP || 0);
+    const earnedCoins = targetMilestone.coins || 0;
+
+    if (!targetMilestone.completed) {
+      targetMilestone.completed = true;
+      targetMilestone.completedAt = new Date().toISOString();
+      this.state.totalXP = (this.state.totalXP || 0) + earnedXP;
+      this.state.currency = (this.state.currency || 0) + earnedCoins;
+
+      const newLevel = this.getLevel();
+      const didLevelUp = newLevel > oldLevel;
+      if (didLevelUp) {
+        this.state.currency += 20; // 20 bonus Life Credits on leveling up!
+      }
+
+      this.saveState();
+      this.notify();
+
+      return {
+        milestone: targetMilestone,
+        tier: targetTier,
+        isCompleted: true,
+        xpGained: earnedXP,
+        craftXP: targetMilestone.craftXP || 0,
+        discXP: targetMilestone.discXP || 0,
+        coinsGained: earnedCoins,
+        oldLevel,
+        newLevel,
+        careerTrack: this.state.careerTrack,
+        didLevelUp
+      };
+    } else {
+      targetMilestone.completed = false;
+      targetMilestone.completedAt = null;
+      this.state.totalXP = Math.max(0, (this.state.totalXP || 0) - earnedXP);
+      this.state.currency = Math.max(0, (this.state.currency || 0) - earnedCoins);
+
+      this.saveState();
+      this.notify();
+
+      return {
+        milestone: targetMilestone,
+        tier: targetTier,
+        isCompleted: false,
+        xpGained: -earnedXP,
+        coinsGained: -earnedCoins,
+        oldLevel,
+        newLevel: this.getLevel(),
+        didLevelUp: false
+      };
+    }
+  }
+
+  // Change Career Track & load appropriate progression tree
+  setCareerTrack(trackName) {
+    const validTrack = CAREER_TREE_PRESETS[trackName] ? trackName : 'Software Engineer & Builder';
+    this.state.careerTrack = validTrack;
+    this.state.careerTree = JSON.parse(JSON.stringify(CAREER_TREE_PRESETS[validTrack]));
+    this.saveState();
+    this.notify();
   }
 
   // Toggle theme mode (dark vs light)
@@ -384,4 +710,5 @@ window.AppStore = new StateManager();
 window.PILLARS = PILLARS;
 window.CAREER_TRACKS = CAREER_TRACKS;
 window.PARALYSIS_MICRO_QUESTS = PARALYSIS_MICRO_QUESTS;
+window.CAREER_TREE_PRESETS = CAREER_TREE_PRESETS;
 window.XP_PER_LEVEL = XP_PER_LEVEL;

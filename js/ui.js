@@ -143,8 +143,11 @@ class UIRenderer {
     const trackBadge = document.getElementById('hero-career-track');
     const goalQuote = document.getElementById('hero-life-goal');
 
-    if (trackBadge) trackBadge.textContent = state.careerTrack;
-    if (goalQuote) goalQuote.textContent = `"${state.lifeGoal}"`;
+    if (trackBadge) trackBadge.textContent = state.careerTrack || 'Software Engineer & Builder';
+    const goalText = (state.lifeGoal && state.lifeGoal !== 'undefined')
+      ? state.lifeGoal 
+      : 'Master full-stack engineering, ship real-world tools, and cultivate calm presence.';
+    if (goalQuote) goalQuote.textContent = `"${goalText}"`;
   }
 
   /**
@@ -179,26 +182,165 @@ class UIRenderer {
   }
 
   /**
-   * Render Profile Sidebar (Level, 100 XP Bar, Relationship Bonds)
+   * Render Profile Sidebar: Reality Mirror & Career Progression Tree
    */
   renderProfileSidebar(state) {
+    if (!state) return;
+
     const level = window.AppStore.getLevel();
     const progressXP = window.AppStore.getLevelProgressXP();
+    const reqXP = window.AppStore.getLevelReqXP();
     const progressPercent = window.AppStore.getLevelProgressPercent();
     const rankTitle = window.AppStore.getRankTitle();
 
+    // 1. Reality Mirror Avatar & Identity
+    const avatarImg = document.getElementById('profile-avatar-img');
+    const userFullname = document.getElementById('profile-user-fullname');
+    const rankEl = document.getElementById('profile-rank-title');
+    const streakTag = document.getElementById('profile-streak-tag');
+    const coinsTag = document.getElementById('profile-coins-tag');
+    const avatarLvlBadge = document.getElementById('profile-avatar-lvl-badge');
+
+    const username = state.username || 'arpita';
+    if (avatarImg) {
+      avatarImg.src = `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(username)}`;
+      avatarImg.alt = `${escapeHTML(state.fullName || username)} Avatar`;
+      avatarImg.onerror = function() {
+        this.onerror = null;
+        this.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" fill="%236366f1"/><text x="50" y="58" font-size="34" font-family="sans-serif" text-anchor="middle" fill="white">🪞</text></svg>`;
+      };
+    }
+    if (avatarLvlBadge) avatarLvlBadge.textContent = `Lv. ${level}`;
+    if (userFullname) userFullname.textContent = state.fullName || username;
+    if (rankEl) rankEl.textContent = rankTitle;
+    if (streakTag) streakTag.textContent = state.streak || 1;
+    if (coinsTag) coinsTag.textContent = state.currency || 20;
+
+    // 2. Non-Linear XP Bar ($XP_{req} = 100 \times L^{1.5}$)
     const levelTitle = document.getElementById('profile-level-title');
     const xpReadout = document.getElementById('profile-xp-readout');
     const xpFill = document.getElementById('profile-xp-fill');
-    const rankEl = document.getElementById('profile-rank-title');
-    const bondsContainer = document.getElementById('relationship-bonds-list');
+    const xpPercent = document.getElementById('profile-xp-percent');
 
     if (levelTitle) levelTitle.textContent = `Level ${level}`;
-    if (xpReadout) xpReadout.textContent = `${progressXP} / ${window.XP_PER_LEVEL} XP`;
+    if (xpReadout) xpReadout.textContent = `${progressXP} / ${reqXP} XP`;
     if (xpFill) xpFill.style.width = `${progressPercent}%`;
-    if (rankEl) rankEl.textContent = rankTitle;
+    if (xpPercent) xpPercent.textContent = `${progressPercent}%`;
 
-    // Render Relationship Bonds (Mom, Dad, Partner)
+    // 3. Interactive 6 Pillar Stat Matrix
+    const pillarGrid = document.getElementById('profile-pillar-stat-grid');
+    if (pillarGrid) {
+      const { points, pillarLevels, pillarProgress } = window.AppStore.getPillarStats();
+      const pillars = Object.values(window.PILLARS);
+
+      pillarGrid.innerHTML = pillars.map(p => {
+        const pts = points[p.key] || 0;
+        const lvl = (pillarLevels && pillarLevels[p.key]) || 1;
+        const prog = (pillarProgress && pillarProgress[p.key]) || 0;
+
+        return `
+          <div class="pillar-mini-card" 
+               style="--pillar-accent:${p.color};" 
+               data-pillar="${p.key}" 
+               title="${p.name}: ${pts} Points • Level ${lvl}"
+               role="button"
+               tabindex="0"
+          >
+            <div class="pillar-mini-top">
+              <span class="pillar-mini-icon">${p.icon}</span>
+              <span class="pillar-mini-lvl">Lv. ${lvl}</span>
+            </div>
+            <div class="pillar-mini-name">${p.name.split('&')[0].trim()}</div>
+            <div class="pillar-mini-bar-track">
+              <div class="pillar-mini-bar-fill" style="width:${prog}%; background:${p.color};"></div>
+            </div>
+            <div class="pillar-mini-pts">${pts} pts</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 4. Dream Career & Skill Mastery Trees
+    const trackSelect = document.getElementById('career-track-select');
+    if (trackSelect && state.careerTrack) {
+      trackSelect.value = state.careerTrack;
+    }
+
+    const careerTreeContainer = document.getElementById('career-tree-container');
+    const completedBadge = document.getElementById('career-completed-badge');
+    const careerTree = state.careerTree || [];
+
+    let totalMilestones = 0;
+    let completedMilestones = 0;
+
+    careerTree.forEach(tier => {
+      (tier.milestones || []).forEach(m => {
+        totalMilestones++;
+        if (m.completed) completedMilestones++;
+      });
+    });
+
+    if (completedBadge) {
+      completedBadge.textContent = `${completedMilestones}/${totalMilestones} Done`;
+    }
+
+    if (careerTreeContainer) {
+      careerTreeContainer.innerHTML = careerTree.map(tier => {
+        const tierCompleted = (tier.milestones || []).length > 0 && (tier.milestones || []).every(m => m.completed);
+        const tierDoneCount = (tier.milestones || []).filter(m => m.completed).length;
+
+        return `
+          <div class="tree-tier-card ${tierCompleted ? 'is-tier-completed' : ''}" data-tier-id="${tier.tierId}">
+            <div class="tier-card-header">
+              <div class="tier-title-row">
+                <span class="tier-number-badge">T${tier.tierId}</span>
+                <div>
+                  <h4 class="tier-name">${escapeHTML(tier.tierName)}</h4>
+                  <p class="tier-subtitle">${escapeHTML(tier.subtitle)}</p>
+                </div>
+              </div>
+              <span class="tier-status-pill ${tierCompleted ? 'pill-completed' : ''}">${tierDoneCount}/${(tier.milestones || []).length}</span>
+            </div>
+
+            <div class="tier-milestones-list">
+              ${(tier.milestones || []).map(m => {
+                const isDone = m.completed;
+                return `
+                  <div class="milestone-item ${isDone ? 'is-completed' : ''}" data-milestone-id="${m.id}">
+                    <button 
+                      type="button" 
+                      class="milestone-checkbox ${isDone ? 'checked' : ''}" 
+                      role="checkbox" 
+                      aria-checked="${isDone}" 
+                      data-action="toggle-career-milestone" 
+                      data-milestone-id="${m.id}"
+                      aria-label="Mark milestone ${escapeHTML(m.title)} as ${isDone ? 'incomplete' : 'complete'}"
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                      </svg>
+                    </button>
+
+                    <div class="milestone-content">
+                      <h5 class="milestone-title">${escapeHTML(m.title)}</h5>
+                      <p class="milestone-desc">${escapeHTML(m.desc)}</p>
+                      <div class="milestone-rewards">
+                        <span class="reward-chip chip-craft">+${m.craftXP || 0} Craft</span>
+                        <span class="reward-chip chip-disc">+${m.discXP || 0} Disc</span>
+                        <span class="reward-chip chip-coin">+${m.coins || 0} 🪙</span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 5. Relationship Bonds System (Mom, Dad, Partner)
+    const bondsContainer = document.getElementById('relationship-bonds-list');
     if (bondsContainer && state.relationshipBonds) {
       bondsContainer.innerHTML = state.relationshipBonds.map(b => `
         <div class="bond-card" title="${escapeHTML(b.note)}">
