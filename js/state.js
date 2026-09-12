@@ -241,11 +241,77 @@ const SPECIAL_QUESTS = [
   { id: 'q_walk', title: 'Evening walk with no headphones', time: '06:30 PM', pillar: 'Joy', xp: 20, coins: 15, note: 'Joy of living: Observe the sky and environment guilt-free.', completed: false, category: 'joy' }
 ];
 
-// 2-Minute Paralysis Breaker Micro-Habits
-const PARALYSIS_MICRO_QUESTS = [
-  { id: 'micro_1', title: 'Open blinds & let morning sunlight in', duration: '30 sec', pillar: 'Calm', xp: 10, coins: 5, note: 'Resets circadian clock and breaks mental fog.' },
-  { id: 'micro_2', title: 'Drink a cold glass of water right now', duration: '1 min', pillar: 'Resilience', xp: 10, coins: 5, note: 'Hydrates neurons and interrupts spiral thinking.' },
-  { id: 'micro_3', title: 'Open code editor and write just 1 single line', duration: '2 min', pillar: 'Craft', xp: 15, coins: 10, note: 'Lowers activation energy to conquer resistance.' }
+// Pre-populated Relationship Bonds & Loved Ones (Relational Harmony & De-escalation)
+const DEFAULT_RELATIONSHIP_BONDS = [
+  {
+    id: 'bond_dad',
+    name: 'Dad',
+    role: 'Father',
+    icon: '👨‍💼',
+    status: 'Sensitive',
+    statusBadge: 'Sensitive',
+    statusColor: '#F59E0B',
+    dynamic: 'Quick to worry; values emotional steadiness, calm listening, and unprompted reassurance.',
+    trust: 65,
+    patienceStreak: 3,
+    deescalationQuest: {
+      id: 'deesc_dad',
+      title: 'Active Listening & Grounded Reassurance',
+      desc: 'Listen to his concerns for 10 minutes without defensive remarks or unsolicited counter-arguments.',
+      completed: false,
+      xp: 25,
+      coins: 15
+    },
+    reflections: [
+      { id: 'ref_dad_1', date: 'Yesterday', text: 'Spoke gently about my career progression. Held ground calmly without getting defensive when he voiced anxiety.', tag: 'Active Listening' }
+    ]
+  },
+  {
+    id: 'bond_mom',
+    name: 'Mom',
+    role: 'Mother',
+    icon: '👩‍👧',
+    status: 'Warm',
+    statusBadge: 'Warm',
+    statusColor: '#10B981',
+    dynamic: 'Appreciates regular check-ins, genuine appreciation, and peaceful shared moments.',
+    trust: 85,
+    patienceStreak: 5,
+    deescalationQuest: {
+      id: 'deesc_mom',
+      title: 'Plan Weekend Tea or Shared Walk',
+      desc: 'Invite Mom for weekend tea or an unhurried walk with zero phone distractions.',
+      completed: false,
+      xp: 25,
+      coins: 15
+    },
+    reflections: [
+      { id: 'ref_mom_1', date: '2 days ago', text: 'Called her just to ask about her day. Listened with complete presence and shared gratitude.', tag: 'Regular Check-In' }
+    ]
+  },
+  {
+    id: 'bond_partner',
+    name: 'Partner / Best Friend',
+    role: 'Companion',
+    icon: '🤝',
+    status: 'Distant',
+    statusBadge: 'Distant',
+    statusColor: '#F43F5E',
+    dynamic: 'Needs dedicated quality time, undistracted presence, and active emotional validation.',
+    trust: 70,
+    patienceStreak: 2,
+    deescalationQuest: {
+      id: 'deesc_partner',
+      title: '30-Minute Undivided Attention Block',
+      desc: 'Put devices in another room and engage in genuine conversation or a shared meal.',
+      completed: false,
+      xp: 25,
+      coins: 15
+    },
+    reflections: [
+      { id: 'ref_partner_1', date: '3 days ago', text: 'Put phone away during dinner and gave undivided focus to their thoughts.', tag: 'Quality Time' }
+    ]
+  }
 ];
 
 class StateManager {
@@ -260,6 +326,29 @@ class StateManager {
     const defaultTrack = (user && user.careerTrack) ? user.careerTrack : 'Software Engineer & Builder';
     const fallbackTree = CAREER_TREE_PRESETS[defaultTrack] || CAREER_TREE_PRESETS['Software Engineer & Builder'];
 
+    // Enrich bonds with complete schema (trust, patienceStreak, deescalationQuest, reflections)
+    const enrichBonds = (existingBonds) => {
+      const source = (existingBonds && existingBonds.length > 0) ? existingBonds : DEFAULT_RELATIONSHIP_BONDS;
+      return source.map(b => {
+        const def = DEFAULT_RELATIONSHIP_BONDS.find(d => d.id === b.id) || {};
+        return {
+          ...def,
+          ...b,
+          trust: typeof b.trust === 'number' ? b.trust : (def.trust || 70),
+          patienceStreak: typeof b.patienceStreak === 'number' ? b.patienceStreak : (def.patienceStreak || 1),
+          deescalationQuest: b.deescalationQuest || (def.deescalationQuest ? JSON.parse(JSON.stringify(def.deescalationQuest)) : {
+            id: `deesc_${b.id}`,
+            title: 'Active Listening & Grounded Empathy',
+            desc: 'Offer 15 minutes of calm, uninterrupted presence and validation.',
+            completed: false,
+            xp: 25,
+            coins: 15
+          }),
+          reflections: (b.reflections && b.reflections.length > 0) ? b.reflections : (def.reflections ? JSON.parse(JSON.stringify(def.reflections)) : [])
+        };
+      });
+    };
+
     if (user && user.userData) {
       const uTrack = user.userData.careerTrack || user.careerTrack || 'Software Engineer & Builder';
       const tree = (user.userData.careerTree && Array.isArray(user.userData.careerTree) && user.userData.careerTree.length > 0)
@@ -272,18 +361,12 @@ class StateManager {
         fullName: user.fullName || user.username,
         careerTrack: uTrack,
         careerTree: tree,
-        lifeGoal: user.lifeGoal || 'Master full-stack engineering and bring security to loved ones.',
+        lifeGoal: (user.userData.lifeGoal && user.userData.lifeGoal !== 'undefined') ? user.userData.lifeGoal : (user.lifeGoal || 'Master full-stack engineering and bring security to loved ones.'),
         themeMode: user.userData.themeMode || user.themeMode || 'dark',
         quests: (user.userData.quests && user.userData.quests.length > 0) 
           ? user.userData.quests 
           : [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
-        relationshipBonds: (user.userData.relationshipBonds && user.userData.relationshipBonds.length > 0)
-          ? user.userData.relationshipBonds
-          : [
-              { id: 'bond_mom', name: 'Mom', role: 'Mother', status: 'Warm', statusColor: '#10B981', trust: 90, note: 'Values consistent check-ins and shared peaceful meals.' },
-              { id: 'bond_dad', name: 'Dad', role: 'Father', status: 'Neutral', statusColor: '#6B7280', trust: 70, note: 'Appreciates quiet demonstrations of career competence.' },
-              { id: 'bond_partner', name: 'Partner / Best Friend', role: 'Companion', status: 'Warm', statusColor: '#F43F5E', trust: 85, note: 'Deep mutual encouragement and shared aspirations.' }
-            ]
+        relationshipBonds: enrichBonds(user.userData.relationshipBonds)
       };
     }
 
@@ -294,16 +377,12 @@ class StateManager {
       totalXP: 0,
       currency: 20, // Initial starter Life Credits
       streak: 1,
-      themeMode: user?.themeMode || 'dark', // 'dark' (Obsidian Cyber-HUD) or 'light' (Mindful Ivory)
+      themeMode: user?.themeMode || 'dark',
       soundEnabled: true,
       careerTrack: defaultTrack,
       careerTree: JSON.parse(JSON.stringify(fallbackTree)),
       lifeGoal: user ? user.lifeGoal : 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
-      relationshipBonds: [
-        { id: 'bond_mom', name: 'Mom', role: 'Mother', status: 'Warm', statusColor: '#10B981', trust: 90, note: 'Values consistent check-ins and shared peaceful meals.' },
-        { id: 'bond_dad', name: 'Dad', role: 'Father', status: 'Neutral', statusColor: '#6B7280', trust: 70, note: 'Appreciates quiet demonstrations of career competence.' },
-        { id: 'bond_partner', name: 'Partner / Best Friend', role: 'Companion', status: 'Warm', statusColor: '#F43F5E', trust: 85, note: 'Deep mutual encouragement and shared aspirations.' }
-      ],
+      relationshipBonds: JSON.parse(JSON.stringify(DEFAULT_RELATIONSHIP_BONDS)),
       quests: [...JSON.parse(JSON.stringify(DEFAULT_ROUTINE)), ...JSON.parse(JSON.stringify(SPECIAL_QUESTS))],
       history: []
     };
@@ -415,6 +494,15 @@ class StateManager {
             points.Discipline += (m.discXP || 0);
           }
         });
+      });
+    }
+
+    // Points from relationship bonds (completed de-escalation quests)
+    if (this.state.relationshipBonds && Array.isArray(this.state.relationshipBonds)) {
+      this.state.relationshipBonds.forEach(b => {
+        if (b.deescalationQuest && b.deescalationQuest.completed) {
+          points.LovedOnes += (b.deescalationQuest.xp || 25);
+        }
       });
     }
 
@@ -600,6 +688,170 @@ class StateManager {
     this.notify();
   }
 
+  // Log an honest personal reflection / interaction for a bond
+  logBondInteraction(bondId, reflectionText, tag = 'Active Listening') {
+    const bond = (this.state.relationshipBonds || []).find(b => b.id === bondId);
+    if (!bond) return null;
+
+    const oldLevel = this.getLevel();
+    const earnedXP = 25;
+    const earnedCoins = 15;
+
+    // 1. Add LovedOnes XP and starter Life Credits
+    this.state.totalXP = (this.state.totalXP || 0) + earnedXP;
+    this.state.currency = (this.state.currency || 0) + earnedCoins;
+
+    // 2. Increase Trust meter by 5% (capped at 100%)
+    bond.trust = Math.min(100, (bond.trust || 65) + 5);
+
+    // 3. Increment Patience Streak
+    bond.patienceStreak = (bond.patienceStreak || 0) + 1;
+
+    // 4. Update status tier dynamically
+    if (bond.trust >= 90) {
+      bond.status = 'Harmonious';
+      bond.statusColor = '#10B981';
+    } else if (bond.trust >= 75) {
+      bond.status = 'Warm';
+      bond.statusColor = '#10B981';
+    } else if (bond.trust >= 60) {
+      bond.status = 'Sensitive';
+      bond.statusColor = '#F59E0B';
+    }
+
+    // 5. Append reflection entry
+    if (!Array.isArray(bond.reflections)) {
+      bond.reflections = [];
+    }
+    const newReflection = {
+      id: `ref_${Date.now()}`,
+      date: 'Just now',
+      text: (reflectionText && reflectionText.trim()) || 'Maintained calm presence and genuine listening.',
+      tag: tag || 'Active Listening'
+    };
+    bond.reflections.unshift(newReflection);
+
+    const newLevel = this.getLevel();
+    const didLevelUp = newLevel > oldLevel;
+    if (didLevelUp) {
+      this.state.currency += 20;
+    }
+
+    this.saveState();
+    this.notify();
+
+    return {
+      bond,
+      reflection: newReflection,
+      xpGained: earnedXP,
+      coinsGained: earnedCoins,
+      newTrust: bond.trust,
+      newStreak: bond.patienceStreak,
+      oldLevel,
+      newLevel,
+      didLevelUp,
+      leveledUp: didLevelUp
+    };
+  }
+
+  // Toggle De-escalation Quest for a bond
+  toggleBondDeescalationQuest(bondId) {
+    const bond = (this.state.relationshipBonds || []).find(b => b.id === bondId);
+    if (!bond || !bond.deescalationQuest) return null;
+
+    const quest = bond.deescalationQuest;
+    const oldLevel = this.getLevel();
+    const earnedXP = quest.xp || 25;
+    const earnedCoins = quest.coins || 15;
+
+    if (!quest.completed) {
+      quest.completed = true;
+      quest.completedAt = new Date().toISOString();
+      this.state.totalXP = (this.state.totalXP || 0) + earnedXP;
+      this.state.currency = (this.state.currency || 0) + earnedCoins;
+      bond.trust = Math.min(100, (bond.trust || 70) + 3);
+
+      const newLevel = this.getLevel();
+      const didLevelUp = newLevel > oldLevel;
+      if (didLevelUp) {
+        this.state.currency += 20;
+      }
+
+      this.saveState();
+      this.notify();
+
+      return {
+        bond,
+        quest,
+        isCompleted: true,
+        completed: true,
+        xpGained: earnedXP,
+        coinsGained: earnedCoins,
+        oldLevel,
+        newLevel,
+        didLevelUp,
+        leveledUp: didLevelUp
+      };
+    } else {
+      quest.completed = false;
+      quest.completedAt = null;
+      this.state.totalXP = Math.max(0, (this.state.totalXP || 0) - earnedXP);
+      this.state.currency = Math.max(0, (this.state.currency || 0) - earnedCoins);
+      bond.trust = Math.max(0, (bond.trust || 70) - 3);
+
+      this.saveState();
+      this.notify();
+
+      return {
+        bond,
+        quest,
+        isCompleted: false,
+        completed: false,
+        xpGained: -earnedXP,
+        coinsGained: -earnedCoins,
+        oldLevel,
+        newLevel: this.getLevel(),
+        didLevelUp: false,
+        leveledUp: false
+      };
+    }
+  }
+
+  // Add a customizable bond
+  addCustomBond(name, role, dynamic, initialTrust = 75, status = 'Warm') {
+    const newBond = {
+      id: `bond_${Date.now()}`,
+      name: name.trim(),
+      role: role.trim() || 'Companion',
+      icon: '🤝',
+      status: status || 'Warm',
+      statusBadge: status || 'Warm',
+      statusColor: status === 'Warm' ? '#10B981' : (status === 'Distant' ? '#F43F5E' : '#F59E0B'),
+      dynamic: dynamic.trim() || 'Values mutual care, trust, and shared flourishing.',
+      trust: parseInt(initialTrust) || 75,
+      patienceStreak: 1,
+      deescalationQuest: {
+        id: `deesc_${Date.now()}`,
+        title: 'Check-In & Active Presence',
+        desc: 'Reach out with genuine, unhurried curiosity and zero agenda.',
+        completed: false,
+        xp: 25,
+        coins: 15
+      },
+      reflections: [
+        { id: `ref_${Date.now()}`, date: 'Today', text: 'Initiated relationship tracking to cultivate intentional care.', tag: 'Initiated Bond' }
+      ]
+    };
+
+    if (!Array.isArray(this.state.relationshipBonds)) {
+      this.state.relationshipBonds = [];
+    }
+    this.state.relationshipBonds.push(newBond);
+    this.saveState();
+    this.notify();
+    return newBond;
+  }
+
   // Toggle theme mode (dark vs light)
   setThemeMode(mode) {
     this.state.themeMode = mode;
@@ -711,4 +963,5 @@ window.PILLARS = PILLARS;
 window.CAREER_TRACKS = CAREER_TRACKS;
 window.PARALYSIS_MICRO_QUESTS = PARALYSIS_MICRO_QUESTS;
 window.CAREER_TREE_PRESETS = CAREER_TREE_PRESETS;
+window.DEFAULT_RELATIONSHIP_BONDS = DEFAULT_RELATIONSHIP_BONDS;
 window.XP_PER_LEVEL = XP_PER_LEVEL;

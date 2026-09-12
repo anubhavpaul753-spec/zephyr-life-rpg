@@ -273,14 +273,24 @@
             <button class="filter-tab active" data-filter="all">All Quests (<span id="filter-count-all">13</span>)</button>
             <button class="filter-tab" data-filter="routine">Daily Routine (<span id="filter-count-routine">13</span>)</button>
             <button class="filter-tab" data-filter="career">Career Mastery (<span id="filter-count-career">0</span>)</button>
-            <button class="filter-tab" data-filter="family">Family & Bonds (<span id="filter-count-family">1</span>)</button>
+            <button class="filter-tab" data-filter="family">🤝 Loved Ones & Bonds (<span id="filter-count-family">3</span>)</button>
             <button class="filter-tab" data-filter="joy">Joy & Savoring (<span id="filter-count-joy">1</span>)</button>
             <button class="filter-tab" data-filter="completed">Completed (<span id="filter-count-completed">0</span>)</button>
           </nav>
           
-          <button id="add-custom-quest-btn" class="pill-btn" style="background:var(--bg-subtle);">
-            <span>+</span> Add Custom Quest
-          </button>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button id="add-bond-btn" class="pill-btn hidden" style="background:var(--bg-subtle); border-color:var(--pillar-lovedones); color:var(--pillar-lovedones);">
+              <span>+</span> Add Bond
+            </button>
+            <button id="add-custom-quest-btn" class="pill-btn" style="background:var(--bg-subtle);">
+              <span>+</span> Add Custom Quest
+            </button>
+          </div>
+        </div>
+
+        <!-- Dedicated Loved Ones & Bonds Feature Dashboard View -->
+        <div id="bonds-dashboard-view" class="bonds-dashboard-view hidden">
+          <!-- Injected dynamically by ui.js -->
         </div>
 
         <!-- Quests Feed -->
@@ -383,6 +393,96 @@
           <button type="submit" class="auth-submit-btn">Add to Today's Routine</button>
         </form>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal: Log Honest Interaction (Relationship Bonds & Loved Ones) -->
+  <div id="log-interaction-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="log-interaction-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="log-interaction-title" style="font-family:var(--font-serif); font-size:1.3rem;">🤝 Log Honest Interaction</h3>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Honest communication & patience are daily RPG virtues. Level up your relational harmony.</p>
+        </div>
+        <button class="icon-btn modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+      
+      <form id="interaction-form" class="auth-form" style="margin-top:16px;">
+        <input type="hidden" id="interaction-bond-id" value="">
+        
+        <!-- Bond Target Summary Banner -->
+        <div class="interaction-target-banner" id="interaction-target-banner">
+          <!-- Injected dynamically by ui.js -->
+        </div>
+
+        <!-- Relational Practice Tag -->
+        <div class="form-group">
+          <label class="form-label">Relational Practice</label>
+          <select id="interaction-tag" class="form-select">
+            <option value="Active Listening">Active Listening (No Defensiveness)</option>
+            <option value="Grounded Reassurance">Grounded Reassurance & Calm Presence</option>
+            <option value="Quality Time">Undivided Quality Time (No Devices)</option>
+            <option value="Regular Check-In">Thoughtful Regular Check-In</option>
+            <option value="Healthy Boundaries">Maintained Calm Boundaries</option>
+            <option value="Shared Gratitude">Shared Heartfelt Gratitude</option>
+          </select>
+        </div>
+
+        <!-- Honest Reflection Text Area -->
+        <div class="form-group">
+          <label class="form-label">Personal Reflection: What went well? How did I maintain calm?</label>
+          <textarea id="interaction-reflection" class="form-textarea" rows="3" placeholder="e.g. Listened attentively to his concerns without taking them personally. Kept my breathing steady and validated his feelings." required></textarea>
+        </div>
+
+        <!-- Reward Callout -->
+        <div class="interaction-rewards-callout">
+          <span style="font-size:0.75rem; font-weight:700; color:var(--text-secondary);">Rewards on Logging:</span>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+            <span class="reward-chip chip-loved">+25 Loved Ones (Empathy) XP</span>
+            <span class="reward-chip chip-coin">+5% Trust & Harmony</span>
+            <span class="reward-chip chip-disc">+1 Patience Streak 🔥</span>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn" style="background:var(--pillar-lovedones);">Record Reflection & Elevate Bond →</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Relationship Bond -->
+  <div id="add-bond-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="add-bond-title">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="add-bond-title" style="font-family:var(--font-serif); font-size:1.3rem;">🤝 Add Relationship Bond</h3>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Bring intentional care to a family member, mentor, or companion.</p>
+        </div>
+        <button class="icon-btn modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+      
+      <form id="add-bond-form" class="auth-form" style="margin-top:16px;">
+        <div class="form-group">
+          <label class="form-label">Name / Relationship</label>
+          <input type="text" id="add-bond-name" class="form-input" placeholder="e.g. Grandma, Brother Alex, Mentor Sarah" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role</label>
+          <input type="text" id="add-bond-role" class="form-input" placeholder="e.g. Sibling, Mentor, Best Friend" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Dynamic / Relational Focus</label>
+          <input type="text" id="add-bond-dynamic" class="form-input" placeholder="e.g. Appreciates quiet check-ins and shared hobbies" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Status</label>
+          <select id="add-bond-status" class="form-select">
+            <option value="Warm">Warm (Strong Foundation)</option>
+            <option value="Sensitive">Sensitive (Requires Care & Steadiness)</option>
+            <option value="Distant">Distant (Needs Dedicated Quality Time)</option>
+          </select>
+        </div>
+        <button type="submit" class="auth-submit-btn" style="background:var(--pillar-lovedones);">Create Relationship Bond →</button>
+      </form>
     </div>
   </div>
 

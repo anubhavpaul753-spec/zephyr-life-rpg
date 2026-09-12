@@ -11,18 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 1. Initial Render & Sound Unlock
   const urlParams = new URLSearchParams(window.location.search);
-  // Auto-login only if explicitly requested in URL demo query
   if (urlParams.get('demo') === 'true' && !auth.isAuthenticated()) {
-    auth.login('anubhav', '123').then(() => {
-      store.loadActiveUserState();
-      ui.render(store.state);
-    });
+    auth.login('arpita', '123');
+    store.loadActiveUserState();
   }
   if (urlParams.get('theme')) {
     store.setThemeMode(urlParams.get('theme'));
   }
 
   ui.render(store.state);
+
+  if (urlParams.get('tab')) {
+    ui.setQuestFilter(urlParams.get('tab'));
+  }
+  if (urlParams.get('openBondModal')) {
+    ui.openInteractionModal(urlParams.get('openBondModal'));
+  }
 
   // Play Netflix-style intro sound on initial load if user clicks anywhere or hits replay
   const replayBtn = document.getElementById('replay-netflix-intro');
@@ -159,6 +163,42 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Open Add Bond Modal
+    if (e.target.closest('#add-bond-btn')) {
+      openModal('add-bond-modal');
+      return;
+    }
+
+    // Open Log Interaction Modal
+    const openInterBtn = e.target.closest('[data-action="open-interaction-modal"]');
+    if (openInterBtn) {
+      const bondId = openInterBtn.dataset.bondId;
+      ui.openInteractionModal(bondId);
+      return;
+    }
+
+    // Toggle Bond De-escalation Quest
+    const deescalateBtn = e.target.closest('[data-action="toggle-deescalation-quest"]');
+    if (deescalateBtn) {
+      const bondId = deescalateBtn.dataset.bondId;
+      const res = store.toggleBondDeescalationQuest(bondId);
+      if (res && res.completed) {
+        celebrate.playChime('quest');
+        const rect = deescalateBtn.getBoundingClientRect();
+        celebrate.spawnBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 20);
+        celebrate.showQuoteToast(`De-escalation Quest Completed! +25 Loved Ones XP, +15 Life Credits.`);
+        if (res.leveledUp) {
+          setTimeout(() => {
+            const bonusEl = document.getElementById('levelup-bonuses');
+            if (bonusEl) bonusEl.textContent = `You leveled up through family empathy & de-escalation!`;
+            openModal('level-up-modal');
+            celebrate.playChime('levelup');
+          }, 350);
+        }
+      }
+      return;
+    }
+
     // Close Modals
     if (e.target.closest('.modal-close-btn') || e.target.classList.contains('modal-backdrop')) {
       const modal = e.target.closest('.modal-backdrop');
@@ -174,32 +214,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 4. Form Submissions (Auth & Generators)
-  document.addEventListener('submit', async e => {
+  document.addEventListener('submit', e => {
     // Login Form Submit
     if (e.target.id === 'login-form') {
       e.preventDefault();
-      const submitBtn = document.getElementById('login-submit-btn');
-      const errBox = document.getElementById('auth-error-box');
-      if (errBox) errBox.classList.add('hidden');
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Authenticating...'; }
-
       const u = document.getElementById('login-username').value;
       const p = document.getElementById('login-password').value;
-      const res = await auth.login(u, p);
-
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Sign In to Reality Mirror →'; }
-
+      const res = auth.login(u, p);
       if (res.success) {
         triggerNetflixIntro();
         store.loadActiveUserState();
         ui.render(store.state);
       } else {
-        if (errBox) {
-          errBox.textContent = res.message;
-          errBox.classList.remove('hidden');
-        } else {
-          alert(res.message);
-        }
+        alert(res.message);
       }
       return;
     }
@@ -207,30 +234,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Register Form Submit
     if (e.target.id === 'register-form') {
       e.preventDefault();
-      const submitBtn = document.getElementById('register-submit-btn');
-      const errBox = document.getElementById('auth-error-box');
-      if (errBox) errBox.classList.add('hidden');
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating Account...'; }
-
       const full = document.getElementById('reg-fullname').value;
       const u = document.getElementById('reg-username').value;
       const p = document.getElementById('reg-password').value;
       const c = document.getElementById('reg-careertrack').value;
-      const res = await auth.register(u, p, full, c);
-
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create Account & Begin →'; }
-
+      const res = auth.register(u, p, full, c);
       if (res.success) {
         triggerNetflixIntro();
         store.loadActiveUserState();
         ui.render(store.state);
       } else {
-        if (errBox) {
-          errBox.textContent = res.message;
-          errBox.classList.remove('hidden');
-        } else {
-          alert(res.message);
-        }
+        alert(res.message);
       }
       return;
     }
@@ -260,6 +274,50 @@ document.addEventListener('DOMContentLoaded', () => {
       store.addCustomQuest(title, time, pillar, xp, coins, note);
       celebrate.playChime('quest');
       closeModal('custom-quest-modal');
+      return;
+    }
+
+    // Log Honest Interaction Submit
+    if (e.target.id === 'interaction-form') {
+      e.preventDefault();
+      const bondId = document.getElementById('interaction-bond-id').value;
+      const refText = document.getElementById('interaction-reflection').value;
+      const tag = document.getElementById('interaction-tag').value;
+      const res = store.logBondInteraction(bondId, refText, tag);
+      if (res) {
+        celebrate.playChime('quest');
+        celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 24, true);
+        celebrate.showQuoteToast(`Interaction Logged! +25 Loved Ones XP, +5% Harmony with ${res.bond.name}.`);
+        if (res.leveledUp) {
+          setTimeout(() => {
+            const bonusEl = document.getElementById('levelup-bonuses');
+            if (bonusEl) bonusEl.textContent = `You ascended in Level through interpersonal harmony & empathy!`;
+            openModal('level-up-modal');
+            celebrate.playChime('levelup');
+          }, 350);
+        }
+        closeModal('log-interaction-modal');
+        document.getElementById('interaction-reflection').value = '';
+      }
+      return;
+    }
+
+    // Add Custom Bond Submit
+    if (e.target.id === 'add-bond-form') {
+      e.preventDefault();
+      const name = document.getElementById('add-bond-name').value;
+      const role = document.getElementById('add-bond-role').value;
+      const dynamic = document.getElementById('add-bond-dynamic').value;
+      const status = document.getElementById('add-bond-status').value;
+
+      const bond = store.addCustomBond(name, role, dynamic, 50, status);
+      if (bond) {
+        celebrate.playChime('quest');
+        celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 20);
+        celebrate.showQuoteToast(`Bond with ${name} (${role}) added to your inner circle.`);
+        closeModal('add-bond-modal');
+        e.target.reset();
+      }
       return;
     }
   });

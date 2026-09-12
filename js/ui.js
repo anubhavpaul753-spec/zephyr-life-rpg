@@ -33,6 +33,7 @@ class UIRenderer {
     this.renderCareerHero(state);
     this.renderPillarsHUD(state);
     this.renderProfileSidebar(state);
+    this.renderBondsDashboard(state);
     this.renderQuestsFeed(state);
     this.renderParalysisModal();
   }
@@ -51,30 +52,28 @@ class UIRenderer {
     if (this.authTab === 'login') {
       container.innerHTML = `
         <form id="login-form" class="auth-form">
-          <div id="auth-error-box" class="auth-error-banner hidden" style="color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:10px; font-size:0.85rem; margin-bottom:8px; text-align:center;"></div>
           <div class="form-group">
             <label class="form-label">Username</label>
-            <input type="text" id="login-username" class="form-input" placeholder="Enter your username" required autocomplete="username">
+            <input type="text" id="login-username" class="form-input" placeholder="e.g. arpita" required autocomplete="username" value="arpita">
           </div>
           <div class="form-group">
             <label class="form-label">Password</label>
-            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+            <input type="password" id="login-password" class="form-input" placeholder="Enter password" required autocomplete="current-password" value="123">
           </div>
-          <button type="submit" id="login-submit-btn" class="auth-submit-btn">Sign In to Reality Mirror →</button>
-          <p class="auth-hint">New to Project Mirror? Click <strong>Create Account</strong> above to begin your journey.</p>
+          <button type="submit" class="auth-submit-btn">Enter Reality Mirror →</button>
+          <p class="auth-hint">Demo account pre-filled. New user? Click <strong>Create Account</strong> above.</p>
         </form>
       `;
     } else {
       container.innerHTML = `
         <form id="register-form" class="auth-form">
-          <div id="auth-error-box" class="auth-error-banner hidden" style="color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:10px; font-size:0.85rem; margin-bottom:8px; text-align:center;"></div>
           <div class="form-group">
-            <label class="form-label">Your Full Name</label>
-            <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Anubhav Paul" required>
+            <label class="form-label">Your Name</label>
+            <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Arpita" required>
           </div>
           <div class="form-group">
             <label class="form-label">Choose Username</label>
-            <input type="text" id="reg-username" class="form-input" placeholder="e.g. anubhav" required autocomplete="username">
+            <input type="text" id="reg-username" class="form-input" placeholder="e.g. arpita" required autocomplete="username">
           </div>
           <div class="form-group">
             <label class="form-label">Choose Password</label>
@@ -86,8 +85,8 @@ class UIRenderer {
               ${careerOptions}
             </select>
           </div>
-          <button type="submit" id="register-submit-btn" class="auth-submit-btn">Create Account & Begin →</button>
-          <p class="auth-hint">All your progress, habits, and XP are securely preserved in the database.</p>
+          <button type="submit" class="auth-submit-btn">Begin Life RPG Journey →</button>
+          <p class="auth-hint">All your progress, habits, and XP are securely preserved per-account.</p>
         </form>
       `;
     }
@@ -345,10 +344,13 @@ class UIRenderer {
     const bondsContainer = document.getElementById('relationship-bonds-list');
     if (bondsContainer && state.relationshipBonds) {
       bondsContainer.innerHTML = state.relationshipBonds.map(b => `
-        <div class="bond-card" title="${escapeHTML(b.note)}">
+        <div class="bond-card" title="${escapeHTML(b.dynamic || b.note || '')}" data-bond-id="${b.id}">
           <div class="bond-header">
             <span class="bond-name">${escapeHTML(b.name)} <small style="color:var(--text-muted);">(${escapeHTML(b.role)})</small></span>
-            <span class="bond-status" style="color:${b.statusColor}; border:1px solid ${b.statusColor};">${b.status} (${b.trust}%)</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span class="patience-streak-mini" title="Patience Streak">🔥 ${b.patienceStreak || 0}d</span>
+              <span class="bond-status" style="color:${b.statusColor || '#10B981'}; border:1px solid ${b.statusColor || '#10B981'};">${b.status} (${b.trust}%)</span>
+            </div>
           </div>
           <div class="bond-trust-track">
             <div class="bond-trust-fill" style="width:${b.trust}%;"></div>
@@ -376,7 +378,7 @@ class UIRenderer {
     if (countAll) countAll.textContent = quests.length;
     if (countRoutine) countRoutine.textContent = quests.filter(q => q.category === 'routine').length;
     if (countCareer) countCareer.textContent = quests.filter(q => q.category === 'career').length;
-    if (countFamily) countFamily.textContent = quests.filter(q => q.category === 'family').length;
+    if (countFamily) countFamily.textContent = (state.relationshipBonds && state.relationshipBonds.length > 0) ? state.relationshipBonds.length : quests.filter(q => q.category === 'family').length;
     if (countJoy) countJoy.textContent = quests.filter(q => q.category === 'joy').length;
     if (countCompleted) countCompleted.textContent = quests.filter(q => q.completed).length;
 
@@ -457,11 +459,192 @@ class UIRenderer {
     `).join('');
   }
 
+  /**
+   * Render Dedicated Relationship Bonds & Loved Ones Feature Dashboard
+   */
+  renderBondsDashboard(state) {
+    const bondsContainer = document.getElementById('bonds-dashboard-view');
+    const addBondBtn = document.getElementById('add-bond-btn');
+    const isFamilyFilter = this.currentQuestFilter === 'family';
+
+    if (!bondsContainer) return;
+
+    if (addBondBtn) {
+      addBondBtn.classList.toggle('hidden', !isFamilyFilter);
+    }
+
+    if (!isFamilyFilter) {
+      bondsContainer.classList.add('hidden');
+      return;
+    }
+
+    bondsContainer.classList.remove('hidden');
+    const bonds = (state && state.relationshipBonds) ? state.relationshipBonds : [];
+
+    bondsContainer.innerHTML = `
+      <div class="bonds-intro-card">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <span class="bonds-intro-icon">🤝</span>
+          <div>
+            <h3 class="bonds-intro-title">Loved Ones & Relational Harmony</h3>
+            <p class="bonds-intro-desc">
+              Personal growth is not selfish. Leveling up your daily consistency should bring stability, quiet pride, and peace to those you love.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bonds-grid">
+        ${bonds.map(b => {
+          const quest = b.deescalationQuest || {
+            id: `deesc_${b.id}`,
+            title: 'Active Listening & Grounded Empathy',
+            desc: 'Offer 15 minutes of uninterrupted, patient attention.',
+            completed: false,
+            xp: 25,
+            coins: 15
+          };
+          const isQuestDone = quest.completed;
+          const recentReflection = (b.reflections && b.reflections.length > 0) ? b.reflections[0] : null;
+
+          return `
+            <article class="bond-feature-card" data-bond-id="${b.id}">
+              <div class="bond-feature-top">
+                <div class="bond-title-group">
+                  <span class="bond-avatar-icon">${b.icon || '🤝'}</span>
+                  <div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <h4 class="bond-feature-name">${escapeHTML(b.name)}</h4>
+                      <span class="bond-role-badge">${escapeHTML(b.role)}</span>
+                    </div>
+                    <p class="bond-dynamic-text">"${escapeHTML(b.dynamic)}"</p>
+                  </div>
+                </div>
+
+                <div class="bond-badges-col">
+                  <span class="patience-streak-badge" title="Consecutive days of patient, grounded interaction">
+                    <span>🔥</span>
+                    <strong>${b.patienceStreak || 0}</strong>
+                    <small>day streak</small>
+                  </span>
+                  <span class="bond-status-chip" style="color:${b.statusColor || '#10B981'}; border-color:${b.statusColor || '#10B981'};">
+                    ${escapeHTML(b.status)}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Trust & Harmony Meter (0% to 100%) -->
+              <div class="harmony-meter-box">
+                <div class="harmony-meter-header">
+                  <span class="harmony-label">Trust & Harmony Meter</span>
+                  <span class="harmony-percent-readout">${b.trust || 0}%</span>
+                </div>
+                <div class="harmony-track">
+                  <div class="harmony-fill" style="width: ${b.trust || 0}%;"></div>
+                </div>
+              </div>
+
+              <!-- Actionable De-escalation Quest -->
+              <div class="deescalation-box ${isQuestDone ? 'is-completed' : ''}">
+                <div class="deescalation-header">
+                  <span class="deescalation-tag">⚡ Actionable De-escalation Quest</span>
+                  <div style="display:flex; gap:6px;">
+                    <span class="reward-chip chip-loved">+${quest.xp || 25} Loved Ones XP</span>
+                    <span class="reward-chip chip-coin">+${quest.coins || 15} 🪙</span>
+                  </div>
+                </div>
+                
+                <div class="deescalation-flow">
+                  <button 
+                    type="button" 
+                    class="deescalation-checkbox ${isQuestDone ? 'checked' : ''}" 
+                    role="checkbox" 
+                    aria-checked="${isQuestDone}" 
+                    data-action="toggle-deescalation-quest" 
+                    data-bond-id="${b.id}"
+                    aria-label="Mark de-escalation quest as ${isQuestDone ? 'incomplete' : 'complete'}"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  </button>
+                  <div style="flex-grow:1;">
+                    <h5 class="deescalation-title">${escapeHTML(quest.title)}</h5>
+                    <p class="deescalation-desc">${escapeHTML(quest.desc)}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Honest Reflection Log -->
+              ${recentReflection ? `
+                <div class="recent-reflection-box">
+                  <div class="reflection-meta">
+                    <span class="reflection-tag">✍️ ${escapeHTML(recentReflection.tag)}</span>
+                    <span class="reflection-date">${escapeHTML(recentReflection.date)}</span>
+                  </div>
+                  <p class="reflection-quote">"${escapeHTML(recentReflection.text)}"</p>
+                </div>
+              ` : ''}
+
+              <!-- Log Honest Interaction Button -->
+              <div class="bond-actions-row">
+                <button 
+                  type="button" 
+                  class="pill-btn primary-btn log-interaction-open-btn" 
+                  data-action="open-interaction-modal" 
+                  data-bond-id="${b.id}"
+                  style="background:var(--pillar-lovedones); border-color:var(--pillar-lovedones);"
+                >
+                  <span>✍️</span> Log Honest Interaction (+25 XP)
+                </button>
+              </div>
+            </article>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  // Open "Log Honest Interaction" Modal for specific bond
+  openInteractionModal(bondId) {
+    const bond = (window.AppStore.state.relationshipBonds || []).find(b => b.id === bondId);
+    if (!bond) return;
+
+    const modal = document.getElementById('log-interaction-modal');
+    const banner = document.getElementById('interaction-target-banner');
+    const inputId = document.getElementById('interaction-bond-id');
+    const textarea = document.getElementById('interaction-reflection');
+
+    if (inputId) inputId.value = bond.id;
+    if (textarea) textarea.value = '';
+
+    if (banner) {
+      banner.innerHTML = `
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; width:100%;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.8rem;">${bond.icon || '🤝'}</span>
+            <div>
+              <h4 style="font-size:1.05rem; font-weight:700;">${escapeHTML(bond.name)} <small style="color:var(--text-secondary); font-size:0.75rem;">(${escapeHTML(bond.role)})</small></h4>
+              <p style="font-size:0.775rem; color:var(--text-secondary);">${escapeHTML(bond.dynamic || '')}</p>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <span class="bond-status-chip" style="color:${bond.statusColor || '#10B981'}; border-color:${bond.statusColor || '#10B981'};">${bond.status}</span>
+            <div style="font-size:0.75rem; font-weight:700; color:var(--pillar-lovedones); margin-top:3px;">${bond.trust}% Harmony</div>
+          </div>
+        </div>
+      `;
+    }
+
+    if (modal) modal.classList.remove('hidden');
+  }
+
   setQuestFilter(filterKey) {
     this.currentQuestFilter = filterKey;
     document.querySelectorAll('.filter-tab').forEach(b => {
       b.classList.toggle('active', b.dataset.filter === filterKey);
     });
+    this.renderBondsDashboard(window.AppStore.state);
     this.renderQuestsFeed(window.AppStore.state);
   }
 
