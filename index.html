@@ -38,27 +38,43 @@
   </script>
 
   <style id="theme-enforcer">
-    /* Bulletproof Anti-Brown Global Lock */
-    html:not([data-theme="light"]), 
-    body:not([data-theme="light"]),
-    html[data-theme="dark"], 
-    body[data-theme="dark"] {
+    /* Flawless Dual-Theme Engine (Obsidian Midnight & Golden Autumn Daylight) */
+    html[data-theme="dark"],
+    body[data-theme="dark"],
+    html:not([data-theme="light"]) body {
       background-color: #07080D !important;
       --bg-app: #07080D !important;
       --bg-surface: #0E1119 !important;
       --bg-card: #121622 !important;
+      --bg-card-hover: #171D2B !important;
+      --bg-subtle: #161D2B !important;
+      --bg-input: #0A0D14 !important;
+      --text-primary: #F3F5F9 !important;
+      --text-secondary: #94A0B8 !important;
+      --border-color: rgba(255, 255, 255, 0.08) !important;
+      --border-card: rgba(255, 255, 255, 0.12) !important;
     }
-    html[data-theme="light"], 
-    body[data-theme="light"] {
+
+    html[data-theme="light"],
+    body[data-theme="light"],
+    html[data-theme="light"] body {
       background-color: #FAF9F5 !important;
       --bg-app: #FAF9F5 !important;
       --bg-surface: #F5F1E9 !important;
       --bg-card: #FFFFFF !important;
+      --bg-card-hover: #FCFBF9 !important;
+      --bg-subtle: #EDE7DD !important;
+      --bg-input: #FDFBF8 !important;
+      --text-primary: #1C1917 !important;
+      --text-secondary: #44403C !important;
+      --text-muted: #78716C !important;
+      --border-color: rgba(217, 119, 6, 0.15) !important;
+      --border-card: rgba(0, 0, 0, 0.08) !important;
     }
   </style>
 
   <!-- Version-tagged to force browsers to bypass cache -->
-  <link rel="stylesheet" href="css/styles.css?v=20260912-obsidian-v3">
+  <link rel="stylesheet" href="css/styles.css?v=20260912-flawless-light-v4">
 </head>
 <body>
   <!-- Screen Reader Announcements (ARIA Live) -->

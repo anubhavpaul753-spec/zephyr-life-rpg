@@ -48,6 +48,7 @@ class UIManager {
     // Apply Active Theme Mode ('dark' or 'light')
     const activeTheme = state?.themeMode || 'dark';
     document.documentElement.setAttribute('data-theme', activeTheme);
+    if (document.body) document.body.setAttribute('data-theme', activeTheme);
 
     // Apply Active Equipped Palette
     const activePalette = state?.activePalette || 'default';
