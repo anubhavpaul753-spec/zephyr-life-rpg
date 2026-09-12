@@ -1164,6 +1164,60 @@ class StateManager {
     return generatedQuests;
   }
 
+
+  // Aliases for bulletproof controller compatibility
+  toggleMilestone(milestoneId) {
+    return this.toggleCareerMilestone(milestoneId);
+  }
+
+  resetDailyRoutine() {
+    return this.resetRoutine();
+  }
+
+  switchCareerTrack(trackName) {
+    if (window.API) window.API.selectCareer(trackName);
+    return this.setCareerTrack(trackName);
+  }
+
+  logRelationshipInteraction(bondId, action, reflection) {
+    if (window.API) window.API.logRelationship(bondId, action, reflection);
+    return this.logBondInteraction(bondId, reflection, action);
+  }
+
+  setFilter(filterName) {
+    this.filter = filterName;
+    this.notify();
+  }
+
+  addXP(xpAmount, pillarName = 'Calm') {
+    const oldLevel = this.getLevel();
+    this.state.totalXP = (this.state.totalXP || 0) + xpAmount;
+    const newLevel = this.getLevel();
+    if (newLevel > oldLevel) {
+      this.state.currency = (this.state.currency || 0) + 20;
+    }
+    this.saveState();
+    this.notify();
+    return { xpGained: xpAmount, oldLevel, newLevel, leveledUp: newLevel > oldLevel };
+  }
+
+  save() {
+    this.saveState();
+  }
+
+  setThemeMode(mode) {
+    this.state.themeMode = mode;
+    document.documentElement.setAttribute('data-theme', mode);
+    this.saveState();
+    this.notify();
+  }
+
+  toggleSound() {
+    this.state.soundEnabled = !this.state.soundEnabled;
+    this.saveState();
+    this.notify();
+  }
+
   // Reset daily routine for a fresh day
   resetRoutine() {
     const completedAny = this.state.quests.some(q => q.completed);

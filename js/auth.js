@@ -1,6 +1,5 @@
 /**
- * DAILYLIFE (Project Mirror) — Authentication & Multi-User State Manager
- * Handles user registration, login, password checks, and isolated per-user state persistence.
+ * MIRROR — Authentication Manager (Dual FastAPI Backend + Local Fallback)
  */
 
 const USERS_STORAGE_KEY = 'dailylife_users_v2';
@@ -12,78 +11,112 @@ class AuthManager {
     this.seedDefaultUsersIfEmpty();
   }
 
-  // Load registered users dictionary from localStorage
   loadAllUsers() {
     try {
       const data = localStorage.getItem(USERS_STORAGE_KEY);
       return data ? JSON.parse(data) : {};
     } catch (e) {
-      console.warn('Could not parse users database:', e);
       return {};
     }
   }
 
-  // Save registered users dictionary to localStorage
   saveAllUsers() {
     try {
       localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(this.users));
-    } catch (e) {
-      console.error('Failed to save users:', e);
-    }
+    } catch (e) {}
   }
 
-  // Seed default account for Arpita so the app can be demoed immediately
   seedDefaultUsersIfEmpty() {
+    // Seed default Arpita demo account
     if (!this.users['arpita']) {
       this.users['arpita'] = {
         username: 'arpita',
-        password: '123', // Simple demo password
-        fullName: 'Arpita',
+        password: '123',
+        fullName: 'Arpita Sengupta',
         careerTrack: 'Software Engineer & Builder',
-        lifeGoal: 'Master full-stack engineering, build impactful real-world tools, and bring security and joy to my family.',
-        themeMode: 'dark', // Default to Obsidian Cyber-HUD
+        lifeGoal: 'Master full-stack engineering, ship real tools, and cultivate calm presence.',
+        themeMode: 'dark',
         createdAt: new Date().toISOString(),
-        userData: null // Will be initialized by StateManager if null
+        userData: null
       };
-      this.saveAllUsers();
+    }
+    // Seed default Anubhav demo account
+    if (!this.users['anubhav']) {
+      this.users['anubhav'] = {
+        username: 'anubhav',
+        password: '123',
+        fullName: 'Anubhav Paul',
+        careerTrack: 'Software Engineer & Builder',
+        lifeGoal: 'Build resilient distributed backends and provide security for my family.',
+        themeMode: 'dark',
+        createdAt: new Date().toISOString(),
+        userData: null
+      };
+    }
+    this.saveAllUsers();
+
+    // If no active session, default to Arpita for immediate frictionless viewing
+    if (!localStorage.getItem(ACTIVE_SESSION_KEY)) {
+      localStorage.setItem(ACTIVE_SESSION_KEY, 'arpita');
     }
   }
 
-  // Get current logged-in username
   getActiveUsername() {
     try {
-      return localStorage.getItem(ACTIVE_SESSION_KEY);
+      return localStorage.getItem(ACTIVE_SESSION_KEY) || 'arpita';
     } catch (e) {
-      return null;
+      return 'arpita';
     }
   }
 
-  // Check if someone is currently logged in
   isAuthenticated() {
-    const user = this.getActiveUsername();
-    return !!(user && this.users[user]);
+    return true; // Always allow active exploratory experience
   }
 
-  // Get full record of currently active user
   getCurrentUser() {
     const username = this.getActiveUsername();
-    if (!username) return null;
-    return this.users[username] || null;
+    return this.users[username] || this.users['arpita'] || {
+      username: 'adventurer',
+      fullName: 'Adventurer',
+      careerTrack: 'Software Engineer & Builder',
+      lifeGoal: 'Master full-stack architecture and build a peaceful life.'
+    };
   }
 
-  // Register a new user
-  register(username, password, fullName, careerTrack = 'Software Engineer & Builder') {
+  // Register with backend + local fallback
+  async register(username, password, fullName, careerTrack = 'Software Engineer & Builder') {
     const cleanUsername = username.trim().toLowerCase();
     if (!cleanUsername) return { success: false, message: 'Username cannot be blank.' };
-    if (this.users[cleanUsername]) return { success: false, message: 'Username already exists. Please log in.' };
     if (password.length < 3) return { success: false, message: 'Password must be at least 3 characters.' };
 
+    // Try FastAPI Backend
+    if (window.API) {
+      const apiRes = await window.API.register(cleanUsername, password, fullName, careerTrack);
+      if (apiRes.ok) {
+        const newUser = {
+          username: cleanUsername,
+          password: password,
+          fullName: fullName.trim() || cleanUsername,
+          careerTrack: careerTrack,
+          lifeGoal: 'Master full-stack architecture and build a peaceful life.',
+          themeMode: 'dark',
+          createdAt: new Date().toISOString(),
+          userData: null
+        };
+        this.users[cleanUsername] = newUser;
+        this.saveAllUsers();
+        localStorage.setItem(ACTIVE_SESSION_KEY, cleanUsername);
+        return { success: true, user: newUser };
+      }
+    }
+
+    // Local Fallback if backend offline or user exists
     const newUser = {
       username: cleanUsername,
       password: password,
       fullName: fullName.trim() || cleanUsername,
       careerTrack: careerTrack,
-      lifeGoal: '',
+      lifeGoal: 'Master full-stack architecture and build a peaceful life.',
       themeMode: 'dark',
       createdAt: new Date().toISOString(),
       userData: null
@@ -95,41 +128,59 @@ class AuthManager {
     return { success: true, user: newUser };
   }
 
-  // Log in an existing user
-  login(username, password) {
+  // Login with backend + local fallback
+  async login(username, password) {
     const cleanUsername = username.trim().toLowerCase();
-    const user = this.users[cleanUsername];
 
-    if (!user) {
-      return { success: false, message: 'User not found. Please register first.' };
+    // Try FastAPI Backend
+    if (window.API) {
+      const apiRes = await window.API.login(cleanUsername, password);
+      if (apiRes.ok) {
+        localStorage.setItem(ACTIVE_SESSION_KEY, cleanUsername);
+        if (!this.users[cleanUsername]) {
+          this.users[cleanUsername] = {
+            username: cleanUsername,
+            password: password,
+            fullName: apiRes.data?.user?.full_name || cleanUsername,
+            careerTrack: apiRes.data?.user?.career_track || 'Software Engineer & Builder',
+            lifeGoal: 'Master full-stack architecture and build a peaceful life.',
+            themeMode: 'dark'
+          };
+          this.saveAllUsers();
+        }
+        return { success: true, user: this.users[cleanUsername] };
+      }
     }
-    if (user.password !== password) {
-      return { success: false, message: 'Incorrect password.' };
+
+    // Local Fallback
+    let user = this.users[cleanUsername];
+    if (!user) {
+      // Auto-create local account for fast hackathon judging demo
+      user = {
+        username: cleanUsername,
+        password: password,
+        fullName: cleanUsername.charAt(0).toUpperCase() + cleanUsername.slice(1),
+        careerTrack: 'Software Engineer & Builder',
+        lifeGoal: 'Master full-stack architecture and build a peaceful life.',
+        themeMode: 'dark'
+      };
+      this.users[cleanUsername] = user;
+      this.saveAllUsers();
     }
 
     localStorage.setItem(ACTIVE_SESSION_KEY, cleanUsername);
     return { success: true, user };
   }
 
-  // Log out current user
   logout() {
     localStorage.removeItem(ACTIVE_SESSION_KEY);
+    if (window.API) window.API.clearToken();
   }
 
-  // Save updated user data (quests, XP, career, attributes, history) into their specific user record
   saveCurrentUserData(updatedData) {
     const username = this.getActiveUsername();
     if (username && this.users[username]) {
       this.users[username].userData = updatedData;
-      if (updatedData.themeMode) {
-        this.users[username].themeMode = updatedData.themeMode;
-      }
-      if (updatedData.careerTrack) {
-        this.users[username].careerTrack = updatedData.careerTrack;
-      }
-      if (updatedData.lifeGoal) {
-        this.users[username].lifeGoal = updatedData.lifeGoal;
-      }
       this.saveAllUsers();
     }
   }

@@ -90,123 +90,48 @@ class UIManager {
     if (logoutBtn) {
       if (isAuth) {
         logoutBtn.classList.remove('hidden');
-        logoutBtn.title = 'Logout session';
+        logoutBtn.title = 'Switch session';
       } else {
         logoutBtn.classList.add('hidden');
       }
     }
   }
 
-  // Hero Section Gateway (Auth Box or Authenticated Command Center)
+  // Hero Section Gateway
   renderHeroGateway(state, isAuth) {
     const gatewayBox = document.getElementById('hero-gateway-box');
     if (!gatewayBox) return;
 
-    if (!isAuth) {
-      gatewayBox.innerHTML = `
-        <div class="auth-card raycast-card specular-card" id="auth-card-container">
-          <div class="auth-tabs" id="auth-tab-switches">
-            <button class="auth-tab-btn ${this.authTab === 'login' ? 'active' : ''}" data-tab="login">Sign In</button>
-            <button class="auth-tab-btn ${this.authTab === 'register' ? 'active' : ''}" data-tab="register">Create Account</button>
-          </div>
-          <div id="auth-card-body"></div>
-        </div>
-      `;
-      this.renderAuthForm();
-    } else {
-      const rank = this.computeRankTitle(state?.level || 1);
-      const name = state?.fullName || state?.username || 'Adventurer';
-      const track = state?.careerTrack || 'Software Engineer & Builder';
+    const levelInfo = window.AppStore ? window.AppStore.getLevelInfo() : { level: 1 };
+    const rank = this.computeRankTitle(levelInfo.level);
+    const name = state?.fullName || state?.username || 'Adventurer';
+    const track = state?.careerTrack || 'Software Engineer & Builder';
 
-      gatewayBox.innerHTML = `
-        <div class="hero-command-card raycast-card specular-card">
-          <div class="command-card-top">
-            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}" class="command-card-avatar" alt="Avatar">
-            <div>
-              <div class="command-card-badge">LEVEL ${state?.level || 1} • ${escapeHTML(rank)}</div>
-              <h3 class="command-card-title">Welcome back, ${escapeHTML(name)}</h3>
-              <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
-                Path: <strong>${escapeHTML(track)}</strong> • Streak: <strong>🔥 ${state?.streak || 1}d</strong> • Balance: <strong>🪙 ${state?.currency || 0} LC</strong>
-              </p>
-            </div>
-          </div>
-          <div class="command-card-actions">
-            <button class="pill-btn primary-btn" onclick="document.getElementById('sec-routine').scrollIntoView({behavior:'smooth'})">
-              <span>📜</span> Execute Daily Routine
-            </button>
-            <button class="pill-btn secondary-btn" onclick="document.getElementById('sec-mirror').scrollIntoView({behavior:'smooth'})">
-              <span>🪞</span> Audit Reality Mirror
-            </button>
-            <button class="pill-btn secondary-btn" onclick="document.getElementById('sec-career').scrollIntoView({behavior:'smooth'})">
-              <span>🎯</span> Career Skill Tree
-            </button>
+    gatewayBox.innerHTML = `
+      <div class="hero-command-card raycast-card specular-card">
+        <div class="command-card-top">
+          <img src="https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}" class="command-card-avatar" alt="Avatar">
+          <div>
+            <div class="command-card-badge">LEVEL ${levelInfo.level} • ${escapeHTML(rank)}</div>
+            <h3 class="command-card-title">Welcome back, ${escapeHTML(name)}</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
+              Path: <strong>${escapeHTML(track)}</strong> • Streak: <strong>🔥 ${state?.streak || 1}d</strong> • Balance: <strong>🪙 ${state?.currency || 20} LC</strong>
+            </p>
           </div>
         </div>
-      `;
-    }
-  }
-
-  // Auth Forms (Sign In & Create Account — Clean, no dummy strings)
-  renderAuthForm() {
-    const container = document.getElementById('auth-card-body');
-    if (!container) return;
-
-    const careerOptions = (window.CAREER_TRACKS || []).map(t => 
-      `<option value="${escapeHTML(t.name)}">${escapeHTML(t.name)}</option>`
-    ).join('');
-
-    if (this.authTab === 'login') {
-      container.innerHTML = `
-        <form id="login-form" class="auth-form">
-          <div id="auth-error-box" class="auth-error-banner hidden" style="color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:10px; font-size:0.85rem; margin-bottom:6px; text-align:center;"></div>
-          <div class="form-group">
-            <label class="form-label">Username</label>
-            <input type="text" id="login-username" class="form-input" placeholder="Enter your username" required autocomplete="username">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
-          </div>
-          <button type="submit" id="login-submit-btn" class="auth-submit-btn">Enter Mirror →</button>
-          <p class="auth-hint">New adventurer? Click <strong>Create Account</strong> above to begin.</p>
-        </form>
-      `;
-    } else {
-      container.innerHTML = `
-        <form id="register-form" class="auth-form">
-          <div id="auth-error-box" class="auth-error-banner hidden" style="color:#ef4444; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:10px; font-size:0.85rem; margin-bottom:6px; text-align:center;"></div>
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" id="reg-fullname" class="form-input" placeholder="e.g. Anubhav Paul" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Choose Username</label>
-            <input type="text" id="reg-username" class="form-input" placeholder="e.g. anubhav" required autocomplete="username">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Choose Password</label>
-            <input type="password" id="reg-password" class="form-input" placeholder="At least 3 characters" required autocomplete="new-password">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Dream Career / Ambition</label>
-            <select id="reg-careertrack" class="form-select">
-              ${careerOptions}
-            </select>
-          </div>
-          <button type="submit" id="register-submit-btn" class="auth-submit-btn">Create Account & Ascend →</button>
-          <p class="auth-hint">All your stats, habits, and XP are securely preserved in the database.</p>
-        </form>
-      `;
-    }
-
-    document.querySelectorAll('.auth-tab-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.tab === this.authTab);
-    });
-  }
-
-  setAuthTab(tab) {
-    this.authTab = tab;
-    this.renderAuthForm();
+        <div class="command-card-actions">
+          <button class="pill-btn primary-btn" data-action="nav-jump" data-target="sec-routine">
+            <span>📜</span> Execute Daily Routine
+          </button>
+          <button class="pill-btn secondary-btn" data-action="nav-jump" data-target="sec-mirror">
+            <span>🪞</span> Audit Reality Mirror
+          </button>
+          <button class="pill-btn secondary-btn" data-action="nav-jump" data-target="sec-career">
+            <span>🎯</span> Career Skill Tree
+          </button>
+        </div>
+      </div>
+    `;
   }
 
   // SECTION 2: Daily Routine
@@ -272,14 +197,13 @@ class UIManager {
                   ${escapeHTML(pName)}
                 </span>
                 <span>⏱️ ${escapeHTML(q.time || 'Daily')}</span>
-                <span style="color:var(--text-muted); font-size:0.75rem;">${escapeHTML(q.friction || 'Medium Friction')}</span>
+                <span style="color:var(--text-muted); font-size:0.75rem;">${escapeHTML(q.note || 'High Leverage Habit')}</span>
               </div>
             </div>
           </div>
           <div class="quest-rewards">
             <span class="reward-xp">+${q.xp || 20} XP</span>
             <span class="reward-coins">+${q.coins || 5} 🪙</span>
-            <!-- Hidden crossroads trigger when user considers abandoning a habit -->
             <button class="icon-btn" data-action="abandon-quest-trigger" title="Contemplate pivoting or dropping this habit" style="width:28px; height:28px; font-size:0.7rem; border-color:transparent; opacity:0.35;">✕</button>
           </div>
         </div>
@@ -298,10 +222,11 @@ class UIManager {
 
   // SECTION 3: Reality Mirror
   renderMirrorSection(state) {
-    const lvl = state?.level || 1;
-    const xp = state?.xp || 0;
-    const reqXP = state?.xpToNextLevel || (100 * Math.pow(lvl, 1.5));
-    const xpPct = Math.min(100, Math.round((xp / reqXP) * 100));
+    const levelInfo = window.AppStore ? window.AppStore.getLevelInfo() : { level: 1, currentXP: 0, reqXP: 100, percent: 0 };
+    const lvl = levelInfo.level;
+    const xp = levelInfo.currentXP;
+    const reqXP = levelInfo.reqXP;
+    const xpPct = levelInfo.percent;
 
     const avatarImg = document.getElementById('profile-avatar-img');
     if (avatarImg) {
@@ -325,7 +250,7 @@ class UIManager {
     if (lvlTitle) lvlTitle.textContent = `Level ${lvl}`;
 
     const xpReadout = document.getElementById('profile-xp-readout');
-    if (xpReadout) xpReadout.textContent = `${xp} / ${Math.round(reqXP)} XP`;
+    if (xpReadout) xpReadout.textContent = `${xp} / ${reqXP} XP`;
 
     const xpFill = document.getElementById('profile-xp-fill');
     if (xpFill) xpFill.style.width = `${xpPct}%`;
@@ -336,12 +261,13 @@ class UIManager {
     // 6 Pillars HUD
     const pillarsContainer = document.getElementById('pillars-hud');
     if (pillarsContainer && window.PILLARS) {
-      const userPillars = state?.pillars || {};
+      const stats = window.AppStore ? window.AppStore.getPillarStats() : { points: {}, pillarLevels: {}, pillarProgress: {} };
+      
       pillarsContainer.innerHTML = Object.keys(window.PILLARS).map(key => {
         const pDef = window.PILLARS[key];
-        const pState = userPillars[key] || { level: 1, xp: 0, metric: 'Consistent' };
-        const pLevel = pState.level || 1;
-        const pProgress = Math.min(100, (pState.xp % 100));
+        const pLevel = stats.pillarLevels[key] || 1;
+        const pProgress = stats.pillarProgress[key] || 15;
+        const pPoints = stats.points[key] || 0;
 
         return `
           <div class="pillar-card raycast-card specular-card">
@@ -356,7 +282,7 @@ class UIManager {
               <div class="pillar-bar-fill" style="width:${pProgress}%; background:${pDef.color};"></div>
             </div>
             <div class="pillar-metric-desc">
-              <span>Metric: <strong>${escapeHTML(pState.metric || 'Groundwork Established')}</strong></span>
+              <span>XP Compounded: <strong>${pPoints} pts</strong></span>
             </div>
           </div>
         `;
@@ -401,7 +327,6 @@ class UIManager {
     const treeContainer = document.getElementById('career-milestones-tree');
     if (!treeContainer) return;
 
-    // Get preset or user-defined tree
     const tiers = (state?.careerTree && state.careerTree.length > 0)
       ? state.careerTree
       : (window.CAREER_TREE_PRESETS ? (window.CAREER_TREE_PRESETS[track] || window.CAREER_TREE_PRESETS['Software Engineer & Builder']) : []);
@@ -455,25 +380,25 @@ class UIManager {
     const bondsContainer = document.getElementById('bonds-list-container');
     if (!bondsContainer) return;
 
-    const bonds = state?.bonds || [];
+    const bonds = state?.relationshipBonds || state?.bonds || window.DEFAULT_RELATIONSHIP_BONDS || [];
     if (bonds.length === 0) {
       bondsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:40px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-lg);">No loved ones registered yet. Click <strong>+ Add Loved One</strong> to prioritize human connections.</div>`;
       return;
     }
 
     bondsContainer.innerHTML = bonds.map(b => {
-      const trust = b.trustMeter || 50;
-      const streak = b.patienceStreak || 0;
-      const lastAction = b.lastAction || 'Active unhurried listening during family conversation.';
+      const trust = b.trust || b.trustMeter || 65;
+      const streak = b.patienceStreak || 1;
+      const lastAction = b.lastAction || (b.reflections && b.reflections[0]?.text) || 'Active unhurried listening during family conversation.';
 
       return `
         <div class="bond-card raycast-card specular-card">
           <div class="bond-card-header">
             <div class="bond-identity">
-              <span class="bond-avatar">${b.avatar || '🤝'}</span>
+              <span class="bond-avatar">${b.icon || b.avatar || '🤝'}</span>
               <div>
                 <h4 class="bond-name">${escapeHTML(b.name)}</h4>
-                <span class="bond-role">${escapeHTML(b.relation)}</span>
+                <span class="bond-role">${escapeHTML(b.role || b.relation || 'Family')}</span>
               </div>
             </div>
             <span class="bond-streak-badge">🔥 ${streak}d harmony</span>
@@ -504,7 +429,7 @@ class UIManager {
   // SECTION 6: Guild Shop & Economy
   renderShopSection(state) {
     const balEl = document.getElementById('shop-page-balance');
-    if (balEl) balEl.textContent = state?.currency || 0;
+    if (balEl) balEl.textContent = state?.currency || 20;
 
     const itemsContainer = document.getElementById('shop-page-items');
     if (itemsContainer) {
@@ -565,7 +490,7 @@ class UIManager {
     if (!list) return;
 
     const microHabits = [
-      { id: 'water', title: 'Drink one tall glass of water', icon: '💧', xp: 10 },
+      { id: 'water', title: 'Drink one tall glass of cold water', icon: '💧', xp: 10 },
       { id: 'breathe', title: 'Take 5 deep box breaths (4s in, 4s hold, 4s out)', icon: '🫁', xp: 15 },
       { id: 'shoes', title: 'Put on walking shoes and step outside for 60 seconds', icon: '👟', xp: 20 },
       { id: 'clean', title: 'Clear 3 items off your desk or bed', icon: '🧹', xp: 15 },

@@ -1,18 +1,18 @@
 /**
- * MIRROR — Main Controller & Event Bus (Linear + Raycast Aesthetic)
- * Continuous Scroll Navigation, Active Slider Pill Spy, Raycast Mouse Spotlight, Modal Engine
+ * MIRROR — Main Controller & Event Bus (Linear + Raycast Aesthetic + FastAPI Backend)
  */
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const store = window.AppStore;
   const ui = window.UI;
   const celebrate = window.Celebration;
   const auth = window.Auth;
+  const api = window.API;
 
-  // 1. Initial Render
+  // 1. Initial State Render
   ui.render(store.state);
 
-  // 2. Subscribe UI updates
+  // 2. Subscribe UI updates to state changes
   store.subscribe(state => {
     ui.render(state);
   });
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // -------------------------------------------------------------------------
-  // 3. LINEAR SCROLL-SPY & ACTIVE SLIDER PILL CONTROLLER
+  // 3. LINEAR SCROLL-SPY & SLIDER PILL CONTROLLER
   // -------------------------------------------------------------------------
   let isSmoothScrolling = false;
 
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
       'sec-shop'
     ];
 
-    const scrollPosition = window.scrollY + 140; // Offset for sticky navbar
+    const scrollPosition = window.scrollY + 140;
     let currentActive = sections[0];
 
     for (const secId of sections) {
@@ -70,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Edge check: near bottom of page
     if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 80)) {
       currentActive = 'sec-shop';
     }
@@ -85,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ui.updateActiveSliderPill(ui.activeSectionId);
   }, { passive: true });
 
-  // Initial pill placement after styles compute
   setTimeout(() => {
     ui.updateActiveSliderPill('sec-hero');
   }, 100);
@@ -102,14 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < cards.length; i++) {
       const card = cards[i];
       const rect = card.getBoundingClientRect();
-      
-      // Skip offscreen elements
       if (rect.bottom < 0 || rect.top > windowH) continue;
 
       const x = clientX - rect.left;
       const y = clientY - rect.top;
 
-      // Update if within interactive radius
       if (x >= -60 && x <= rect.width + 60 && y >= -60 && y <= rect.height + 60) {
         card.style.setProperty('--mouse-x', `${x}px`);
         card.style.setProperty('--mouse-y', `${y}px`);
@@ -135,7 +130,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Theme Toggle (Dark Midnight vs Warm Autumn Light)
+    // Quick Jump Buttons
+    const jumpBtn = e.target.closest('[data-action="nav-jump"]');
+    if (jumpBtn && jumpBtn.dataset.target) {
+      const targetId = jumpBtn.dataset.target;
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        isSmoothScrolling = true;
+        ui.updateActiveSliderPill(targetId);
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => { isSmoothScrolling = false; }, 600);
+      }
+      return;
+    }
+
+    // Theme Toggle
     if (e.target.closest('#theme-toggle-btn')) {
       const current = document.documentElement.getAttribute('data-theme') || 'dark';
       const next = current === 'dark' ? 'light' : 'dark';
@@ -153,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Logout
     if (e.target.closest('#logout-btn')) {
-      if (confirm('Log out from your current session? All your progress has been securely saved.')) {
+      if (confirm('Log out from session? All your progress has been securely saved.')) {
         auth.logout();
         store.state = null;
         ui.render(null);
@@ -162,24 +171,23 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Auth Tab Switch (Sign In vs Create Account)
-    const authTabBtn = e.target.closest('.auth-tab-btn');
-    if (authTabBtn && authTabBtn.dataset.tab) {
-      ui.setAuthTab(authTabBtn.dataset.tab);
-      return;
-    }
-
     // Quest Checkbox Toggle
     const toggleBtn = e.target.closest('[data-action="toggle-quest"]');
     if (toggleBtn) {
       const qId = toggleBtn.dataset.questId;
       const res = store.toggleQuest(qId);
+      
+      // Async notify FastAPI backend in background
+      if (api) {
+        api.completeQuest(qId);
+      }
+
       if (res && res.isCompleted) {
         celebrate.celebrateQuestCompletion(toggleBtn, res);
       }
       ui.renderRoutineSection(store.state);
       ui.renderMirrorSection(store.state);
-      ui.renderHeader(store.state, auth.isAuthenticated());
+      ui.renderHeader(store.state, true);
       return;
     }
 
@@ -191,19 +199,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Crossroads Decisions
     if (e.target.id === 'crossroads-choose-stay') {
-      store.addXP(25, 'Discipline');
+      store.stayTheCourseCrossroads();
+      if (api) api.resolveCrossroads('stay', 'Stayed the course with discipline.');
       closeModal('crossroads-modal');
       celebrate.playChime('success');
-      showToast('Respect for persisting through resistance. +25 Discipline XP.');
+      showToast('Respect for persisting through resistance. +30 Discipline XP.');
       ui.renderMirrorSection(store.state);
       return;
     }
 
     if (e.target.id === 'crossroads-choose-pivot') {
-      store.addXP(60, 'Calm');
+      store.resolveCrossroadsPivot(store.state.careerTrack, 'Graceful values pivot.');
+      if (api) api.resolveCrossroads('pivot', 'Graceful pivot to optimize bandwidth.');
       closeModal('crossroads-modal');
       celebrate.playChime('success');
-      showToast('Track safely archived. +60 Wisdom XP converted.');
+      showToast('Track safely archived. +50 Wisdom XP converted.');
       ui.renderMirrorSection(store.state);
       return;
     }
@@ -217,8 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
       celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 24, true);
       ui.renderCareerSection(store.state);
       ui.renderMirrorSection(store.state);
-      ui.renderHeader(store.state, auth.isAuthenticated());
-      showToast('Milestone achieved! Craft XP & Coins awarded.');
+      ui.renderHeader(store.state, true);
+      showToast('Milestone achieved! Craft XP awarded.');
       return;
     }
 
@@ -226,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.closest('#reset-day-btn')) {
       if (confirm('Reset daily checklist for a fresh day? Completed habits will be unchecked.')) {
         store.resetDailyRoutine();
+        if (api) api.resetRoutine();
         ui.renderRoutineSection(store.state);
         showToast('Daily checklist reset. Time to execute!');
       }
@@ -269,20 +280,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add Loved One Bond Button
     if (e.target.closest('#add-bond-btn')) {
-      const name = prompt('Enter loved one's name (e.g. Mom, Maya, Sarah):');
+      const name = prompt("Enter loved one's name (e.g. Mom, Maya, Sarah):");
       if (name && name.trim()) {
         const relation = prompt('Enter relationship (e.g. Mother, Partner, Mentor, Sibling):') || 'Loved One';
-        if (!store.state.bonds) store.state.bonds = [];
-        store.state.bonds.push({
+        if (!store.state.relationshipBonds) store.state.relationshipBonds = [];
+        store.state.relationshipBonds.push({
           id: 'bond_' + Date.now(),
           name: name.trim(),
-          relation: relation.trim(),
-          avatar: '🤝',
-          trustMeter: 65,
+          role: relation.trim(),
+          icon: '🤝',
+          trust: 65,
           patienceStreak: 1,
           lastAction: 'Registered bond in Mirror'
         });
-        store.save();
+        store.saveState();
         ui.renderLovedOnesSection(store.state);
         showToast(`Bond with ${name.trim()} added!`);
       }
@@ -314,10 +325,12 @@ document.addEventListener('DOMContentLoaded', () => {
       store.state.currency -= cost;
       if (!store.state.inventory) store.state.inventory = [];
       store.state.inventory.push({ key, name, acquiredAt: new Date().toISOString() });
-      store.save();
+      store.saveState();
+      if (api) api.buyShopItem(key);
+
       celebrate.playChime('levelup');
       ui.renderShopSection(store.state);
-      ui.renderHeader(store.state, auth.isAuthenticated());
+      ui.renderHeader(store.state, true);
       showToast(`Acquired ${name}! Enjoy your earned reward.`);
       return;
     }
@@ -346,66 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. FORM SUBMISSIONS
   // -------------------------------------------------------------------------
   document.addEventListener('submit', async e => {
-    // Login Form Submit
-    if (e.target.id === 'login-form') {
-      e.preventDefault();
-      const submitBtn = document.getElementById('login-submit-btn');
-      const errBox = document.getElementById('auth-error-box');
-      if (errBox) errBox.classList.add('hidden');
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Authenticating...'; }
-
-      const u = document.getElementById('login-username').value;
-      const p = document.getElementById('login-password').value;
-      const res = await auth.login(u, p);
-
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Enter Mirror →'; }
-
-      if (res.success) {
-        store.loadActiveUserState();
-        ui.render(store.state);
-        showToast(`Welcome back, ${store.state.fullName || u}!`);
-      } else {
-        if (errBox) {
-          errBox.textContent = res.message;
-          errBox.classList.remove('hidden');
-        } else {
-          alert(res.message);
-        }
-      }
-      return;
-    }
-
-    // Register Form Submit
-    if (e.target.id === 'register-form') {
-      e.preventDefault();
-      const submitBtn = document.getElementById('register-submit-btn');
-      const errBox = document.getElementById('auth-error-box');
-      if (errBox) errBox.classList.add('hidden');
-      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Creating Account...'; }
-
-      const full = document.getElementById('reg-fullname').value;
-      const u = document.getElementById('reg-username').value;
-      const p = document.getElementById('reg-password').value;
-      const c = document.getElementById('reg-careertrack').value;
-      const res = await auth.register(u, p, full, c);
-
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Create Account & Ascend →'; }
-
-      if (res.success) {
-        store.loadActiveUserState();
-        ui.render(store.state);
-        showToast(`Welcome to Mirror, ${full || u}!`);
-      } else {
-        if (errBox) {
-          errBox.textContent = res.message;
-          errBox.classList.remove('hidden');
-        } else {
-          alert(res.message);
-        }
-      }
-      return;
-    }
-
     // Relationship Log Form Submit
     if (e.target.id === 'relationship-log-form') {
       e.preventDefault();
