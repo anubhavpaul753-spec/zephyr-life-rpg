@@ -61,7 +61,7 @@ $$\text{Required XP}(L) = 100 \times L^{1.5}$$
 
 ## 🚀 Live Demo & Deliverables
 
-- 🌐 **Live Web Application:** *Deployment URL will be linked here upon final build.*
+- 🌐 **Live Web Application:** [https://infrared-reports-expected-ruled.trycloudflare.com](https://infrared-reports-expected-ruled.trycloudflare.com)
 - 🎥 **Walkthrough Video:** *Strict 90–180s demonstration showing signup, task completion, stat leveling, and page refresh persistence (hosted under 100MB).*
 - 📂 **GitHub Repository:** [https://github.com/anubhavpaul753-spec/zephyr-life-rpg](https://github.com/anubhavpaul753-spec/zephyr-life-rpg)
 

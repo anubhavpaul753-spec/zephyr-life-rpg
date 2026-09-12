@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>dailylife — Automated Test Suite</title>
+  <style>
+    body { font-family: monospace; padding: 24px; background: #181a1b; color: #edeae4; }
+    .pass { color: #50b070; }
+    .fail { color: #f05050; font-weight: bold; }
+    .summary { margin-top: 20px; padding: 12px; border: 1px solid #353a3d; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <h1>dailylife Automated Verification</h1>
+  <div id="results">Running tests...</div>
+
+  <!-- Load dependencies -->
+  <script src="js/state.js"></script>
+  <script src="js/celebrate.js"></script>
+  <script src="js/ui.js"></script>
+
+  <script>
+    const results = [];
+    function assert(name, condition, details = '') {
+      results.push({ name, pass: !!condition, details });
+      console.log((condition ? '[PASS] ' : '[FAIL] ') + name, details);
+    }
+
+    // Reset storage for clean test run
+    localStorage.clear();
+    const store = new StateManager();
+
+    // Test 1: Initial State & Routine Count
+    assert('13 Routine Quests Defined', store.state.quests.length === 13, `Count: ${store.state.quests.length}`);
+    assert('Initial Level is 1', store.getLevel() === 1, `Level: ${store.getLevel()}`);
+    assert('Initial XP is 0', store.state.totalXP === 0);
+    assert('Initial Currency is 0', store.state.currency === 0);
+
+    // Test 2: Specific Quests check
+    const deepWork = store.state.quests.find(q => q.title === 'Deep Work');
+    const water = store.state.quests.find(q => q.title === 'Drink a glass of water');
+    const gym = store.state.quests.find(q => q.title.includes('gym'));
+    const nap = store.state.quests.find(q => q.title.includes('nap'));
+
+    assert('Deep Work has high XP (45 XP)', deepWork && deepWork.xp === 45);
+    assert('Drink water has low XP (5 XP)', water && water.xp === 5);
+    assert('Gym has high XP (40 XP)', gym && gym.xp === 40);
+    assert('Nap has low XP (10 XP)', nap && nap.xp === 10);
+
+    // Test 3: Toggle Single Quest
+    const res1 = store.toggleQuest(water.id);
+    assert('Water completed', res1.isCompleted === true);
+    assert('XP updated to 5', store.state.totalXP === 5);
+    assert('Coins updated to 5', store.state.currency === 5);
+    assert('Level remains 1', store.getLevel() === 1);
+    assert('Progress XP is 5/100', store.getLevelProgressXP() === 5);
+
+    // Test 4: Undo Single Quest
+    const resUndo = store.toggleQuest(water.id);
+    assert('Water undo completion', resUndo.isCompleted === false);
+    assert('XP reverted to 0', store.state.totalXP === 0);
+    assert('Coins reverted to 0', store.state.currency === 0);
+
+    // Test 5: Level-Up Logic at exactly 100 XP threshold
+    // Complete: Deep Work (45), Gym (40), Meditate (25) -> Total = 110 XP
+    store.toggleQuest(deepWork.id);   // 45 XP
+    store.toggleQuest(gym.id);        // 45 + 40 = 85 XP
+    assert('85 XP is still Level 1', store.getLevel() === 1 && store.getLevelProgressXP() === 85);
+
+    const meditate = store.state.quests.find(q => q.category === 'Mind' && q.title.includes('Meditate'));
+    const levelUpRes = store.toggleQuest(meditate.id); // 85 + 25 = 110 XP
+
+    assert('Crossed 100 XP triggers didLevelUp', levelUpRes.didLevelUp === true);
+    assert('New Level is 2', store.getLevel() === 2, `Current Level: ${store.getLevel()}`);
+    assert('Current Level progress is 10 XP (110 % 100)', store.getLevelProgressXP() === 10);
+    assert('Level up awards 15 bonus coins', store.state.currency === (deepWork.coins + gym.coins + meditate.coins + 15));
+
+    // Test 6: Core Attributes Calculation
+    const { stats } = store.getAttributes();
+    assert('Mind attribute has Meditate XP (25)', stats.Mind === 25, `Mind: ${stats.Mind}`);
+    assert('Body attribute has Gym XP (40)', stats.Body === 40, `Body: ${stats.Body}`);
+    assert('Focus attribute has Deep Work XP (45)', stats.Focus === 45, `Focus: ${stats.Focus}`);
+
+    // Test 7: Rewards Shop Theme Purchase
+    // Currently coins >= 50, test purchasing Warm Terracotta (price 50)
+    const terracottaRes = store.buyShopItem('theme_terracotta', 'theme');
+    assert('Buy Warm Terracotta theme success', terracottaRes.success === true);
+    assert('Active theme set to terracotta', store.state.activeTheme === 'terracotta');
+    assert('Terracotta is in unlocked themes', store.state.unlockedThemes.includes('theme_terracotta'));
+
+    // Test 8: Audio chime and burst creation
+    const celebrate = new CelebrationSystem();
+    assert('Celebration system initialized', !!celebrate);
+    celebrate.spawnBurst(200, 200, 10, false);
+    const bursts = document.querySelectorAll('.burst-container');
+    assert('Particle burst DOM element created', bursts.length > 0);
+
+    // Render results
+    const out = document.getElementById('results');
+    const passedCount = results.filter(r => r.pass).length;
+    out.innerHTML = `
+      <div class="summary">
+        <h2>${passedCount} / ${results.length} Tests Passed</h2>
+      </div>
+      <ul>
+        ${results.map(r => `
+          <li class="${r.pass ? 'pass' : 'fail'}">
+            ${r.pass ? '✓' : '✗'} ${r.name} ${r.details ? `(${r.details})` : ''}
+          </li>
+        `).join('')}
+      </ul>
+    `;
+    window.__TEST_RESULTS__ = { total: results.length, passed: passedCount, results };
+  </script>
+</body>
+</html>

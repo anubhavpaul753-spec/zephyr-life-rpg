@@ -1,0 +1,1166 @@
+/* ==========================================================================
+   DAILYLIFE (PROJECT MIRROR) — OBSIDIAN CYBER-HUD & MINDFUL IVORY
+   Dual-Theme System, Netflix-Style Cinematic Intro, 6 Life Pillars & Tactical Micro-Interactions
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. COLOR SYSTEM & CSS VARIABLES
+   -------------------------------------------------------------------------- */
+:root {
+  --font-serif: 'Fraunces', 'Newsreader', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* The 6 Life Pillar Signature Jewel-Tone Accents */
+  --pillar-craft: #6366F1;       /* Electric Violet / Indigo */
+  --pillar-resilience: #10B981;  /* Emerald Jade */
+  --pillar-calm: #0EA5E9;        /* Azure Sky */
+  --pillar-lovedones: #F43F5E;   /* Rose Pink */
+  --pillar-discipline: #F59E0B;  /* Radiant Gold */
+  --pillar-joy: #FB923C;         /* Sunset Coral */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-smooth: 500ms cubic-bezier(0.25, 1, 0.5, 1);
+  --transition-xp: 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- THEME 1: Obsidian Cyber-HUD (Default Dark Mode) --- */
+:root, [data-theme="dark"] {
+  --bg-app: #0D0F12;
+  --bg-card: #16191E;
+  --bg-card-hover: #1C2027;
+  --bg-subtle: #21262F;
+  --bg-input: #121418;
+
+  --border-color: #262B34;
+  --border-subtle: #1E232B;
+  --border-focus: #6366F1;
+
+  --text-primary: #F3F4F6;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --text-inverse: #0D0F12;
+
+  --accent: #6366F1;
+  --accent-light: rgba(99, 102, 241, 0.15);
+  --accent-hover: #4F46E5;
+  --accent-glow: rgba(99, 102, 241, 0.35);
+
+  --coin-gold: #F59E0B;
+  --coin-bg: rgba(245, 158, 11, 0.15);
+  --fire-orange: #FB923C;
+  --fire-bg: rgba(251, 146, 60, 0.15);
+
+  --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.45);
+  --shadow-modal: 0 24px 60px rgba(0, 0, 0, 0.7);
+}
+
+/* --- THEME 2: Mindful Ivory (Light Mode) --- */
+[data-theme="light"] {
+  --bg-app: #FBF9F4;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FCFBFA;
+  --bg-subtle: #F3EFE6;
+  --bg-input: #F8F6F0;
+
+  --border-color: #E5E0D4;
+  --border-subtle: #ECE7DC;
+  --border-focus: #4F46E5;
+
+  --text-primary: #1F2421;
+  --text-secondary: #5C625E;
+  --text-muted: #8E9490;
+  --text-inverse: #FFFFFF;
+
+  --accent: #4F46E5;
+  --accent-light: #EEF2FF;
+  --accent-hover: #4338CA;
+  --accent-glow: rgba(79, 70, 229, 0.2);
+
+  --coin-gold: #D97706;
+  --coin-bg: #FEF3C7;
+  --fire-orange: #EA580C;
+  --fire-bg: #FFEDD5;
+
+  --shadow-subtle: 0 2px 10px rgba(40, 36, 30, 0.05);
+  --shadow-card: 0 6px 20px rgba(40, 36, 30, 0.07);
+  --shadow-modal: 0 20px 45px rgba(35, 30, 25, 0.14);
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE STYLES
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. NETFLIX-STYLE CINEMATIC INTRO & AUTH GATEWAY
+   -------------------------------------------------------------------------- */
+.auth-overlay {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: radial-gradient(circle at 50% 30%, var(--bg-card) 0%, var(--bg-app) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Cyber Grid lines */
+.auth-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* Netflix-Style Cinematic Brand Animation Container */
+.netflix-brand-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 28px;
+  text-align: center;
+  position: relative;
+}
+
+.netflix-logo-text {
+  font-family: var(--font-serif);
+  font-size: 3.4rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  display: inline-block;
+  position: relative;
+  text-shadow: 
+    0 0 15px var(--accent-glow),
+    0 0 35px var(--accent),
+    0 0 70px rgba(99, 102, 241, 0.6);
+  animation: netflixCinematicZoom 2.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-theme="light"] .netflix-logo-text {
+  color: #1F2421;
+}
+
+/* Beam shimmer line below Netflix-style logo */
+.netflix-beam-flare {
+  width: 160px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--pillar-craft), var(--pillar-calm), var(--pillar-resilience), transparent);
+  border-radius: var(--radius-full);
+  margin-top: 6px;
+  box-shadow: 0 0 16px var(--accent);
+  animation: beamFlarePulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes netflixCinematicZoom {
+  0% {
+    opacity: 0;
+    transform: scale(0.65) translateY(18px);
+    letter-spacing: -0.04em;
+    filter: blur(12px);
+  }
+  35% {
+    opacity: 1;
+    transform: scale(1.08) translateY(-4px);
+    letter-spacing: 0.22em;
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    letter-spacing: 0.18em;
+    filter: blur(0px);
+  }
+}
+
+@keyframes beamFlarePulse {
+  0% { transform: scaleX(0.7); opacity: 0.5; }
+  100% { transform: scaleX(1.3); opacity: 1; }
+}
+
+.netflix-tagline {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-top: 10px;
+  letter-spacing: 0.04em;
+}
+
+.replay-intro-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.775rem;
+  color: var(--accent);
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  margin-top: 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.replay-intro-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+
+/* Auth Card */
+.auth-card {
+  width: 100%;
+  max-width: 460px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(12px);
+  position: relative;
+  z-index: 10;
+  animation: cardFadeIn 0.6s ease forwards;
+}
+
+@keyframes cardFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Auth Switch Tabs (Sign In vs Register) */
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 24px;
+  gap: 4px;
+}
+
+.auth-tab-btn {
+  padding: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab-btn.active {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-subtle);
+}
+
+/* Form Styles */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.auth-submit-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  box-shadow: 0 4px 14px var(--accent-glow);
+  transition: all var(--transition-fast);
+}
+
+.auth-submit-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.auth-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 14px;
+}
+
+.auth-hint strong {
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   4. APP DASHBOARD LAYOUT
+   -------------------------------------------------------------------------- */
+.app-layout {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-subtle);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.app-title {
+  font-family: var(--font-serif);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.app-subtitle {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.streak-pill, .currency-pill, .user-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid var(--border-color);
+  background: var(--bg-subtle);
+}
+
+.streak-pill {
+  background: var(--fire-bg);
+  border-color: rgba(251, 146, 60, 0.3);
+  color: var(--fire-orange);
+}
+
+.currency-pill {
+  background: var(--coin-bg);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: var(--coin-gold);
+}
+
+.user-badge-pill {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.icon-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.icon-btn:hover {
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   5. GROUNDED MOTIVATIONAL QUOTE BANNER
+   -------------------------------------------------------------------------- */
+.motivational-banner {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(16, 185, 129, 0.12) 100%);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  box-shadow: 0 4px 20px var(--accent-glow);
+  transition: all var(--transition-normal);
+}
+
+.quote-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quote-label {
+  font-size: 0.725rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--pillar-craft);
+}
+
+.quote-text {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-primary);
+}
+
+.quote-author {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.quote-pop-anim {
+  animation: quotePulse 0.6s ease;
+}
+
+@keyframes quotePulse {
+  0% { transform: scale(0.98); opacity: 0.8; }
+  50% { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* --------------------------------------------------------------------------
+   6. CAREER TRACK & LIFE AMBITION HERO BANNER
+   -------------------------------------------------------------------------- */
+.career-hero-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px;
+  box-shadow: var(--shadow-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.career-hero-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; width: 280px; height: 100%;
+  background: radial-gradient(circle at top right, var(--accent-light) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.career-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 680px;
+}
+
+.career-track-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.775rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pillar-craft);
+}
+
+.career-title {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.career-goal-quote {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.career-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  transition: all var(--transition-fast);
+}
+
+.primary-btn {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-color: var(--accent);
+}
+
+.primary-btn:hover {
+  background: var(--accent-hover);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.paralysis-btn {
+  background: rgba(239, 68, 68, 0.12);
+  color: #EF4444;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.paralysis-btn:hover {
+  background: rgba(239, 68, 68, 0.22);
+}
+
+/* --------------------------------------------------------------------------
+   7. THE 6 LIFE PILLARS HUD (IMAGE 2)
+   -------------------------------------------------------------------------- */
+.pillars-hud-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.pillar-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.pillar-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--text-muted);
+}
+
+.pillar-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pillar-icon {
+  font-size: 1.25rem;
+}
+
+.pillar-points {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.pillar-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+.pillar-bar-track {
+  width: 100%;
+  height: 5px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.pillar-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--transition-smooth);
+}
+
+/* Pillar Signature Colors */
+.fill-craft { background: var(--pillar-craft); }
+.fill-resilience { background: var(--pillar-resilience); }
+.fill-calm { background: var(--pillar-calm); }
+.fill-lovedones { background: var(--pillar-lovedones); }
+.fill-discipline { background: var(--pillar-discipline); }
+.fill-joy { background: var(--pillar-joy); }
+
+/* --------------------------------------------------------------------------
+   8. MAIN CONTENT GRID (PROFILE SIDEBAR & QUEST FEED)
+   -------------------------------------------------------------------------- */
+.app-main-grid {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Profile Sidebar */
+.profile-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: var(--shadow-subtle);
+}
+
+/* Level & 100 XP Bar */
+.level-xp-box {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.level-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.level-title {
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--pillar-craft);
+}
+
+.xp-numbers {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.xp-bar-track {
+  width: 100%;
+  height: 10px;
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.xp-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pillar-craft), var(--pillar-resilience));
+  border-radius: var(--radius-full);
+  transition: width var(--transition-xp);
+}
+
+/* Relationship Bonds Section (from Image 3) */
+.bonds-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.section-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-label {
+  font-size: 0.775rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.bond-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color var(--transition-fast);
+}
+
+.bond-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bond-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.bond-status {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--bg-subtle);
+}
+
+.bond-trust-track {
+  width: 100%;
+  height: 4px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.bond-trust-fill {
+  height: 100%;
+  background: var(--pillar-lovedones);
+}
+
+/* Quests Section */
+.quests-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Filter Bar */
+.filter-tabs-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filter-tab {
+  padding: 7px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.825rem;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.filter-tab.active {
+  background: var(--bg-card);
+  color: var(--accent);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-subtle);
+}
+
+/* Quest Card */
+.quest-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all var(--transition-normal);
+}
+
+.quest-card:hover {
+  border-color: var(--text-muted);
+  box-shadow: var(--shadow-subtle);
+}
+
+.quest-card.is-completed {
+  background: var(--bg-subtle);
+  opacity: 0.8;
+}
+
+.quest-card.is-completed .quest-title {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.quest-left-flow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.quest-checkbox {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border-color);
+  background: var(--bg-card);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all var(--transition-fast);
+  outline: none;
+  flex-shrink: 0;
+}
+
+.quest-checkbox:hover {
+  border-color: var(--accent);
+  transform: scale(1.06);
+}
+
+.quest-card.is-completed .quest-checkbox {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #FFFFFF;
+}
+
+.quest-checkbox svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 3;
+}
+
+.quest-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+
+.quest-time-tag {
+  font-family: var(--font-mono);
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+}
+
+.pillar-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.badge-craft { background: rgba(99, 102, 241, 0.15); color: var(--pillar-craft); }
+.badge-resilience { background: rgba(16, 185, 129, 0.15); color: var(--pillar-resilience); }
+.badge-calm { background: rgba(14, 165, 233, 0.15); color: var(--pillar-calm); }
+.badge-lovedones { background: rgba(244, 63, 94, 0.15); color: var(--pillar-lovedones); }
+.badge-discipline { background: rgba(245, 158, 11, 0.15); color: var(--pillar-discipline); }
+.badge-joy { background: rgba(251, 146, 60, 0.15); color: var(--pillar-joy); }
+
+.quest-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.quest-note {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.reward-chip {
+  font-family: var(--font-mono);
+  font-size: 0.775rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.chip-xp { color: var(--pillar-craft); background: var(--accent-light); }
+.chip-coin { color: var(--coin-gold); background: var(--coin-bg); }
+
+/* --------------------------------------------------------------------------
+   9. CELEBRATION TOASTS & BURSTS
+   -------------------------------------------------------------------------- */
+.toast-portal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 2000;
+}
+
+.celebration-toast {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  box-shadow: var(--shadow-card), 0 0 20px var(--accent-glow);
+  border-radius: var(--radius-full);
+  padding: 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  animation: toastFloat 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-main { color: var(--pillar-craft); }
+.toast-xp { color: var(--pillar-resilience); }
+.toast-coin { color: var(--coin-gold); }
+
+@keyframes toastFloat {
+  0% { opacity: 0; transform: translate(-50%, -20%) scale(0.85); }
+  15% { opacity: 1; transform: translate(-50%, -100%) scale(1.05); }
+  85% { opacity: 1; transform: translate(-50%, -120%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -150%) scale(0.9); }
+}
+
+.burst-container {
+  position: absolute;
+  width: 0; height: 0;
+  pointer-events: none;
+  z-index: 1999;
+}
+
+.burst-dot {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation: burstAnim 750ms cubic-bezier(0.12, 0.8, 0.32, 1) forwards;
+}
+
+@keyframes burstAnim {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.2); }
+}
+
+/* --------------------------------------------------------------------------
+   10. MODALS (PARALYSIS BREAKER, CAREER SETUP, LEVEL UP)
+   -------------------------------------------------------------------------- */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(13, 15, 18, 0.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 20px;
+}
+
+.modal-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: cardFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Micro-Habits in Paralysis Breaker */
+.micro-quest-item {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--bg-subtle);
+  transition: all var(--transition-fast);
+}
+
+.micro-quest-item:hover {
+  border-color: var(--accent);
+  transform: translateX(3px);
+}
+
+/* --------------------------------------------------------------------------
+   11. RESPONSIVENESS
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .pillars-hud-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .app-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pillars-hud-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .netflix-logo-text {
+    font-size: 2.4rem;
+  }
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .quest-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
