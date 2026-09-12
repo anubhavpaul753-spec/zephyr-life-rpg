@@ -16,12 +16,13 @@ function escapeHTML(str) {
 const ROTATING_WISDOM = [
   { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
   { text: "The impediment to action advances action. What stands in the way becomes the way.", author: "Marcus Aurelius" },
-  { text: "Consistency is not glamorous, but it is the only force that permanently transforms a life.", author: "Grounded Mentor" },
+  { text: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Will Durant (on Aristotle)" },
   { text: "Impatience with actions, patience with results. Work hard today, let compounding take months.", author: "Naval Ravikant" },
   { text: "We suffer more often in imagination than in reality. Breathe, clear the desk, and execute.", author: "Seneca" },
-  { text: "Holding your peace in an argument is harder than heavy lifting. That is real emotional mastery.", author: "Grounded Mentor" },
-  { text: "Don't count the days; make the days count through quiet, unhurried presence.", author: "Muhammad Ali" },
-  { text: "Small disciplines repeated with unwavering consistency build unbreakable self-respect.", author: "Grounded Mentor" }
+  { text: "Holding your peace in an argument is harder than heavy lifting. That is real emotional mastery.", author: "Epictetus" },
+  { text: "He who has a why to live can bear almost any how.", author: "Viktor Frankl" },
+  { text: "Knowing is not enough, we must apply. Willing is not enough, we must do.", author: "Bruce Lee" },
+  { text: "Discipline equals freedom. Show up every day regardless of feelings.", author: "Jocko Willink" }
 ];
 
 class UIManager {
@@ -104,30 +105,37 @@ class UIManager {
 
     const levelInfo = window.AppStore ? window.AppStore.getLevelInfo() : { level: 1 };
     const rank = this.computeRankTitle(levelInfo.level);
-    const name = state?.fullName || state?.username || 'Adventurer';
-    const track = state?.careerTrack || 'Software Engineer & Builder';
+    const photoSrc = state?.photoUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
+    const curProf = state?.currentProfession || 'Student / Learner';
+    const dreamCar = state?.dreamCareer || state?.careerTrack || 'Software Engineer & Builder';
 
     gatewayBox.innerHTML = `
       <div class="hero-command-card raycast-card specular-card">
         <div class="command-card-top">
-          <img src="https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}" class="command-card-avatar" alt="Avatar">
+          <img src="${photoSrc}" class="command-card-avatar" alt="Avatar">
           <div>
             <div class="command-card-badge">LEVEL ${levelInfo.level} • ${escapeHTML(rank)}</div>
             <h3 class="command-card-title">Welcome back, ${escapeHTML(name)}</h3>
             <p style="font-size:0.85rem; color:var(--text-secondary); margin-top:2px;">
-              Path: <strong>${escapeHTML(track)}</strong> • Streak: <strong>🔥 ${state?.streak || 1}d</strong> • Balance: <strong>🪙 ${state?.currency || 20} LC</strong>
+              Current: <strong>${escapeHTML(curProf)}</strong> ➔ Dream: <strong>${escapeHTML(dreamCar)}</strong>
+            </p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-top:1px;">
+              Streak: <strong>🔥 ${state?.streak || 1}d</strong> • Balance: <strong>🪙 ${state?.currency || 20} Coins</strong>
             </p>
           </div>
         </div>
         <div class="command-card-actions">
           <button class="pill-btn primary-btn" data-action="nav-jump" data-target="sec-routine">
-            <span>📜</span> Execute Daily Routine
+            <span>📜</span> Daily Routine
           </button>
           <button class="pill-btn secondary-btn" data-action="nav-jump" data-target="sec-mirror">
-            <span>🪞</span> Audit Reality Mirror
+            <span>🪞</span> Reality Mirror
           </button>
           <button class="pill-btn secondary-btn" data-action="nav-jump" data-target="sec-career">
-            <span>🎯</span> Career Skill Tree
+            <span>🎯</span> Career Tree
+          </button>
+          <button class="pill-btn secondary-btn" data-action="open-profile-customization">
+            <span>⚙️</span> Customize Profile
           </button>
         </div>
       </div>
@@ -228,9 +236,10 @@ class UIManager {
     const reqXP = levelInfo.reqXP;
     const xpPct = levelInfo.percent;
 
+        const photoSrc = state?.photoUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
     const avatarImg = document.getElementById('profile-avatar-img');
     if (avatarImg) {
-      avatarImg.src = `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
+      avatarImg.src = photoSrc;
     }
 
     const lvlBadge = document.getElementById('profile-avatar-lvl-badge');
@@ -320,7 +329,11 @@ class UIManager {
     if (goalEl) goalEl.textContent = `"${goal}"`;
 
     const selectEl = document.getElementById('career-switcher-select');
-    if (selectEl && selectEl.value !== track) {
+    if (selectEl) {
+      const tracks = window.CAREER_TRACKS || [];
+      if (selectEl.options.length < tracks.length) {
+        selectEl.innerHTML = tracks.map(t => `<option value="${escapeHTML(t.name)}">${escapeHTML(t.name)}</option>`).join('');
+      }
       selectEl.value = track;
     }
 
@@ -377,7 +390,21 @@ class UIManager {
 
   // SECTION 5: Loved Ones & Relationships
   renderLovedOnesSection(state) {
+    const sectionEl = document.getElementById('sec-lovedones');
+    const navBtn = document.getElementById('nav-btn-lovedones');
+
+    // If user chose to skip relationships, hide section & top nav button completely
+    if (state?.skipRelationships) {
+      if (sectionEl) sectionEl.classList.add('hidden');
+      if (navBtn) navBtn.classList.add('hidden');
+      return;
+    } else {
+      if (sectionEl) sectionEl.classList.remove('hidden');
+      if (navBtn) navBtn.classList.remove('hidden');
+    }
+
     const bondsContainer = document.getElementById('bonds-list-container');
+    if (!bondsContainer) return;
     if (!bondsContainer) return;
 
     const bonds = state?.relationshipBonds || state?.bonds || window.DEFAULT_RELATIONSHIP_BONDS || [];
@@ -451,7 +478,7 @@ class UIManager {
             </div>
           </div>
           <div class="shop-item-footer">
-            <span class="shop-item-cost">🪙 ${item.cost} LC</span>
+            <span class="shop-item-cost">🪙 ${item.cost} Coins</span>
             <button class="pill-btn primary-btn" 
                     data-action="buy-shop-item" 
                     data-item-key="${item.key}" 
@@ -536,5 +563,36 @@ class UIManager {
     if (authorEl && quote) authorEl.textContent = `— ${quote.author}`;
   }
 }
+
+
+  populateProfileCustomizationModal(state) {
+    const curSelect = document.getElementById('cust-current-profession');
+    const dreamSelect = document.getElementById('cust-dream-career');
+    const nameInput = document.getElementById('cust-fullname');
+    const dobInput = document.getElementById('cust-dob');
+    const goalInput = document.getElementById('cust-life-goal');
+    const skipCheckbox = document.getElementById('cust-skip-relationships');
+    const photoPreview = document.getElementById('profile-modal-photo-preview');
+
+    if (nameInput) nameInput.value = state?.fullName || state?.username || '';
+    if (dobInput && state?.dob) dobInput.value = state.dob;
+    if (goalInput) goalInput.value = state?.lifeGoal || '';
+    if (skipCheckbox) skipCheckbox.checked = !!state?.skipRelationships;
+
+    const photoSrc = state?.photoUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(state?.username || 'adventurer')}`;
+    if (photoPreview) photoPreview.src = photoSrc;
+
+    const tracks = window.CAREER_TRACKS || [];
+    const optionsHtml = tracks.map(t => `<option value="${escapeHTML(t.name)}">${escapeHTML(t.name)}</option>`).join('');
+
+    if (curSelect) {
+      curSelect.innerHTML = optionsHtml;
+      curSelect.value = state?.currentProfession || tracks[0]?.name || '';
+    }
+    if (dreamSelect) {
+      dreamSelect.innerHTML = optionsHtml;
+      dreamSelect.value = state?.dreamCareer || state?.careerTrack || tracks[1]?.name || '';
+    }
+  }
 
 window.UI = new UIManager();

@@ -144,6 +144,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
+    // Open Profile Customization Modal
+    if (e.target.closest('[data-action="open-profile-customization"]')) {
+      ui.populateProfileCustomizationModal(store.state);
+      openModal('profile-customization-modal');
+      return;
+    }
+
     // Theme Toggle
     if (e.target.closest('#theme-toggle-btn')) {
       const current = document.documentElement.getAttribute('data-theme') || 'dark';
@@ -318,7 +325,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       const key = buyBtn.dataset.itemKey;
 
       if ((store.state.currency || 0) < cost) {
-        showToast(`Insufficient Life Credits. Need ${cost} LC.`, '⚠️');
+        showToast(`Insufficient Life Credits. Need ${cost} Coins.`, '⚠️');
         return;
       }
 
@@ -389,6 +396,98 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
   });
+
+
+  // Profile Photo File Upload Handler
+  const photoInput = document.getElementById('profile-photo-input');
+  let selectedPhotoBase64 = null;
+
+  if (photoInput) {
+    photoInput.addEventListener('change', e => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          showToast('Image size exceeds 2MB. Please select a smaller photo.', '⚠️');
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = ev => {
+          selectedPhotoBase64 = ev.target.result;
+          const previewImg = document.getElementById('profile-modal-photo-preview');
+          if (previewImg) previewImg.src = selectedPhotoBase64;
+          showToast('Photo uploaded! Click Save to apply.');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Profile Customization Form Submit
+  const profileForm = document.getElementById('profile-customization-form');
+  if (profileForm) {
+    profileForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const fullName = document.getElementById('cust-fullname')?.value || '';
+      const dob = document.getElementById('cust-dob')?.value || '';
+      const currentProfession = document.getElementById('cust-current-profession')?.value || '';
+      const dreamCareer = document.getElementById('cust-dream-career')?.value || '';
+      const lifeGoal = document.getElementById('cust-life-goal')?.value || '';
+      const skipRelationships = document.getElementById('cust-skip-relationships')?.checked || false;
+
+      // Construct relationship bonds if not skipped
+      let relationshipBonds = [];
+      if (!skipRelationships) {
+        const fatherTrust = document.getElementById('rel-status-father')?.value || 'Good';
+        const motherTrust = document.getElementById('rel-status-mother')?.value || 'Harmonious';
+        const partnerTrust = document.getElementById('rel-status-partner')?.value || 'Harmonious';
+        const friendTrust = document.getElementById('rel-status-friend')?.value || 'Harmonious';
+
+        const trustMap = {
+          'Harmonious': 90,
+          'Good': 75,
+          'Neutral': 60,
+          'Sensitive': 40,
+          'Distant': 25
+        };
+
+        relationshipBonds = [
+          { id: 'bond_dad', name: 'Dad', role: 'Father', icon: '👨‍💼', trust: trustMap[fatherTrust] || 75, patienceStreak: 3, lastAction: 'Configured bond in Mirror' },
+          { id: 'bond_mom', name: 'Mom', role: 'Mother', icon: '👩‍💼', trust: trustMap[motherTrust] || 90, patienceStreak: 5, lastAction: 'Configured bond in Mirror' }
+        ];
+
+        if (partnerTrust !== 'None') {
+          relationshipBonds.push({
+            id: 'bond_partner', name: 'Partner', role: 'Spouse/Partner', icon: '💖', trust: trustMap[partnerTrust] || 90, patienceStreak: 4, lastAction: 'Deep presence and communication'
+          });
+        }
+        if (friendTrust !== 'None') {
+          relationshipBonds.push({
+            id: 'bond_friend', name: 'Best Friend', role: 'Companion', icon: '🤝', trust: trustMap[friendTrust] || 85, patienceStreak: 2, lastAction: 'Supportive conversation'
+          });
+        }
+      }
+
+      store.updateProfile({
+        fullName,
+        dob,
+        photoUrl: selectedPhotoBase64 || store.state.photoUrl,
+        currentProfession,
+        dreamCareer,
+        lifeGoal,
+        skipRelationships,
+        relationshipBonds
+      });
+
+      if (api) {
+        api.selectCareer(dreamCareer, lifeGoal);
+      }
+
+      celebrate.playChime('levelup');
+      closeModal('profile-customization-modal');
+      ui.render(store.state);
+      showToast('Profile & Life Setup successfully updated!');
+    });
+  }
 
   // Career Switcher Change Listener
   document.addEventListener('change', e => {

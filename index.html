@@ -73,7 +73,7 @@
         <div class="currency-pill" title="Life Credits (LC) earned">
           <span>🪙</span>
           <span id="currency-count" class="mono-bold">20</span>
-          <span class="pill-unit">LC</span>
+          <span class="pill-unit">Coins</span>
         </div>
 
         <button id="theme-toggle-btn" class="icon-btn" title="Toggle Dark / Autumn Light Mode">🌓</button>
@@ -248,6 +248,9 @@
             <h2 class="page-heading">The Reality Mirror</h2>
             <p class="page-subheading">A tangible audit of your real-life capabilities, consistency, and compounding growth.</p>
           </div>
+          <button class="pill-btn secondary-btn" data-action="open-profile-customization">
+            <span>⚙️</span> Edit Identity & Relationships
+          </button>
         </div>
 
         <div class="mirror-grid-layout">
@@ -418,7 +421,7 @@
           </div>
           <div class="shop-balance-display raycast-card specular-card">
             <span>Available Capital:</span>
-            <span class="balance-number">🪙 <strong id="shop-page-balance">20</strong> LC</span>
+            <span class="balance-number">🪙 <strong id="shop-page-balance">20</strong> Coins</span>
           </div>
         </div>
 
@@ -552,7 +555,7 @@
       <p class="levelup-level-text">You have reached <span id="levelup-level-num">Level 2</span></p>
       <p class="levelup-quote" id="levelup-quote">"Small disciplines repeated with consistency lead to monumental inner clarity."</p>
       <div class="levelup-bonus">
-        <span>Milestone Bonus: <strong>+25 🪙 Life Credits</strong></span>
+        <span>Milestone Bonus: <strong>+25 🪙 Coins</strong></span>
       </div>
       <button id="dismiss-levelup-btn" class="pill-btn primary-btn levelup-confirm-btn">Continue Journey</button>
     </div>
@@ -578,6 +581,124 @@
           <input type="text" id="ai-goal-input" class="form-input" placeholder="e.g. Build fault-tolerant microservices and provide stability for my family" required>
         </div>
         <button type="submit" class="pill-btn primary-btn" style="width:100%;">Synthesize Realistic Roadmap →</button>
+      </form>
+    </div>
+  </div>
+
+  
+  <!-- Modal 6: Profile Customization & Identity Setup -->
+  <div id="profile-customization-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card raycast-card specular-card profile-modal-card">
+      <header class="modal-header">
+        <div>
+          <h3 class="modal-title">⚙️ Customize Profile & Identity</h3>
+          <p class="modal-subtitle">Personalize your name, photo, current field, dream career, and relationships.</p>
+        </div>
+        <button class="icon-btn modal-close-btn" data-close="profile-customization-modal">✕</button>
+      </header>
+
+      <form id="profile-customization-form" class="modal-form">
+        <!-- Photo Upload & Preview -->
+        <div class="photo-upload-row">
+          <div class="photo-preview-wrap">
+            <img id="profile-modal-photo-preview" src="https://api.dicebear.com/7.x/notionists/svg?seed=adventurer" alt="Preview">
+          </div>
+          <div class="photo-upload-actions">
+            <label for="profile-photo-input" class="file-input-label">
+              <span>📷</span> Upload Custom Photo
+            </label>
+            <input type="file" id="profile-photo-input" accept="image/*" style="display:none;">
+            <span style="font-size:0.75rem; color:var(--text-muted);">PNG, JPG, or GIF (stored locally)</span>
+          </div>
+        </div>
+
+        <div class="profile-form-grid">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="cust-fullname" class="form-input" placeholder="e.g. Anubhav Paul" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date of Birth / Age</label>
+            <input type="date" id="cust-dob" class="form-input">
+          </div>
+        </div>
+
+        <div class="profile-form-grid">
+          <div class="form-group">
+            <label class="form-label">Current Profession</label>
+            <select id="cust-current-profession" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Dream Career & Mastery Track</label>
+            <select id="cust-dream-career" class="form-select"></select>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:16px;">
+          <label class="form-label">Primary Life Ambition / North Star</label>
+          <input type="text" id="cust-life-goal" class="form-input" placeholder="e.g. Master full-stack architecture and build a peaceful life for my family.">
+        </div>
+
+        <!-- Relationships Configuration -->
+        <div class="relationships-setup-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Loved Ones & Relationship Dynamics</strong>
+            <span style="font-size:0.75rem; color:var(--text-muted);">Calibrate emotional trust & harmony</span>
+          </div>
+
+          <div class="relationship-row-item">
+            <span>👨‍💼 Father</span>
+            <select id="rel-status-father">
+              <option value="Harmonious">Harmonious & Warm (90% Trust)</option>
+              <option value="Good" selected>Good & Supportive (75% Trust)</option>
+              <option value="Neutral">Neutral / Growing (60% Trust)</option>
+              <option value="Sensitive">Sensitive / Strained (40% Trust)</option>
+              <option value="Distant">Distant / Needs Healing (25% Trust)</option>
+            </select>
+          </div>
+
+          <div class="relationship-row-item">
+            <span>👩‍💼 Mother</span>
+            <select id="rel-status-mother">
+              <option value="Harmonious" selected>Harmonious & Warm (90% Trust)</option>
+              <option value="Good">Good & Supportive (75% Trust)</option>
+              <option value="Neutral">Neutral / Growing (60% Trust)</option>
+              <option value="Sensitive">Sensitive / Strained (40% Trust)</option>
+              <option value="Distant">Distant / Needs Healing (25% Trust)</option>
+            </select>
+          </div>
+
+          <div class="relationship-row-item">
+            <span>💖 Partner / Spouse</span>
+            <select id="rel-status-partner">
+              <option value="Harmonious" selected>Harmonious & Deep Bond (90% Trust)</option>
+              <option value="Good">Good & Steadfast (75% Trust)</option>
+              <option value="Neutral">Neutral / Busy Season (60% Trust)</option>
+              <option value="Sensitive">Sensitive Dynamics (40% Trust)</option>
+              <option value="None">Not Applicable / Skip</option>
+            </select>
+          </div>
+
+          <div class="relationship-row-item">
+            <span>🤝 Best Friend / Companion</span>
+            <select id="rel-status-friend">
+              <option value="Harmonious" selected>Lifelong & Harmonious (90% Trust)</option>
+              <option value="Good">Good & Steady (75% Trust)</option>
+              <option value="Neutral">Neutral (60% Trust)</option>
+              <option value="None">Not Applicable / Skip</option>
+            </select>
+          </div>
+
+          <!-- Skip Relationships Option -->
+          <div class="skip-relationships-box">
+            <input type="checkbox" id="cust-skip-relationships">
+            <label for="cust-skip-relationships" style="cursor:pointer;">
+              <strong>Skip Relationships Setup</strong> — Keep personal dynamics private and hide the Loved Ones section completely.
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="pill-btn primary-btn" style="width:100%;">Save Profile & Update Mirror →</button>
       </form>
     </div>
   </div>

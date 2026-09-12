@@ -14,12 +14,12 @@ class CelebrationSystem {
       { text: "You do not rise to the level of your goals. You fall to the level of your systems.", author: "James Clear" },
       { text: "We suffer more often in imagination than in reality.", author: "Seneca" },
       { text: "He who has a why to live can bear almost any how.", author: "Friedrich Nietzsche" },
-      { text: "Small disciplines repeated with consistency lead to monumental inner clarity.", author: "The Grounded Mentor" },
+      { text: "Small disciplines repeated with consistency lead to monumental inner clarity.", author: "Seneca" },
       { text: "Action isn't just the effect of motivation; it's also the cause of it.", author: "Mark Manson" },
       { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
       { text: "Knowing is not enough, we must apply. Willing is not enough, we must do.", author: "Bruce Lee" },
       { text: "Focus is a muscle. Today, you strengthened it with steady presence.", author: "Project Mirror" },
-      { text: "Personal leveling up is not selfish; your growth protects and uplifts those you love.", author: "Grounded Wisdom" }
+      { text: "Personal leveling up is not selfish; your growth protects and uplifts those you love.", author: "Marcus Aurelius" }
     ];
 
     this.pillarColors = [

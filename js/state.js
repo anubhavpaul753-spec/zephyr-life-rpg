@@ -16,12 +16,32 @@ const PILLARS = {
 };
 
 // Available Career Tracks (Presets)
+// Comprehensive 24-Domain Career Taxonomy
 const CAREER_TRACKS = [
-  { id: 'swe', name: 'Software Engineer & Builder', defaultGoal: 'Master full-stack architecture, ship portfolio apps, and land a high-impact engineering role.' },
-  { id: 'design', name: 'Product Designer', defaultGoal: 'Craft clean design systems, conduct deep user research, and build beautiful intuitive experiences.' },
-  { id: 'founder', name: 'Founder/Entrepreneur', defaultGoal: 'Validate genuine market problems, build an MVP, and create a profitable, mission-driven business.' },
-  { id: 'scholar', name: 'Writer/Scholar', defaultGoal: 'Deepen domain mastery, write daily with unhurried clarity, and publish foundational work.' },
-  { id: 'custom', name: 'Custom Ambition', defaultGoal: 'Design a bespoke path of grounded discipline, creative mastery, and authentic living.' }
+  { id: 'student', name: 'Student & Academic Learner', defaultGoal: 'Excel in academic foundations, build deep learning habits, and unlock high-potential opportunities.' },
+  { id: 'swe', name: 'Software Engineer & Full-Stack Developer', defaultGoal: 'Master system design, build production web/mobile apps, and deliver scalable software.' },
+  { id: 'hardware', name: 'Hardware & Electronics Engineer', defaultGoal: 'Design embedded circuits, master firmware development, and build tangible electronic devices.' },
+  { id: 'mech', name: 'Mechanical & Robotics Engineer', defaultGoal: 'Master CAD modeling, physical prototyping, robotics automation, and structural mechanics.' },
+  { id: 'civil', name: 'Civil & Structural Engineer', defaultGoal: 'Design resilient public infrastructure, master sustainable materials, and manage urban projects.' },
+  { id: 'doctor', name: 'Doctor & Healthcare Practitioner', defaultGoal: 'Excel in clinical diagnostics, empathetic patient care, and continuous medical advancement.' },
+  { id: 'nurse', name: 'Nurse & Clinical Specialist', defaultGoal: 'Deliver compassionate bedside care, master emergency triage, and support patient healing.' },
+  { id: 'pilot', name: 'Commercial Aviator & Pilot', defaultGoal: 'Master flight aerodynamics, rigorous safety protocols, and cross-continental navigation.' },
+  { id: 'astronaut', name: 'Astronaut & Aerospace Researcher', defaultGoal: 'Push propulsion engineering, orbital mechanics, and extraterrestrial scientific inquiry.' },
+  { id: 'musician', name: 'Musician, Composer & Audio Producer', defaultGoal: 'Master music theory, instrumental craft, acoustic arrangement, and emotional sonic resonance.' },
+  { id: 'dancer', name: 'Dancer & Choreographer', defaultGoal: 'Cultivate extraordinary somatic grace, physical discipline, and expressive performance art.' },
+  { id: 'artist', name: 'Visual Artist, Illustrator & Painter', defaultGoal: 'Master color harmony, visual composition, concept illustration, and evocative gallery exhibits.' },
+  { id: 'design', name: 'UI/UX & Product Designer', defaultGoal: 'Craft intuitive design systems, frictionless interfaces, and humane digital experiences.' },
+  { id: 'founder', name: 'Entrepreneur & Startup Founder', defaultGoal: 'Validate genuine market problems, achieve profitable product-market fit, and build lasting freedom.' },
+  { id: 'teacher', name: 'Teacher, Professor & Educator', defaultGoal: 'Ignite intellectual curiosity, mentor future generations, and simplify complex wisdom.' },
+  { id: 'writer', name: 'Writer, Journalist & Author', defaultGoal: 'Master prose precision, investigate deep human stories, and publish resonant foundational books.' },
+  { id: 'lawyer', name: 'Lawyer & Legal Advocate', defaultGoal: 'Master jurisprudence, defend human rights, craft watertight contracts, and champion justice.' },
+  { id: 'chef', name: 'Chef & Culinary Arts Professional', defaultGoal: 'Master gastronomy, kitchen leadership, exquisite flavors, and hospitality excellence.' },
+  { id: 'civil_services', name: 'Civil Services & Public Policy Leader', defaultGoal: 'Execute ethical public governance, optimize community welfare, and lead policy reforms.' },
+  { id: 'trades', name: 'Trades, Craftsman & Artisan', defaultGoal: 'Master hands-on craftsmanship, carpentry, electrical mastery, and enduring physical builds.' },
+  { id: 'athlete', name: 'Athlete, Coach & Fitness Specialist', defaultGoal: 'Reach peak physiological resilience, inspire athletic excellence, and coach transformative health.' },
+  { id: 'scientist', name: 'Research Scientist & Mathematician', defaultGoal: 'Conduct peer-reviewed research, discover physical principles, and solve mathematical conjectures.' },
+  { id: 'finance', name: 'Finance, Banking & Investment Analyst', defaultGoal: 'Master capital allocation, risk modeling, market dynamics, and ethical wealth stewardship.' },
+  { id: 'filmmaker', name: 'Filmmaker, Director & Cinematographer', defaultGoal: 'Master visual storytelling, cinematic lighting, directorial vision, and poignant filmmaking.' }
 ];
 
 // Visual Progression Tree Presets: 4 Distinct Tiers for each Career Track
@@ -1164,6 +1184,32 @@ class StateManager {
     return generatedQuests;
   }
 
+
+
+  // Update Profile Customization
+  updateProfile(profileData) {
+    if (!this.state) this.state = this.getInitialState();
+
+    if (profileData.fullName) this.state.fullName = profileData.fullName;
+    if (profileData.photoUrl !== undefined) this.state.photoUrl = profileData.photoUrl;
+    if (profileData.dob) this.state.dob = profileData.dob;
+    if (profileData.age) this.state.age = profileData.age;
+    if (profileData.currentProfession) this.state.currentProfession = profileData.currentProfession;
+    if (profileData.dreamCareer) {
+      this.state.dreamCareer = profileData.dreamCareer;
+      this.state.careerTrack = profileData.dreamCareer;
+    }
+    if (profileData.lifeGoal) this.state.lifeGoal = profileData.lifeGoal;
+    if (profileData.skipRelationships !== undefined) {
+      this.state.skipRelationships = !!profileData.skipRelationships;
+    }
+    if (profileData.relationshipBonds) {
+      this.state.relationshipBonds = profileData.relationshipBonds;
+    }
+
+    this.saveState();
+    this.notify();
+  }
 
   // Aliases for bulletproof controller compatibility
   toggleMilestone(milestoneId) {

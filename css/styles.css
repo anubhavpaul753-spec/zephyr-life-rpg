@@ -70,39 +70,39 @@
 
 /* --- THEME 2: Golden Autumn Sanctuary (Light Mode) --- */
 [data-theme="light"] {
-  --bg-app: #FAF6EE;
-  --bg-surface: #F3ECE0;
-  --bg-card: #FFFFFF;
-  --bg-card-hover: #FFFDF8;
-  --bg-subtle: #EDE3D2;
-  --bg-input: #F7F1E6;
+  --bg-app: #FAF8F5;       /* Warm morning daylight / soft clean linen */
+  --bg-surface: #F3EFE9;   /* Gentle morning warmth */
+  --bg-card: #FFFFFF;      /* Clean luminous white cards */
+  --bg-card-hover: #FDFBF8;
+  --bg-subtle: #EDE7DD;
+  --bg-input: #F8F4ED;
 
-  --border-color: rgba(217, 119, 6, 0.15);
-  --border-subtle: rgba(217, 119, 6, 0.08);
-  --border-specular: rgba(217, 119, 6, 0.35);
+  --border-color: rgba(202, 138, 4, 0.14);
+  --border-subtle: rgba(202, 138, 4, 0.08);
+  --border-specular: rgba(217, 119, 6, 0.28);
   --border-focus: #D97706;
 
-  --text-primary: #292524;
-  --text-secondary: #57534E;
-  --text-muted: #8E8880;
+  --text-primary: #262320;   /* Clean espresso reading contrast */
+  --text-secondary: #544E47; /* Warm soft charcoal */
+  --text-muted: #807971;
   --text-inverse: #FFFFFF;
 
-  --accent: #D97706;
-  --accent-light: rgba(217, 119, 6, 0.12);
+  --accent: #D97706;         /* Morning Golden Amber (Warm, optimistic sunbeam) */
+  --accent-light: rgba(217, 119, 6, 0.09);
   --accent-hover: #B45309;
-  --accent-glow: rgba(217, 119, 6, 0.25);
+  --accent-glow: rgba(217, 119, 6, 0.22);
 
-  --spotlight-color: rgba(217, 119, 6, 0.12);
+  --spotlight-color: rgba(245, 158, 11, 0.12);
   --pill-active-bg: rgba(217, 119, 6, 0.12);
-  --pill-active-border: rgba(217, 119, 6, 0.28);
-  --pill-active-shadow: 0 4px 12px rgba(180, 83, 9, 0.1);
+  --pill-active-border: rgba(217, 119, 6, 0.25);
+  --pill-active-shadow: 0 4px 12px rgba(180, 83, 9, 0.08);
 
   --coin-gold: #D97706;
-  --coin-bg: rgba(217, 119, 6, 0.14);
+  --coin-bg: rgba(217, 119, 6, 0.12);
   --fire-orange: #EA580C;
 
-  --shadow-card: 0 0 0 1px rgba(180, 83, 9, 0.1), 0 10px 30px -6px rgba(120, 53, 15, 0.08);
-  --shadow-specular: 0 0 0 1px rgba(180, 83, 9, 0.22), 0 16px 40px -8px rgba(120, 53, 15, 0.12);
+  --shadow-card: 0 0 0 1px rgba(202, 138, 4, 0.1), 0 8px 24px -4px rgba(120, 53, 15, 0.06);
+  --shadow-specular: 0 0 0 1px rgba(217, 119, 6, 0.2), 0 14px 34px -6px rgba(120, 53, 15, 0.1);
   --shadow-glow: 0 0 25px rgba(217, 119, 6, 0.14);
 }
 
@@ -238,13 +238,71 @@ h1, h2, h3, h4, h5 {
 }
 
 .nav-container {
-  max-width: 1240px;
+  max-width: 1380px;
+  width: 100%;
   margin: 0 auto;
-  padding: 10px 20px;
+  padding: 10px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+}
+
+.brand-link {
+  flex-shrink: 0;
+}
+
+.linear-nav-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--bg-subtle);
+  padding: 3px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.nav-tab-btn {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.streak-pill, .currency-pill {
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-full);
+  font-size: 0.825rem;
 }
 
 .brand-link {
@@ -1876,4 +1934,117 @@ h1, h2, h3, h4, h5 {
   .crossroads-matrix-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Profile Customization Modal & Photo Upload */
+.profile-modal-card {
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.photo-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.photo-preview-wrap {
+  width: 76px;
+  height: 76px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--accent);
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--bg-card);
+}
+
+.photo-preview-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-upload-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.file-input-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-specular);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  width: fit-content;
+}
+
+.file-input-label:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 600px) {
+  .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.relationships-setup-card {
+  padding: 16px;
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.relationship-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.relationship-row-item select {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.skip-relationships-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px dashed rgba(244, 63, 94, 0.3);
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
 }
