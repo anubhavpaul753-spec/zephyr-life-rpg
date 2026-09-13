@@ -83,6 +83,7 @@ class UIManager {
       this.renderLovedOnesSection(state);
       this.renderShopSection(state);
       this.updateActiveSliderPill(this.activeSectionId);
+      this.renderParalysisModal(state);
     }
 
     // Dynamic Rotating Wisdom Loop
@@ -1006,17 +1007,25 @@ class UIManager {
     }
   }
 
-  // Paralysis Breaker Micro-Habits Modal
-  renderParalysisModal() {
+  // Paralysis Breaker Micro-Habits Modal (Dynamic 5th step tailored to active career)
+  renderParalysisModal(state) {
     const list = document.getElementById('paralysis-micro-list');
     if (!list) return;
 
+    const curState = state || (window.AppStore ? window.AppStore.state : null);
+    const track = curState?.careerTrack || curState?.dreamCareer || 'Software Engineer & Full-Stack Developer';
+
+    const getHabitFn = window.getCareerMicroHabit || (window.AppStore && window.AppStore.getCareerMicroHabit);
+    const careerHabit = getHabitFn 
+      ? getHabitFn(track) 
+      : { id: 'career_micro', title: 'Open workspace and take just 1 small action step for your craft', icon: '🎯', pillar: 'Craft', xp: 20 };
+
     const microHabits = [
-      { id: 'water', title: 'Drink one tall glass of cold water', icon: '💧', xp: 10 },
-      { id: 'breathe', title: 'Take 5 deep box breaths (4s in, 4s hold, 4s out)', icon: '🫁', xp: 15 },
-      { id: 'shoes', title: 'Put on walking shoes and step outside for 60 seconds', icon: '👟', xp: 20 },
-      { id: 'clean', title: 'Clear 3 items off your desk or bed', icon: '🧹', xp: 15 },
-      { id: 'editor', title: 'Open code editor and write just 1 line of comments', icon: '💻', xp: 20 }
+      { id: 'water', title: 'Drink one tall glass of cold water', icon: '💧', pillar: 'Resilience', xp: 10 },
+      { id: 'breathe', title: 'Take 5 deep box breaths (4s in, 4s hold, 4s out)', icon: '🫁', pillar: 'Calm', xp: 15 },
+      { id: 'shoes', title: 'Put on walking shoes and step outside for 60 seconds', icon: '👟', pillar: 'Resilience', xp: 20 },
+      { id: 'clean', title: 'Clear 3 items off your desk or bed', icon: '🧹', pillar: 'Discipline', xp: 15 },
+      careerHabit
     ];
 
     list.innerHTML = microHabits.map(m => `
@@ -1025,7 +1034,7 @@ class UIManager {
           <span style="font-size:1.3rem;">${m.icon}</span>
           <span style="font-size:0.9rem; font-weight:600;">${escapeHTML(m.title)}</span>
         </div>
-        <button class="pill-btn primary-btn" data-action="do-micro-habit" data-micro-xp="${m.xp}">
+        <button class="pill-btn primary-btn" data-action="do-micro-habit" data-micro-xp="${m.xp}" data-micro-pillar="${m.pillar || 'Craft'}" data-micro-title="${escapeHTML(m.title)}">
           Do Now (+${m.xp} XP)
         </button>
       </div>

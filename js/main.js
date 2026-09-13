@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // 5.15 Open Paralysis Breaker Modal
       if (e.target.closest('#paralysis-breaker-btn')) {
-        ui.renderParalysisModal();
+        ui.renderParalysisModal(store.state);
         openModal('paralysis-modal');
         return;
       }
@@ -322,9 +322,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       const microBtn = e.target.closest('[data-action="do-micro-habit"]');
       if (microBtn) {
         const xp = parseInt(microBtn.dataset.microXp || '10', 10);
-        store.addXP(xp, 'Calm');
+        const pillar = microBtn.dataset.microPillar || 'Calm';
+        store.addXP(xp, pillar);
         if (celebrate) celebrate.playChime('success');
-        showToast(`Paralysis broken! +${xp} XP awarded.`);
+        showToast(`Paralysis broken! +${xp} ${pillar} XP awarded.`);
         closeModal('paralysis-modal');
         ui.renderMirrorSection(store.state);
         return;

@@ -45,6 +45,284 @@ const CAREER_TRACKS = [
 ];
 if (typeof window !== "undefined") window.CAREER_TRACKS = CAREER_TRACKS;
 
+// Dynamic 2-Minute Paralysis Breaker Micro-Habits mapped to all 24 Career Ambitions
+const CAREER_MICRO_HABITS = {
+  'Teacher, Professor & Educator': {
+    title: 'Call or message a student with encouragement, or outline 1 teaching note',
+    icon: '👨‍🏫',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Student & Academic Learner': {
+    title: 'Open textbook or course notes and read just 1 paragraph',
+    icon: '📚',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Software Engineer & Full-Stack Developer': {
+    title: 'Open code editor and write just 1 line of comments or code',
+    icon: '💻',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Hardware & Electronics Engineer': {
+    title: 'Inspect your workbench or review 1 circuit schematic diagram',
+    icon: '⚡',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Mechanical & Robotics Engineer': {
+    title: 'Open CAD software or sketch 1 mechanical component / joint',
+    icon: '⚙️',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Civil & Structural Engineer': {
+    title: 'Open blueprint layout or inspect 1 structural load specification',
+    icon: '🏗️',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Doctor & Healthcare Practitioner': {
+    title: 'Review 1 clinical diagnosis flashcard or check patient triage guide',
+    icon: '🩺',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Nurse & Clinical Specialist': {
+    title: 'Review 1 patient care protocol or check 1 clinical supply prep item',
+    icon: '🩹',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Commercial Aviator & Pilot': {
+    title: 'Review 1 pre-flight instrument checklist or verify runway weather radar',
+    icon: '✈️',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Astronaut & Aerospace Researcher': {
+    title: 'Review 1 orbital velocity formula or inspect telemetry sensor data',
+    icon: '🚀',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Musician, Composer & Audio Producer': {
+    title: 'Pick up your instrument or hum/record 1 single musical melody idea',
+    icon: '🎵',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Dancer & Choreographer': {
+    title: 'Do a 60-second gentle posture stretch or mark 1 choreography 8-count',
+    icon: '🩰',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Visual Artist, Illustrator & Painter': {
+    title: 'Pick up a pencil or stylus and sketch just 1 loose gesture drawing',
+    icon: '🎨',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'UI/UX & Product Designer': {
+    title: 'Open Figma and adjust just 1 frame layout, button padding, or color',
+    icon: '📐',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Entrepreneur & Startup Founder': {
+    title: 'Send 1 quick customer outreach message or review 1 key growth metric',
+    icon: '💡',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Writer, Journalist & Author': {
+    title: 'Open your document and write just 1 honest, unfiltered sentence',
+    icon: '✍️',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Lawyer & Legal Advocate': {
+    title: 'Read 1 landmark case precedent paragraph or review 1 contractual clause',
+    icon: '⚖️',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Chef & Culinary Arts Professional': {
+    title: 'Sharpen 1 knife or prep 1 fresh culinary ingredient mise-en-place',
+    icon: '🍳',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Civil Services & Public Policy Leader': {
+    title: 'Review 1 community welfare brief or read 1 policy executive summary',
+    icon: '🏛️',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Trades, Craftsman & Artisan': {
+    title: 'Grab your tape measure and make just 1 precision pencil cut mark',
+    icon: '🔨',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Athlete, Coach & Fitness Specialist': {
+    title: 'Do 5 slow bodyweight squats or 30 seconds of dynamic mobility',
+    icon: '🏃',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Research Scientist & Mathematician': {
+    title: 'Read 1 scientific paper abstract or calculate 1 proof hypothesis step',
+    icon: '🔬',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Finance, Banking & Investment Analyst': {
+    title: 'Open your financial model and check 1 cash flow projection or ticker',
+    icon: '📊',
+    pillar: 'Craft',
+    xp: 20
+  },
+  'Filmmaker, Director & Cinematographer': {
+    title: 'Sketch or visualize 1 cinematic camera angle or storyboard frame',
+    icon: '🎬',
+    pillar: 'Craft',
+    xp: 20
+  }
+};
+
+function getCareerMicroHabit(trackName) {
+  if (!trackName) {
+    return {
+      id: 'career_micro',
+      title: 'Open code editor and write just 1 line of comments or code',
+      icon: '💻',
+      pillar: 'Craft',
+      xp: 20
+    };
+  }
+
+  // Exact match
+  if (CAREER_MICRO_HABITS[trackName]) {
+    const h = CAREER_MICRO_HABITS[trackName];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: h.pillar || 'Craft', xp: h.xp || 20 };
+  }
+
+  const lower = trackName.toLowerCase();
+  
+  if (lower.includes('teach') || lower.includes('educat') || lower.includes('professor') || lower.includes('school')) {
+    const h = CAREER_MICRO_HABITS['Teacher, Professor & Educator'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('student') || lower.includes('academic') || lower.includes('study')) {
+    const h = CAREER_MICRO_HABITS['Student & Academic Learner'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('software') || lower.includes('full-stack') || lower.includes('code') || lower.includes('developer') || lower.includes('builder') || lower.includes('programmer') || lower.includes('web')) {
+    const h = CAREER_MICRO_HABITS['Software Engineer & Full-Stack Developer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('hardware') || lower.includes('electronic') || lower.includes('circuit')) {
+    const h = CAREER_MICRO_HABITS['Hardware & Electronics Engineer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('mech') || lower.includes('robot')) {
+    const h = CAREER_MICRO_HABITS['Mechanical & Robotics Engineer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('civil') && !lower.includes('service')) {
+    const h = CAREER_MICRO_HABITS['Civil & Structural Engineer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('doctor') || lower.includes('physician') || lower.includes('medic') || lower.includes('clinical') || lower.includes('health')) {
+    const h = CAREER_MICRO_HABITS['Doctor & Healthcare Practitioner'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('nurse')) {
+    const h = CAREER_MICRO_HABITS['Nurse & Clinical Specialist'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('pilot') || lower.includes('aviat') || lower.includes('flight')) {
+    const h = CAREER_MICRO_HABITS['Commercial Aviator & Pilot'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('astronaut') || lower.includes('space') || lower.includes('aerospace')) {
+    const h = CAREER_MICRO_HABITS['Astronaut & Aerospace Researcher'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('music') || lower.includes('audio') || lower.includes('song') || lower.includes('composer')) {
+    const h = CAREER_MICRO_HABITS['Musician, Composer & Audio Producer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('danc') || lower.includes('choreograph')) {
+    const h = CAREER_MICRO_HABITS['Dancer & Choreographer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('artist') || lower.includes('paint') || lower.includes('illustrat') || lower.includes('draw')) {
+    const h = CAREER_MICRO_HABITS['Visual Artist, Illustrator & Painter'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('design') || lower.includes('ux') || lower.includes('ui') || lower.includes('product designer')) {
+    const h = CAREER_MICRO_HABITS['UI/UX & Product Designer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('founder') || lower.includes('entrepreneur') || lower.includes('startup') || lower.includes('business')) {
+    const h = CAREER_MICRO_HABITS['Entrepreneur & Startup Founder'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('writ') || lower.includes('author') || lower.includes('journal') || lower.includes('book')) {
+    const h = CAREER_MICRO_HABITS['Writer, Journalist & Author'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('law') || lower.includes('legal') || lower.includes('attorney') || lower.includes('advocate')) {
+    const h = CAREER_MICRO_HABITS['Lawyer & Legal Advocate'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('chef') || lower.includes('cook') || lower.includes('culinary') || lower.includes('kitchen')) {
+    const h = CAREER_MICRO_HABITS['Chef & Culinary Arts Professional'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('civil service') || lower.includes('policy') || lower.includes('governance')) {
+    const h = CAREER_MICRO_HABITS['Civil Services & Public Policy Leader'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('trade') || lower.includes('carpenter') || lower.includes('artisan') || lower.includes('craftsman')) {
+    const h = CAREER_MICRO_HABITS['Trades, Craftsman & Artisan'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('athlet') || lower.includes('fitness') || lower.includes('sport') || lower.includes('coach')) {
+    const h = CAREER_MICRO_HABITS['Athlete, Coach & Fitness Specialist'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('scien') || lower.includes('research') || lower.includes('math')) {
+    const h = CAREER_MICRO_HABITS['Research Scientist & Mathematician'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('financ') || lower.includes('bank') || lower.includes('invest')) {
+    const h = CAREER_MICRO_HABITS['Finance, Banking & Investment Analyst'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+  if (lower.includes('film') || lower.includes('cinema') || lower.includes('director') || lower.includes('video')) {
+    const h = CAREER_MICRO_HABITS['Filmmaker, Director & Cinematographer'];
+    return { id: 'career_micro', title: h.title, icon: h.icon, pillar: 'Craft', xp: h.xp };
+  }
+
+  return {
+    id: 'career_micro',
+    title: `Open workspace and take just 1 small action step in ${trackName}`,
+    icon: '🎯',
+    pillar: 'Craft',
+    xp: 20
+  };
+}
+
+if (typeof window !== "undefined") {
+  window.CAREER_MICRO_HABITS = CAREER_MICRO_HABITS;
+  window.getCareerMicroHabit = getCareerMicroHabit;
+}
+
 // Visual Progression Tree Presets: 4 Distinct Tiers for each Career Track
 // Visual Progression Tree Presets: 4 Distinct Tiers for prominent career tracks
 const CAREER_TREE_PRESETS = {
@@ -522,6 +800,12 @@ const DEFAULT_RELATIONSHIP_BONDS = [
 ];
 
 class StateManager {
+  // Helper to retrieve dynamic 2-minute micro-habit for active career
+  getCareerMicroHabit(trackName) {
+    const track = trackName || this.state?.careerTrack || this.state?.dreamCareer;
+    return getCareerMicroHabit(track);
+  }
+
   // Helper to retrieve or procedurally generate 4-tier tree for any career track
   getTreeForCareer(trackName) {
     if (CAREER_TREE_PRESETS[trackName]) {
