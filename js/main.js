@@ -336,6 +336,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      // 5.17b Open Add Loved One Modal
+      if (e.target.closest('#add-bond-btn') || e.target.closest('#empty-add-bond-btn')) {
+        openModal('add-bond-modal');
+        return;
+      }
+
       // 5.18 Log Bond Interaction Modal
       const logBondBtn = e.target.closest('[data-action="log-bond"]');
       if (logBondBtn) {
@@ -613,6 +619,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      // 6.4b Add Loved One Form Submit
+      if (e.target.id === 'add-bond-form') {
+        e.preventDefault();
+        const nameInput = document.getElementById('add-bond-name');
+        const roleInput = document.getElementById('add-bond-role');
+        const iconInput = document.getElementById('add-bond-icon');
+        const trustInput = document.getElementById('add-bond-trust');
+        const dynamicInput = document.getElementById('add-bond-dynamic');
+
+        const name = nameInput ? nameInput.value.trim() : '';
+        const role = roleInput ? roleInput.value : 'Companion';
+        const icon = iconInput ? iconInput.value : '🤝';
+        const trust = trustInput ? parseInt(trustInput.value, 10) : 75;
+        const dynamic = dynamicInput && dynamicInput.value.trim() ? dynamicInput.value.trim() : 'Values mutual presence, patient listening, and shared growth.';
+
+        if (!name) {
+          showToast('Please provide a name or relationship label.', '⚠️');
+          return;
+        }
+
+        store.addCustomBond(name, role, dynamic, trust, 'Warm', icon);
+        store.addXP(30, 'LovedOnes');
+
+        closeModal('add-bond-modal');
+        const addBondForm = document.getElementById('add-bond-form');
+        if (addBondForm) addBondForm.reset();
+        const trustValEl = document.getElementById('add-bond-trust-val');
+        if (trustValEl) trustValEl.textContent = '75%';
+
+        if (celebrate) {
+          celebrate.playChime('levelup');
+          celebrate.spawnBurst(window.innerWidth / 2, window.innerHeight / 2, 28, true);
+        }
+
+        ui.renderLovedOnesSection(store.state);
+        ui.renderMirrorSection(store.state);
+        ui.renderHeader(store.state, true);
+        showToast(`Added ${name} to your Loved Ones circle! +30 Empathy XP 🤝`);
+        return;
+      }
+
       // 6.5 AI Blueprint Generator Submit
       if (e.target.id === 'ai-blueprint-form') {
         e.preventDefault();
@@ -689,6 +736,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (celebrate) celebrate.playChime('success');
       showToast(`Career switched to ${newTrack}! Daily routine & milestones updated. 🎯`);
       return;
+    }
+  });
+
+  // -------------------------------------------------------------------------
+  // 8. RANGE SLIDER REAL-TIME DISPLAY LISTENERS
+  // -------------------------------------------------------------------------
+  document.addEventListener('input', e => {
+    if (e.target.id === 'add-bond-trust') {
+      const valEl = document.getElementById('add-bond-trust-val');
+      if (valEl) valEl.textContent = `${e.target.value}%`;
     }
   });
 });

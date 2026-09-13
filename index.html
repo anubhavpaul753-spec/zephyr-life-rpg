@@ -621,6 +621,73 @@
     </div>
   </div>
 
+  <!-- Modal 3b: Add Loved One Bond Modal -->
+  <div id="add-bond-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card raycast-card specular-card">
+      <header class="modal-header">
+        <div>
+          <h3 class="modal-title">🤝 Add Loved One & Relationship Bond</h3>
+          <p class="modal-subtitle">Prioritize a meaningful human connection in your life quest.</p>
+        </div>
+        <button class="icon-btn modal-close-btn" data-close="add-bond-modal">✕</button>
+      </header>
+      <form id="add-bond-form" class="modal-form">
+        <div class="form-group">
+          <label class="form-label" for="add-bond-name">Name / Relationship Label</label>
+          <input type="text" id="add-bond-name" class="form-input" placeholder="e.g. Mom, Maya, Rahul, Dad, Little Sister" required autocomplete="off">
+        </div>
+        <div class="form-row" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label" for="add-bond-role">Relationship Role</label>
+            <select id="add-bond-role" class="form-input form-select">
+              <option value="Parent / Guardian">Parent / Guardian</option>
+              <option value="Partner / Spouse">Partner / Spouse</option>
+              <option value="Sibling">Sibling</option>
+              <option value="Best Friend">Best Friend</option>
+              <option value="Close Friend">Close Friend</option>
+              <option value="Mentor / Guide">Mentor / Guide</option>
+              <option value="Child / Dependent">Child / Dependent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="add-bond-icon">Avatar Icon</label>
+            <select id="add-bond-icon" class="form-input form-select">
+              <option value="🤝" selected>🤝 Connection</option>
+              <option value="❤️">❤️ Love</option>
+              <option value="👩‍💼">👩‍💼 Mom / Woman</option>
+              <option value="👨‍💼">👨‍💼 Dad / Man</option>
+              <option value="💖">💖 Partner</option>
+              <option value="🫂">🫂 Hug / Empathy</option>
+              <option value="🌻">🌻 Warmth</option>
+              <option value="🌟">🌟 Inspiration</option>
+              <option value="🛡️">🛡️ Protector</option>
+              <option value="☕">☕ Conversation</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label class="form-label" for="add-bond-trust" style="margin:0;">Initial Trust & Presence Meter</label>
+            <span id="add-bond-trust-val" style="font-weight:700; color:var(--accent); font-family:var(--font-mono); font-size:0.9rem;">75%</span>
+          </div>
+          <input type="range" id="add-bond-trust" min="20" max="100" value="75" class="form-input" style="padding:0; accent-color:var(--accent); cursor:pointer; width:100%;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:4px;">
+            <span>Needs Healing (20%)</span>
+            <span>Healthy (60-80%)</span>
+            <span>Unshakeable (100%)</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="add-bond-dynamic">Core Mutual Value / Dynamic</label>
+          <input type="text" id="add-bond-dynamic" class="form-input" placeholder="e.g. Unconditional support, honest conversations, laughter" value="Values mutual presence, patient listening, and shared growth.">
+        </div>
+        <button type="submit" class="pill-btn primary-btn" style="width:100%; margin-top:8px;">
+          <span>✨</span> Commit to Bond (+30 Empathy XP)
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal 4: Level-Up Celebration Overlay -->
   <div id="level-up-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
     <div class="modal-card levelup-modal-card raycast-card specular-card">

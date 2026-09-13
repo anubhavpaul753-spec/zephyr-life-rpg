@@ -678,7 +678,14 @@ class UIManager {
 
     const bonds = state?.relationshipBonds || state?.bonds || window.DEFAULT_RELATIONSHIP_BONDS || [];
     if (bonds.length === 0) {
-      bondsContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:40px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-lg);">No loved ones registered yet. Click <strong>+ Add Loved One</strong> to prioritize human connections.</div>`;
+      bondsContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align:center; padding:40px 24px; color:var(--text-muted); background:var(--bg-subtle); border-radius:var(--radius-lg); border:1px dashed var(--border-color);">
+          <p style="margin-bottom:14px; font-size:0.95rem;">No loved ones registered yet. Prioritize meaningful human connections in your life quest.</p>
+          <button id="empty-add-bond-btn" class="pill-btn primary-btn">
+            <span>+</span> Add Loved One
+          </button>
+        </div>
+      `;
       return;
     }
 

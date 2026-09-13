@@ -1409,17 +1409,17 @@ class StateManager {
   }
 
   // Add a customizable bond
-  addCustomBond(name, role, dynamic, initialTrust = 75, status = 'Warm') {
+  addCustomBond(name, role, dynamic, initialTrust = 75, status = 'Warm', icon = '🤝') {
     const newBond = {
       id: `bond_${Date.now()}`,
       name: name.trim(),
       role: role.trim() || 'Companion',
-      icon: '🤝',
+      icon: icon || '🤝',
       status: status || 'Warm',
       statusBadge: status || 'Warm',
       statusColor: status === 'Warm' ? '#10B981' : (status === 'Distant' ? '#F43F5E' : '#F59E0B'),
       dynamic: dynamic.trim() || 'Values mutual care, trust, and shared flourishing.',
-      trust: parseInt(initialTrust) || 75,
+      trust: parseInt(initialTrust, 10) || 75,
       patienceStreak: 1,
       deescalationQuest: {
         id: `deesc_${Date.now()}`,
@@ -1438,6 +1438,7 @@ class StateManager {
       this.state.relationshipBonds = [];
     }
     this.state.relationshipBonds.push(newBond);
+    this.state.skipRelationships = false;
     this.saveState();
     this.notify();
     return newBond;
